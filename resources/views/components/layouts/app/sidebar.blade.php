@@ -1,0 +1,141 @@
+<div class="sidebar sidebar-hide-to-small sidebar-shrink sidebar-gestures">
+    <div class="nano">
+        <div class="nano-content">
+            <ul>
+                <li class="active">
+                    <a wire:navigate href="{{ route('dashboard') }}"> 
+                        <i class="ti-dashboard"></i> Dashboard
+                    </a>
+                </li>
+
+                <li class="label">Admin & Syatem Users</li>
+
+                <li><a class="sidebar-sub-toggle"><i class="ti-lock"></i> Roles & Permissions<span class="badge badge-primary">2</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
+                    <ul>
+                        <li><a wire:navigate href="{{ route('role') }}">Roles</a></li>
+                        <li><a wire:navigate href="{{ route('permissions') }}">Permissions</a></li>
+                    </ul>
+                </li>
+
+                <li><a class="sidebar-sub-toggle"><i class="ti-user"></i> System Users<span class="badge badge-primary">2</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
+                    <ul>
+                        <li><a wire:navigate href="{{ route('users') }}">Users</a></li>
+                        <li><a href="javascript:void(0);">Activity Log</a></li>
+                    </ul>
+                </li>
+
+                <li><a class="sidebar-sub-toggle"><i class="ti-harddrives"></i> Master Data<span class="badge badge-primary">5</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
+                    <ul>
+                        <li><a href="javascript:void(0);">Monthly Return</a></li>
+                        <li><a href="javascript:void(0);">Level Bonus</a></li>
+                        <li><a href="javascript:void(0);">Remuneration</a></li>
+                        <li><a href="javascript:void(0);">Award Master</a></li>
+                        <li><a href="javascript:void(0);">Franchise Benefit</a></li>
+                    </ul>
+                </li>
+
+                
+
+                <li class="label">MLM Management</li>
+                <li class="">
+                    <a href="javascript:void(0);"> 
+                        <i class="ti-settings"></i> MLM Settings
+                    </a>
+                </li>
+                <li><a class="sidebar-sub-toggle"><i class="ti-crown"></i>  Leaders  <span class="badge badge-primary">3</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
+                    <ul>
+                        <li><a href="javascript:void(0);">All Leaders</a></li>
+                        <li><a wire:navigate href="{{ route('binary.tree') }}">Tree View</a></li>
+                        <li><a href="javascript:void(0);">Users of Leader</a></li>
+                    </ul>
+                </li>
+                <li><a class="sidebar-sub-toggle"><i class="ti-id-badge"></i>  KYC  <span class="badge badge-primary">4</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
+                    <ul>
+                        <li><a href="javascript:void(0);">Pending</a></li>
+                        <li><a href="javascript:void(0);">Cancelled</a></li>
+                        <li><a href="javascript:void(0);">Completed</a></li>
+                        <li><a href="javascript:void(0);">All KYC</a></li>
+                    </ul>
+                </li>
+
+                <li><a class="sidebar-sub-toggle"><i class="ti-package"></i>  Orders & Products  <span class="badge badge-primary">3</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
+                    <ul>
+                        <li><a href="javascript:void(0);">Orders</a></li>
+                        <li><a href="javascript:void(0);">Categories</a></li>
+                        <li><a href="javascript:void(0);">Products</a></li>
+                    </ul>
+                </li>
+
+                <li><a class="sidebar-sub-toggle"><i class="ti-stats-up"></i>  Reports  <span class="badge badge-primary">18</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
+                    <ul>
+                        <li><a href="javascript:void(0);">ID Activation</a></li>
+                        <li><a href="javascript:void(0);">Sales</a></li>
+                        <li><a href="javascript:void(0);">TDS</a></li>
+                        <li><a href="javascript:void(0);">Repurchase</a></li>
+                        <li><a href="javascript:void(0);">Direct Bonus</a></li>
+                        <li><a href="javascript:void(0);">Level Bonus</a></li>
+                        <li><a href="javascript:void(0);">Investor Returns</a></li>
+                        <li><a href="javascript:void(0);">Product Support</a></li>
+                        <li><a href="javascript:void(0);">Payout</a></li>
+                        <li><a href="javascript:void(0);">Payout History</a></li>
+                        <li><a href="javascript:void(0);">Hold Amount</a></li>
+                        <li><a href="javascript:void(0);">Paid/Unpaid Payments</a></li>
+                        <li><a href="javascript:void(0);">Commission > 200</a></li>
+                        <li><a class="sidebar-sub-toggle"><i class="ti-bar-chart-alt"></i>  Remuneration  <span class="badge badge-primary">2</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
+                            <ul>
+                                <li><a href="javascript:void(0);">Transactions</a></li>
+                                <li><a href="javascript:void(0);">Reports</a></li>
+                            </ul>
+                        </li>
+                        <li><a class="sidebar-sub-toggle"><i class="ti-bar-chart-alt"></i>  Business  <span class="badge badge-primary">2</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
+                            <ul>
+                                <li><a href="javascript:void(0);">Level-wise</a></li>
+                                <li><a href="javascript:void(0);">Tree-wise</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript:void(0);">Dilse Plan</a></li>
+                        <li><a href="javascript:void(0);">Add-on</a></li>
+                        <li><a href="javascript:void(0);">Product Delivery</a></li>
+                    </ul>
+                </li>
+
+                <li class="label">Website Management</li>
+                <li class="">
+                    <a href="javascript:void(0);"> 
+                        <i class="ti-settings"></i> Site Settings
+                    </a>
+                </li>
+                <li><a class="sidebar-sub-toggle"><i class="ti-briefcase"></i>  Legal  <span class="badge badge-primary">3</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
+                    <ul>
+                        <li><a href="javascript:void(0);">Certificates</a></li>
+                        <li><a href="javascript:void(0);">Terms & Conditions</a></li>
+                        <li><a href="javascript:void(0);">Privacy Policy</a></li>
+                    </ul>
+                </li>
+                <li class="">
+                    <a href="javascript:void(0);"> 
+                        <i class="ti-email"></i> Contact Requests
+                    </a>
+                </li>
+                <li class="">
+                    <a href="javascript:void(0);"> 
+                        <i class="ti-gallery"></i> Photo Gallery
+                    </a>
+                </li>
+
+                
+                {{-- <li>
+                    <a href="{{ route('logout') }}"
+                       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        <i class="ti-close"></i> Logout
+                    </a>
+                </li>
+                
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    @csrf
+                </form> --}}
+                
+            </ul>
+        </div>
+    </div>
+</div>
