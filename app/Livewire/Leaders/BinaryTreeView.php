@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Leaders;
 
 use Livewire\Component;
 use App\Models\BinaryTree;
+use Illuminate\Support\Facades\Log;
 
 class BinaryTreeView extends Component
 {
@@ -18,6 +19,8 @@ class BinaryTreeView extends Component
 
     public function loadTree($rootId = null)
     {
+        
+        Log::info("$rootId");
         // Eager load user with all necessary relationships and counts
         $withClosure = function ($query) {
             $query->with([
@@ -84,6 +87,6 @@ class BinaryTreeView extends Component
 
     public function render()
     {
-        return view('livewire.binary-tree-view');
+        return view('livewire.leaders.binary-tree-view');
     }
 }

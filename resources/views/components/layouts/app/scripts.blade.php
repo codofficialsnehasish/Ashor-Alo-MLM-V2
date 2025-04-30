@@ -36,4 +36,7 @@
 <!-- scripit init-->
 <script src="{{ asset('assets/js/lib/sweetalert/sweetalert.init.js') }}"></script>
 
+<!-- select2 -->
+<script src="{{ asset('assets/select2/js/select2.min.js') }}"></script>
+
 <script src="{{ asset('assets/js/scripts.js') }}"></script>

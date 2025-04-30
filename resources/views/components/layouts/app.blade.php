@@ -37,6 +37,9 @@
     <link href="{{ asset('assets/bootstrap-5/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/lib/sweetalert/sweetalert.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/lib/unix.css') }}" rel="stylesheet">
+
+    <script src="{{ asset('assets/select2/css/select2.min.css') }}"></script>
+    
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     @livewireStyles

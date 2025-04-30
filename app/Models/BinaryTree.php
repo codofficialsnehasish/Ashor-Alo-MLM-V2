@@ -8,10 +8,14 @@ class BinaryTree extends Model
 {
     protected $fillable = [
         'user_id', 
+        'member_number',
+        'sponsor_id',
         'parent_id', 
         'position', 
         'left_user_id', 
         'right_user_id',
+        'status',
+        'activated_at',
     ];
     
     public function user()

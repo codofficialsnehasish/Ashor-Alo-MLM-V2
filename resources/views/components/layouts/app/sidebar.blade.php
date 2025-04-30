@@ -20,7 +20,7 @@
                 <li><a class="sidebar-sub-toggle"><i class="ti-user"></i> System Users<span class="badge badge-primary">2</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
                     <ul>
                         <li><a wire:navigate href="{{ route('users') }}">Users</a></li>
-                        <li><a href="javascript:void(0);">Activity Log</a></li>
+                        <li><a wire:navigate href="{{ route('activity-log') }}">Activity Log</a></li>
                     </ul>
                 </li>
 
@@ -44,7 +44,7 @@
                 </li>
                 <li><a class="sidebar-sub-toggle"><i class="ti-crown"></i>  Leaders  <span class="badge badge-primary">3</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
                     <ul>
-                        <li><a href="javascript:void(0);">All Leaders</a></li>
+                        <li><a wire:navigate href="{{ route('leaders.all')}}">All Leaders</a></li>
                         <li><a wire:navigate href="{{ route('binary.tree') }}">Tree View</a></li>
                         <li><a href="javascript:void(0);">Users of Leader</a></li>
                     </ul>

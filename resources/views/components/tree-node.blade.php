@@ -3,7 +3,7 @@
 @if($currentDepth <= $maxDepth)
     <li>
         @if($node)
-            <a href="#" onclick="handleNodeClick({{ $node->user_id }})" 
+            <a href="#" onclick="handleNodeClick({{ $node->user_id }})"
                wire:mouseover="$emit('memberDetails', {{ $node->user_id }})">
                 <div class="member-view-box n-ppost">
                     <div class="member-header">

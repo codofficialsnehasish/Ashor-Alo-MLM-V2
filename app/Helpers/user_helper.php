@@ -255,51 +255,127 @@
     }
 
 
+    // if(!function_exists('insertInBinaryTree')){
+    //     function insertInBinaryTree($userId, $sponsorId)
+    //     {
+    //         $sponsorNode = BinaryTree::where('user_id', $sponsorId)->first();
+
+    //         if (!$sponsorNode) {
+    //             // If the sponsor doesn't exist, create the first root node
+    //             return BinaryTree::create([
+    //                 'user_id' => $userId,
+    //                 'parent_id' => null,
+    //             ]);
+    //         }
+
+    //         // BFS to find the first available left/right slot
+    //         $queue = [$sponsorNode];
+
+    //         while (!empty($queue)) {
+    //             $current = array_shift($queue);
+
+    //             if (is_null($current->left_user_id)) {
+    //                 // Ensure the user exists before trying to assign them to the binary tree
+    //                 if (User::find($userId)) {
+    //                     $newNode = BinaryTree::create([
+    //                         'user_id' => $userId,
+    //                         'parent_id' => $current->id,
+    //                         'position' => 'left',
+    //                     ]);
+    //                     $current->update(['left_user_id' => $newNode->id]);
+    //                     return $newNode;
+    //                 }
+    //             }
+
+    //             if (is_null($current->right_user_id)) {
+    //                 // Ensure the user exists before trying to assign them to the binary tree
+    //                 if (User::find($userId)) {
+    //                     $newNode = BinaryTree::create([
+    //                         'user_id' => $userId,
+    //                         'parent_id' => $current->id,
+    //                         'position' => 'right',
+    //                     ]);
+    //                     $current->update(['right_user_id' => $newNode->id]);
+    //                     return $newNode;
+    //                 }
+    //             }
+
+    //             // Queue left and right children for further checking
+    //             if ($current->left_user_id) {
+    //                 $queue[] = BinaryTree::find($current->left_user_id);
+    //             }
+    //             if ($current->right_user_id) {
+    //                 $queue[] = BinaryTree::find($current->right_user_id);
+    //             }
+    //         }
+
+    //         return null; // No available slot
+    //     }
+    // }
+
     if(!function_exists('insertInBinaryTree')){
         function insertInBinaryTree($userId, $sponsorId)
         {
-            $sponsorNode = BinaryTree::where('user_id', $sponsorId)->first();
-
-            if (!$sponsorNode) {
-                // If the sponsor doesn't exist, create the first root node
+            $user = User::find($userId);
+            if (!$user) {
+                return null; // User doesn't exist
+            }
+    
+            // Generate a unique member number (you might want to customize this logic)
+            $memberNumber = str_pad(mt_rand(1, 99999999), 8, '0', STR_PAD_LEFT);
+    
+            // If no sponsor provided, create as root node
+            if (!$sponsorId) {
                 return BinaryTree::create([
                     'user_id' => $userId,
+                    'member_number' => $memberNumber,
                     'parent_id' => null,
+                    'sponsor_id' => null,
+                    'status' => 1, // Assuming root is automatically active
+                    'activated_at' => now(),
                 ]);
             }
-
+    
+            $sponsorNode = BinaryTree::where('user_id', $sponsorId)->first();
+    
+            if (!$sponsorNode) {
+                return null; // Sponsor doesn't exist in binary tree
+            }
+    
             // BFS to find the first available left/right slot
             $queue = [$sponsorNode];
-
+    
             while (!empty($queue)) {
                 $current = array_shift($queue);
-
+    
                 if (is_null($current->left_user_id)) {
-                    // Ensure the user exists before trying to assign them to the binary tree
-                    if (User::find($userId)) {
-                        $newNode = BinaryTree::create([
-                            'user_id' => $userId,
-                            'parent_id' => $current->id,
-                            'position' => 'left',
-                        ]);
-                        $current->update(['left_user_id' => $newNode->id]);
-                        return $newNode;
-                    }
+                    $newNode = BinaryTree::create([
+                        'user_id' => $userId,
+                        'member_number' => $memberNumber,
+                        'parent_id' => $current->id,
+                        'sponsor_id' => $sponsorId,
+                        'position' => 'left',
+                        'status' => 0, // Default inactive
+                    ]);
+                    
+                    $current->update(['left_user_id' => $newNode->id]);
+                    return $newNode;
                 }
-
+    
                 if (is_null($current->right_user_id)) {
-                    // Ensure the user exists before trying to assign them to the binary tree
-                    if (User::find($userId)) {
-                        $newNode = BinaryTree::create([
-                            'user_id' => $userId,
-                            'parent_id' => $current->id,
-                            'position' => 'right',
-                        ]);
-                        $current->update(['right_user_id' => $newNode->id]);
-                        return $newNode;
-                    }
+                    $newNode = BinaryTree::create([
+                        'user_id' => $userId,
+                        'member_number' => $memberNumber,
+                        'parent_id' => $current->id,
+                        'sponsor_id' => $sponsorId,
+                        'position' => 'right',
+                        'status' => 0, // Default inactive
+                    ]);
+                    
+                    $current->update(['right_user_id' => $newNode->id]);
+                    return $newNode;
                 }
-
+    
                 // Queue left and right children for further checking
                 if ($current->left_user_id) {
                     $queue[] = BinaryTree::find($current->left_user_id);
@@ -308,7 +384,7 @@
                     $queue[] = BinaryTree::find($current->right_user_id);
                 }
             }
-
+    
             return null; // No available slot
         }
     }

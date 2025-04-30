@@ -47,7 +47,11 @@ class EditUser extends Component
             return redirect()->route('users')->with('error', 'Invalid ID');
         }
 
-        $this->roles = Role::pluck('name', 'name')->toArray();
+        // $this->roles = Role::pluck('name', 'name')->toArray();
+        $allRoles = Role::pluck('name', 'name')->toArray();
+        $excludedRoles = ['Leader']; // Roles to exclude
+        
+        $this->roles = array_diff($allRoles, $excludedRoles);
         $this->selectedRoles = $this->user->roles->pluck('name')->toArray();
     }
 

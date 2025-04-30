@@ -30,11 +30,13 @@ class Usermanagement extends Component
 
     public function render()
     {
-        $users = User::paginate(10);
-        // $users = User::whereDoesntHave('roles', function ($query) {
-        //     $query->where('name', 'Super Admin');
-        // })->paginate(10);
-        
+        // $users = User::paginate(10);
+        $excludedRoles = ['Leader']; // Your array of role names
+
+        $users = User::whereDoesntHave('roles', function ($query) use ($excludedRoles) {
+            $query->whereIn('name', $excludedRoles);
+        })->paginate(10);
+
         return view('livewire.users.usermanagement', [
             'roles' => $this->roles,
             'users' => $users

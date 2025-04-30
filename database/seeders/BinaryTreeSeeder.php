@@ -15,11 +15,18 @@ class BinaryTreeSeeder extends Seeder
         $users = [];
 
         for ($i = 1; $i <= 15; $i++) {
-            $users[$i] = User::create([
+            $user = User::create([
                 'name' => "User $i",
                 'email' => "user$i@example.com",
+                'phone' => $i.'999999999',
                 'password' => Hash::make('password'),
+                'decoded_password' => "password",
             ]);
+            
+            // Assign Leader role to the user
+            $user->assignRole('Leader');
+            
+            $users[$i] = $user;
         }
 
         // Insert into Binary Tree

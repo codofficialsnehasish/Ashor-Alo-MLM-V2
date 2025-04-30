@@ -25,11 +25,17 @@ class DatabaseSeeder extends Seeder
         $user = User::factory()->create([
             'name' => 'Super Admin',
             'email' => 'admin@admin.com',
+            'phone' => 9999999989,
             'password' => Hash::make('12345678'), // Make sure the password is hashed
+            'decoded_password' => 12345678
         ]);
 
         // Assign the "Super Admin" role to the created user
         $user->assignRole('Super Admin');
+
+        $this->call([
+            BinaryTreeSeeder::class,
+        ]);
     }
 
 }

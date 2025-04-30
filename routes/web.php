@@ -1,20 +1,33 @@
 <?php
 
-use App\Livewire\Settings\Appearance;
-use App\Livewire\Settings\Password;
-use App\Livewire\Settings\Profile;
+use App\Livewire\Settings\{
+    Appearance,
+    Password,
+    Profile
+};
 
 use App\Livewire\Dashboard;
 
-use App\Livewire\RolesPermission\AsignPermission;
-use App\Livewire\RolesPermission\Permissions;
-use App\Livewire\RolesPermission\RoleManagement;
+use App\Livewire\RolesPermission\{
+    AsignPermission,
+    Permissions,
+    RoleManagement,
+};
 
-use App\Livewire\Users\CreateUser;
-use App\Livewire\Users\EditUser;
-use App\Livewire\Users\Usermanagement;
+use App\Livewire\Users\{
+    CreateUser,
+    EditUser,
+    Usermanagement
+};
 
-use App\Livewire\BinaryTreeView;
+use App\Livewire\Leaders\{
+    AllLeaders,
+    BinaryTreeView,
+    AddLeader
+};
+
+use App\Livewire\ActivityLog\ActivityLogTable;
+
 
 use Illuminate\Support\Facades\Route;
 
@@ -48,6 +61,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/users/create' , CreateUser::class)->name('createUser');
     Route::get('/users/{id}/edit', EditUser::class)->name('user.edit');
 
+    Route::get('/activity-log', ActivityLogTable::class)->name('activity-log');
+    
+    Route::get('/leaders', AllLeaders::class)->name('leaders.all');
+    Route::get('/leaders-create', AddLeader::class)->name('leaders.create');
     Route::get('/binary-tree', BinaryTreeView::class)->name('binary.tree');
 });
 

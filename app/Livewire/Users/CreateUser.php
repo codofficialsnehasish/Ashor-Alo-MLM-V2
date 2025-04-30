@@ -42,7 +42,12 @@ class CreateUser extends Component
     }
     public function mount()
     {
-        $this->roles = Role::pluck('name', 'name')->toArray();
+        // $this->roles = Role::pluck('name', 'name')->toArray();
+
+        $allRoles = Role::pluck('name', 'name')->toArray();
+        $excludedRoles = ['Leader']; // Roles to exclude
+        
+        $this->roles = array_diff($allRoles, $excludedRoles);
     }
 
     public function addUser()

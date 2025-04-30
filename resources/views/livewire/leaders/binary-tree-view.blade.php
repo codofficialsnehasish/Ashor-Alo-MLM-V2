@@ -591,8 +591,6 @@
                                         <p class="text-center">No tree data found.</p>
                                     @endif
                                 </div>
-                                
-                                
                             </div>
                         </div>
                     </div>
@@ -605,6 +603,6 @@
 <script>
     function handleNodeClick(userId) {
         console.log(userId);
-        Livewire.dispatch('setAsRoot', userId);
+        Livewire.dispatch('loadTree', userId);
     }
 </script>
