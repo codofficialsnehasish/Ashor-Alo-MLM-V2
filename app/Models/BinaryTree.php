@@ -36,4 +36,16 @@ class BinaryTree extends Model
     {
         return $this->hasOne(BinaryTree::class, 'id', 'right_user_id')->with('left', 'right', 'user');
     }
+
+    public function sponsor()
+    {
+        // The user who sponsored this node (through sponsor_id)
+        return $this->belongsTo(BinaryTree::class, 'sponsor_id')->with('user');
+    }
+
+    public function sponsoredNodes()
+    {
+        // All nodes this user has sponsored
+        return $this->hasMany(BinaryTree::class, 'sponsor_id');
+    }
 }

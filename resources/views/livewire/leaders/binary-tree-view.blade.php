@@ -579,7 +579,8 @@
                                 
                                         <div class="genealogy-tree">
                                             <ul id="tree-container">
-                                                <x-tree-node 
+                                                {{-- <x-tree-node  --}}
+                                                <livewire:leaders.tree-partials.tree-node
                                                     :node="$root" 
                                                     :currentDepth="1" 
                                                     :maxDepth="$levelsToShow"

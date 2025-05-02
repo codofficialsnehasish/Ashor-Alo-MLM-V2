@@ -91,4 +91,9 @@ class User extends Authenticatable implements HasMedia
         return $this->hasMany(BinaryTree::class, 'parent_id')
             ->where('position', 'right');
     }
+
+    public function binaryTreeNode()
+    {
+        return $this->hasOne(BinaryTree::class, 'user_id');
+    }
 }

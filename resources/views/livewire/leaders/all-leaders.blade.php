@@ -75,14 +75,14 @@
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ format_datetime($user->created_at) }}</td>
-                                                <td>{{ format_datetime($user->created_at) }}</td>
-                                                <td>{{ $user->name }} </td>
+                                                <td>{{ !empty($user->binaryNode->activated_at) ? format_datetime($user->binaryNode->activated_at) : '' }}</td>
+                                                <td>{{ $user->name }} ({{$user->binaryNode->member_number}})</td>
                                                 <td>{{ ucFirst($user->binaryNode->position) }}</td>
                                                 <td>{{ $user->phone }}</td>
                                                 <td>{{ $user->decoded_password }}</td>
                                                 <td>{{ $user->email }}</td>
-                                                <td>{{ $user->binaryNode->status }}</td>
-                                                <td>{{ $user->binaryNode->sponsor_id }}</td>
+                                                <td>{!! check_status($user->binaryNode->status) !!}</td>
+                                                <td>{{ $user->binaryNode?->sponsor?->user?->name ?? '' }} @if($user->binaryNode?->sponsor)({{$user->binaryNode?->sponsor?->member_number}})@endif</td>
                                                 <td class="text-end">
                                                     <a href="{{ route('user.edit', ['id' => Crypt::encryptString($user->id)]) }}" wire:navigate><i class="ti-pencil-alt text-secondary font-16 text-info"></i></a>
                                                     <a href="javascript:;" onclick="confirmDeletion({{ $user->id }})"><i class="ti-trash text-secondary font-16 text-danger"></i></a>

@@ -23,7 +23,9 @@ use App\Livewire\Users\{
 use App\Livewire\Leaders\{
     AllLeaders,
     BinaryTreeView,
-    AddLeader
+    AddLeader,
+    TransferSubtree,
+    MembersOfLeader,
 };
 
 use App\Livewire\ActivityLog\ActivityLogTable;
@@ -66,6 +68,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/leaders', AllLeaders::class)->name('leaders.all');
     Route::get('/leaders-create', AddLeader::class)->name('leaders.create');
     Route::get('/binary-tree', BinaryTreeView::class)->name('binary.tree');
+    Route::get('/transfer-sub-tree', TransferSubtree::class)->name('binary.transfer');
+    Route::get('/.members-of-leader', MembersOfLeader::class)->name('leaders.members-of-leader');
 });
 
 require __DIR__.'/auth.php';

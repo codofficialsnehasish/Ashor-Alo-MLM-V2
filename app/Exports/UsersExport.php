@@ -18,17 +18,23 @@ class UsersExport implements FromCollection, WithHeadings
     public function collection()
     {
         return $this->users->map(function ($user) {
+            $sponsorName = $user->binaryNode?->sponsor?->user?->name ?? '';
+            $sponsorNumber = $user->binaryNode?->sponsor?->member_number ?? '';
+            
+            if (!empty($sponsorName) && !empty($sponsorNumber)) {
+                $sponsorName .= " ($sponsorNumber)";
+            }
+
             return [
                 'Sl No.' => $user->id,
-                'Reg Date' => $user->created_at,
-                'Active Date' => $user->created_at,
-                'Name' => $user->name,
-                'Position' => $user->binaryNode->position ?? '',
-                'Mobile' => '',
-                'Password' => '',
+                'Reg Date' => format_datetime($user->created_at),
+                'Active Date' => !empty($user->binaryNode->activated_at) ? format_datetime($user->binaryNode->activated_at) : '',
+                'Name' => $user->name . '(' . $user->binaryNode->member_number . ')',
+                'Position' => ucfirst($user->binaryNode->position) ?? '',
+                'Mobile' => $user->phone,
                 'Email' => $user->email,
-                'Status' => $user->binaryNode->status ?? '',
-                'Sponsor Name' => $user->binaryNode->sponsor_id ?? '',
+                'Status' => $user->binaryNode->status == 1 ? 'Active' : 'Inactive',
+                'Sponsor Name' => $sponsorName,
             ];
         });
     }
@@ -42,7 +48,6 @@ class UsersExport implements FromCollection, WithHeadings
             'Name',
             'Position',
             'Mobile',
-            'Password',
             'Email',
             'Status',
             'Sponsor Name'

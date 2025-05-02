@@ -5,6 +5,7 @@ namespace App\Livewire\Leaders;
 use Livewire\Component;
 use App\Models\BinaryTree;
 use Illuminate\Support\Facades\Log;
+use Livewire\Attributes\On;
 
 class BinaryTreeView extends Component
 {

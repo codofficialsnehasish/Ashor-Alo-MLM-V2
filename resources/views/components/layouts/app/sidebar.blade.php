@@ -46,7 +46,8 @@
                     <ul>
                         <li><a wire:navigate href="{{ route('leaders.all')}}">All Leaders</a></li>
                         <li><a wire:navigate href="{{ route('binary.tree') }}">Tree View</a></li>
-                        <li><a href="javascript:void(0);">Users of Leader</a></li>
+                        <li><a wire:navigate href="{{ route('binary.transfer') }}">Tranafer Tree</a></li>
+                        <li><a wire:navigate href="{{ route('leaders.members-of-leader') }}">Members of Leader</a></li>
                     </ul>
                 </li>
                 <li><a class="sidebar-sub-toggle"><i class="ti-id-badge"></i>  KYC  <span class="badge badge-primary">4</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
