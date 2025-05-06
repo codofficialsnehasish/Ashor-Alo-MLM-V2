@@ -8,11 +8,11 @@ class SMSService
 {
     public function sendSMS($phone_number, $user_id = 0, $password = 0)
     {
-        return $password;
+        // return $password;
         $url = 'https://api.smartping.ai/fe/api/v1/send';
 
-        try {
-            $response = Http::get($url, [
+        // try {
+            $response = Http::get($url, [ 
                 'username' => 'ashoralo.trans',
                 'password' => 'nLcTY',
                 'unicode' => 'false',
@@ -29,9 +29,9 @@ class SMSService
                 // return "Failed to send SMS. Status code: " . $response->status();
                 return $response;
             }
-        } catch (\Exception $e) {
-            // return "An error occurred while sending the SMS: " . $e->getMessage();
-            return false;
-        }
+        // } catch (\Exception $e) {
+        //     // return "An error occurred while sending the SMS: " . $e->getMessage();
+        //     return false;
+        // }
     }
 }

@@ -28,6 +28,14 @@ use App\Livewire\Leaders\{
     MembersOfLeader,
 };
 
+use App\Livewire\MasterData\LevelBonus\Index as LevelBonusIndex;
+use App\Livewire\MasterData\LevelBonus\Create as LevelBonusCreate;
+use App\Livewire\MasterData\LevelBonus\Edit as LevelBonusEdit;
+
+use App\Livewire\MasterData\RemunerationBenefit\Index as RBIndex;
+use App\Livewire\MasterData\RemunerationBenefit\Create as RBCreate;
+use App\Livewire\MasterData\RemunerationBenefit\Edit as RBEdit;
+
 use App\Livewire\ActivityLog\ActivityLogTable;
 
 
@@ -70,6 +78,18 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/binary-tree', BinaryTreeView::class)->name('binary.tree');
     Route::get('/transfer-sub-tree', TransferSubtree::class)->name('binary.transfer');
     Route::get('/.members-of-leader', MembersOfLeader::class)->name('leaders.members-of-leader');
+
+    Route::prefix('master-data/level-bonus')->name('level-bonus.')->group(function () {
+        Route::get('/', LevelBonusIndex::class)->name('index');
+        Route::get('/create', LevelBonusCreate::class)->name('create');
+        Route::get('/edit/{id}', LevelBonusEdit::class)->name('edit');
+    });
+
+    Route::prefix('remuneration-benefit')->name('remuneration-benefit.')->group(function () {
+        Route::get('/', RBIndex::class)->name('index');
+        Route::get('/create', RBCreate::class)->name('create');
+        Route::get('/edit/{id}', RBEdit::class)->name('edit');
+    });
 });
 
 require __DIR__.'/auth.php';

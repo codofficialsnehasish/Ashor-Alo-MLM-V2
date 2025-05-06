@@ -96,4 +96,9 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->hasOne(BinaryTree::class, 'user_id');
     }
+
+    public function kyc()
+    {
+        return $this->hasOne(Kyc::class);
+    }
 }
