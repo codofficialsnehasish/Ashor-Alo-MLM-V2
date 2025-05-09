@@ -11,6 +11,8 @@ class KycList extends Component
     public $kycs;
     public $selectedKycId = null;
     public $statusFilter;
+    public $showActivityModal = false;
+    public $activityKycId = null;
 
     public function mount()
     {
@@ -60,6 +62,18 @@ class KycList extends Component
     public function closeDetails()
     {
         $this->selectedKycId = null;
+    }
+
+    public function showActivity($kycId)
+    {
+        $this->activityKycId = $kycId;
+        $this->showActivityModal = true;
+    }
+
+    public function closeActivityModal()
+    {
+        $this->showActivityModal = false;
+        $this->activityKycId = null;
     }
 
     public function render()

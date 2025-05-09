@@ -85,7 +85,7 @@
                                             </div>
                                             <div class="col-md-3">
                                                 <strong>Status:</strong>
-                                                <select wire:model="statusFields.{{ $collection }}" class="form-select">
+                                                <select wire:model.live="statusFields.{{ $collection }}" class="form-select">
                                                     <option value="0">Pending</option>
                                                     <option value="1">Approved</option>
                                                     <option value="2">Rejected</option>

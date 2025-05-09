@@ -83,6 +83,13 @@
                                             <td>{{ $kyc->created_at->format('d M Y') }}</td>
                                             <td>
                                                 <a href="{{ route('kyc.details', $kyc) }}" class="btn btn-sm btn-info">Details</a>
+                                                @if($kyc->activities->count())
+                                                <button 
+                                                    wire:click="showActivity({{ $kyc->id }})"
+                                                    class="btn btn-warning">
+                                                    View Activity
+                                                </button>
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach
@@ -117,6 +124,26 @@
                                             </li>
                                         @endforeach
                                     </ul>
+                                </div>
+                            @endif
+
+                            <!-- Activity Modal -->
+                            @if($showActivityModal)
+                                <div class="modal fade show" style="display: block; background: rgba(0,0,0,0.5);" tabindex="-1" role="dialog">
+                                    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-primary text-white">
+                                                <h5 class="modal-title">Change History of - {{ $kycs->firstWhere('id', $activityKycId)?->user?->name }} KYC</h5>
+                                                <button type="button" class="btn-close" wire:click="closeActivityModal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <livewire:k-y-c.kyc-activity-log :kycId="$activityKycId" />
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" wire:click="closeActivityModal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             @endif
                         </div>

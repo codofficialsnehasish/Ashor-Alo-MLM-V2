@@ -68,10 +68,46 @@ class KycDetails extends Component
         }
         
         // Also update the KYC model if needed
-        $this->kyc->{$field.'_status'} = $value;
+        // $this->kyc->status = $value;
         $this->kyc->save();
         
+        // Determine the overall KYC status
+        $this->updateOverallKycStatus();
+
         $this->dispatch('status-updated');
+    }
+
+    protected function updateOverallKycStatus()
+    {
+        $proofs = ['identity_proof', 'address_proof', 'bank_proof', 'pan_proof'];
+        $statuses = [];
+        
+        // Collect all current statuses
+        foreach ($proofs as $proof) {
+            $media = $this->kyc->getFirstMedia($proof);
+            $statuses[] = $media?->getCustomProperty('status') ?? 0;
+        }
+        
+        // Determine overall status
+        if (in_array(0, $statuses)) {
+            // Any proof is pending
+            $overallStatus = 0;
+        } elseif (in_array(2, $statuses)) {
+            // Any proof is rejected
+            $overallStatus = 2;
+        } else {
+            // All proofs are approved
+            $overallStatus = 1;
+        }
+        
+        // Update the main KYC status if changed
+        if ($this->kyc->status != $overallStatus) {
+            $this->kyc->status = $overallStatus;
+            if($overallStatus == 1){
+                $this->kyc->verified_at = now();
+            }
+            $this->kyc->save();
+        }
     }
 
     // Add these methods for image preview
