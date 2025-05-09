@@ -38,6 +38,10 @@ use App\Livewire\MasterData\RemunerationBenefit\Edit as RBEdit;
 
 use App\Livewire\ActivityLog\ActivityLogTable;
 
+use App\Livewire\KYC\KycList;
+use App\Livewire\KYC\KycDetails;
+
+
 
 use Illuminate\Support\Facades\Route;
 
@@ -89,6 +93,14 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', RBIndex::class)->name('index');
         Route::get('/create', RBCreate::class)->name('create');
         Route::get('/edit/{id}', RBEdit::class)->name('edit');
+    });
+
+    Route::prefix('kyc')->name('kyc.')->group(function () {
+        Route::get('/all', KycList::class)->name('all');
+        Route::get('/pending', KycList::class)->name('pending');
+        Route::get('/completed', KycList::class)->name('completed');
+        Route::get('/cancelled', KycList::class)->name('cancelled');
+        Route::get('/details/{kyc}', KycDetails::class)->name('details');
     });
 });
 

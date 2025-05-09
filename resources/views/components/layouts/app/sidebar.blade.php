@@ -52,10 +52,10 @@
                 </li>
                 <li><a class="sidebar-sub-toggle"><i class="ti-id-badge"></i>  KYC  <span class="badge badge-primary">4</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
                     <ul>
-                        <li><a href="javascript:void(0);">Pending</a></li>
-                        <li><a href="javascript:void(0);">Cancelled</a></li>
-                        <li><a href="javascript:void(0);">Completed</a></li>
-                        <li><a href="javascript:void(0);">All KYC</a></li>
+                        <li><a wire:navigate href="{{ route('kyc.pending') }}">Pending</a></li>
+                        <li><a wire:navigate href="{{ route('kyc.cancelled') }}">Cancelled</a></li>
+                        <li><a wire:navigate href="{{ route('kyc.completed') }}">Completed</a></li>
+                        <li><a wire:navigate href="{{ route('kyc.all') }}">All KYC</a></li>
                     </ul>
                 </li>
 

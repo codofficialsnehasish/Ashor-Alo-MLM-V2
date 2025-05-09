@@ -59,7 +59,7 @@ class Kyc extends Model implements HasMedia
             ->withCustomProperties([
                 'type' => $type, 
                 'status' => $status, 
-                'remarks' => null,
+                'remarks' => null, 
             ])
             ->toMediaCollection($collection);
     }
@@ -72,7 +72,7 @@ class Kyc extends Model implements HasMedia
         foreach ($collections as $collection) {
             $media = $this->getFirstMedia($collection);
             $data[$collection] = [
-                'url'     => $media?->getFullUrl(),
+                'url'     => $media?->getFullUrl(), 
                 'type'  => $media?->getCustomProperty('type'),
                 'status'  => $media?->getCustomProperty('status') ?? 0,
                 'remarks' => $media?->getCustomProperty('remarks'),
