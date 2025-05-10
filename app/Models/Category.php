@@ -146,4 +146,9 @@ class Category extends Model
             ->dontSubmitEmptyLogs()
             ->useLogName('category');
     }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
 }

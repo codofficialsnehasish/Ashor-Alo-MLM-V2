@@ -4,8 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
+
 class BinaryTree extends Model
 {
+    use LogsActivity;
+
     protected $fillable = [
         'user_id', 
         'member_number',
@@ -17,6 +22,15 @@ class BinaryTree extends Model
         'status',
         'activated_at',
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll()
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs()
+            ->useLogName('binary-tree');
+    }
     
     public function user()
     {

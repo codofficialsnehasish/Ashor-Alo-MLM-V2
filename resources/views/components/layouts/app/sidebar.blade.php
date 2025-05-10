@@ -63,7 +63,7 @@
                     <ul>
                         <li><a href="javascript:void(0);">Orders</a></li>
                         <li><a wire:navigate href="{{ route('categories.index') }}">Categories</a></li>
-                        <li><a href="javascript:void(0);">Products</a></li>
+                        <li><a wire:navigate href="{{ route('products.index') }}">Products</a></li>
                     </ul>
                 </li>
 

@@ -4,20 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
-class RemunerationBenefitMaster extends Model
+class BankDetail extends Model
 {
     use SoftDeletes, LogsActivity;
 
     protected $fillable = [
-        'rank_name',
-        'matching_target',
-        'bonus',
-        'month_validity',
-        'is_visible',
+        'user_id',
+        'bank_name',
+        'account_name',
+        'ifsc_code',
+        'account_number',
+        'account_type',
+        'upi_name',
+        'upi_number',
+        'upi_type',
     ];
 
     public function getActivitylogOptions(): LogOptions
@@ -26,7 +29,12 @@ class RemunerationBenefitMaster extends Model
             ->logAll()
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs()
-            ->useLogName('remuneration-benefit-master');
+            ->useLogName('bank-detail');
+    }
+
+    // Relationship with User
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
- 

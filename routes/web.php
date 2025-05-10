@@ -43,6 +43,10 @@ use App\Livewire\KYC\KycDetails;
 
 use App\Livewire\CategoryManager;
 
+use App\Livewire\Product\Index;
+use App\Livewire\Product\Create;
+use App\Livewire\Product\Edit;
+
 
 use Illuminate\Support\Facades\Route;
 
@@ -105,6 +109,13 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::get('/categories', CategoryManager::class)->name('categories.index');
+
+    Route::prefix('products')->name('products.')->group(function () {
+        Route::get('/', Index::class)->name('index');
+        Route::get('/create', Create::class)->name('create');
+        Route::get('/edit/{product}', Edit::class)->name('edit');
+    });
+
 });
 
 require __DIR__.'/auth.php';

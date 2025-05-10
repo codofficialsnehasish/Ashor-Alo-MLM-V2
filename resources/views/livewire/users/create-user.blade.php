@@ -88,9 +88,9 @@
                                                 <div class="d-grid">
                                                     <div wire:loading wire:target="image" wire:key="image"><i class="fa fa-spinner fa-spin mt-2 ml-2"></i> Uploading...</div>
                                                     @if ($image)
-                                                    <div class="preview-box d-block justify-content-center rounded shadow overflow-hidden bg-light p-1">
-                                                        <img class="rounded d-block mx-auto" src="{{ $image->temporaryUrl() }}">
-                                                    </div>
+                                                    <img class="img-thumbnail rounded me-2" id="blah" alt="Image Preview" width="200" 
+                                                        src="{{ $image->temporaryUrl() }}" 
+                                                        style="display: {{ $image ? 'block' : 'none' }};">
                                                     @endif 
                                                     <input type="file" id="input-file" wire:model="image" accept="image/*"  hidden />
                                                     <label class="btn-upload btn btn-outline-secondary mt-4" for="input-file"><i class="fas fa-cloud-upload-alt"></i> Browse Image</label>
