@@ -41,6 +41,7 @@ use App\Livewire\ActivityLog\ActivityLogTable;
 use App\Livewire\KYC\KycList;
 use App\Livewire\KYC\KycDetails;
 
+use App\Livewire\CategoryManager;
 
 
 use Illuminate\Support\Facades\Route;
@@ -102,6 +103,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/cancelled', KycList::class)->name('cancelled');
         Route::get('/details/{kyc}', KycDetails::class)->name('details');
     });
+
+    Route::get('/categories', CategoryManager::class)->name('categories.index');
 });
 
 require __DIR__.'/auth.php';
