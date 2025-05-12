@@ -19,6 +19,8 @@ class UserProfile extends Model
         'marital_status',
         'qualification',
         'occupation',
+        'pan_number',
+        'aadhar_number'
     ];
 
     public function getActivitylogOptions(): LogOptions

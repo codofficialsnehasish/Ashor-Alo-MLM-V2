@@ -35,4 +35,14 @@ class Nominee extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function state()
+    {
+        return $this->belongsTo(LocationState::class, 'nominee_state_id');
+    }
+
+    public function city()
+    {
+        return $this->belongsTo(LocationCity::class, 'nominee_city_id');
+    }
 }

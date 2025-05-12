@@ -101,4 +101,45 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->hasOne(Kyc::class);
     }
+
+    /**
+     * Relationship with UserProfile
+     */
+    public function profile()
+    {
+        return $this->hasOne(UserProfile::class);
+    }
+
+    /**
+     * Relationship with Address
+     */
+    public function address()
+    {
+        return $this->hasOne(Address::class);
+    }
+
+    /**
+     * Relationship with BankDetail
+     */
+    public function bankDetails()
+    {
+        return $this->hasOne(BankDetail::class);
+    }
+
+    /**
+     * Relationship with Nominee
+     */
+    public function nominee()
+    {
+        return $this->hasOne(Nominee::class);
+    }
+
+    /**
+     * Relationship with profile image media
+     */
+    public function profileImage()
+    {
+        return $this->belongsTo(Media::class, 'profile_image_id');
+    }
+
 }

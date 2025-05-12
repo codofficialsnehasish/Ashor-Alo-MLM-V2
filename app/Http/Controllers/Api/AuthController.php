@@ -104,7 +104,7 @@ class AuthController extends Controller
 
             // in second version date - 30-12-2024
             $user = User::where('phone',$request->phone)->first();
-            return $smsService->sendSMS('91'.$user->phone,$user->binaryNode->member_number,$user->decoded_password);
+            $responce = $smsService->sendSMS('91'.$user->phone,$user->binaryNode->member_number,$user->decoded_password);
             // return $responce;
             if(!empty($responce)){
                 if($responce['statusCode'] == 200){

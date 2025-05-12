@@ -83,6 +83,36 @@
                                                     <em>No document</em>
                                                 @endif
                                             </div>
+                                            @if($collection == 'bank_proof')
+                                            <div class="col-md-3">
+                                                <strong>A/C Details:</strong><br>
+                                                <strong>Account Name - </strong> {{ $user->bankDetails?->account_name }}<br>
+                                                <strong>Bank Name - </strong> {{ $user->bankDetails?->bank_name }}<br>
+                                                <strong>Account Number - </strong> {{ $user->bankDetails?->account_number ?? 'N/A' }}<br>
+                                                <strong>Account Type - </strong> {{ $user->bankDetails?->account_type ?? 'N/A' }}<br>
+                                                <strong>IFSC - </strong> {{ $user->bankDetails?->ifsc_code ?? 'N/A' }}<br>
+                                                <strong>UPI Type - </strong>{{ $user->bankDetails?->upi_type }}
+                                                <strong>UPI Number - </strong>{{ $user->bankDetails?->upi_number }}
+                                                <strong>UPI Name - </strong>{{ $user->bankDetails?->upi_name }}
+                                            </div>
+                                            @endif
+                                            @if($collection == 'address_proof')
+                                            <div class="col-md-3">
+                                                <strong>Address:</strong><br>
+                                                <strong>Shipping Address - </strong> {{ $user->address?->shipping_address }}<br>
+                                                <strong>Address - </strong> {{ $user->address?->address }}<br>
+                                                <strong>Country - </strong> {{ $user->address?->country?->name ?? 'N/A' }}<br>
+                                                <strong>State - </strong> {{ $user->address?->state?->name ?? 'N/A' }}<br>
+                                                <strong>City - </strong> {{ $user->address?->city?->name ?? 'N/A' }}<br>
+                                                <strong>Pin Code - </strong>{{ $user->address?->pin_code }}
+                                            </div>
+                                            @endif
+                                            @if($collection == 'pan_proof')
+                                            <div class="col-md-3">
+                                                <strong>Pan Number:</strong><br>
+                                                {{ $user->profile?->pan_number }}
+                                            </div>
+                                            @endif
                                             <div class="col-md-3">
                                                 <strong>Status:</strong>
                                                 <select wire:model.live="statusFields.{{ $collection }}" class="form-select">

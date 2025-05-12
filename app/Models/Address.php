@@ -14,10 +14,10 @@ class Address extends Model
     protected $fillable = [
         'user_id',
         'shipping_address',
-        'country',
+        'country_id',
         'address',
-        'state',
-        'city',
+        'state_id',
+        'city_id',
         'pin_code',
     ];
 
@@ -35,4 +35,20 @@ class Address extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function country()
+    {
+        return $this->belongsTo(LocationCountrie::class, 'country_id');
+    }
+
+    public function state()
+    {
+        return $this->belongsTo(LocationState::class, 'state_id');
+    }
+
+    public function city()
+    {
+        return $this->belongsTo(LocationCitie::class, 'city_id');
+    }
+
 }

@@ -11,7 +11,7 @@ class SMSService
         // return $password;
         $url = 'https://api.smartping.ai/fe/api/v1/send';
 
-        // try {
+        try {
             $response = Http::get($url, [ 
                 'username' => 'ashoralo.trans',
                 'password' => 'nLcTY',
@@ -20,7 +20,7 @@ class SMSService
                 'to' => $phone_number,
                 'dltPrincipalEntityId' => '1701173417827065605',
                 'dltContentId' => '1707173497469815979',
-                'text' => "Hi User, Welcome to ASHOR ALO, Your user ID 65485 and password is 55496. Please login www.ashoralo.in",
+                'text' => "Hi User, Welcome to ASHOR ALO, Your user ID ".$user_id." and password is ".$password.". Please login www.ashoralo.in",
             ]);
 
             if ($response->status() == 200) {
@@ -29,9 +29,9 @@ class SMSService
                 // return "Failed to send SMS. Status code: " . $response->status();
                 return $response;
             }
-        // } catch (\Exception $e) {
-        //     // return "An error occurred while sending the SMS: " . $e->getMessage();
-        //     return false;
-        // }
+        } catch (\Exception $e) {
+            // return "An error occurred while sending the SMS: " . $e->getMessage();
+            return false;
+        }
     }
 }
