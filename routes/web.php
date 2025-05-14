@@ -28,6 +28,10 @@ use App\Livewire\Leaders\{
     MembersOfLeader,
 };
 
+use App\Http\Controllers\Api\{
+    Documents
+};
+
 use App\Livewire\MasterData\LevelBonus\Index as LevelBonusIndex;
 use App\Livewire\MasterData\LevelBonus\Create as LevelBonusCreate;
 use App\Livewire\MasterData\LevelBonus\Edit as LevelBonusEdit;
@@ -35,6 +39,10 @@ use App\Livewire\MasterData\LevelBonus\Edit as LevelBonusEdit;
 use App\Livewire\MasterData\RemunerationBenefit\Index as RBIndex;
 use App\Livewire\MasterData\RemunerationBenefit\Create as RBCreate;
 use App\Livewire\MasterData\RemunerationBenefit\Edit as RBEdit;
+
+use App\Livewire\MasterData\MonthlyReturn\Index as MRIndex;
+use App\Livewire\MasterData\MonthlyReturn\Create as MRCreate;
+use App\Livewire\MasterData\MonthlyReturn\Edit as MREdit;
 
 use App\Livewire\ActivityLog\ActivityLogTable;
 
@@ -61,7 +69,6 @@ Route::get('/', function () {
 // Route::view('dashboard', 'dashboard')
 //     ->middleware(['auth', 'verified'])
 //     ->name('dashboard');
-
 
 
 Route::middleware(['auth'])->group(function () {
@@ -94,10 +101,16 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/edit/{id}', LevelBonusEdit::class)->name('edit');
     });
 
-    Route::prefix('remuneration-benefit')->name('remuneration-benefit.')->group(function () {
+    Route::prefix('master-data/remuneration-benefit')->name('remuneration-benefit.')->group(function () {
         Route::get('/', RBIndex::class)->name('index');
         Route::get('/create', RBCreate::class)->name('create');
         Route::get('/edit/{id}', RBEdit::class)->name('edit');
+    });
+
+    Route::prefix('master-data/monthly-return')->name('monthly-return.')->group(function () {
+        Route::get('/', MRIndex::class)->name('index');
+        Route::get('/create', MRCreate::class)->name('create');
+        Route::get('/edit/{id}', MREdit::class)->name('edit');
     });
 
     Route::prefix('kyc')->name('kyc.')->group(function () {
@@ -117,5 +130,8 @@ Route::middleware(['auth'])->group(function () {
     });
 
 });
+
+Route::get("/web/welcome-letter/{user_id}",[Documents::class,"welcome_letter_view"])->name('my-documents.welcome-letter.view');
+Route::get("/web/id-card/{user_id}",[Documents::class,"id_card_view"])->name('my-documents.id-card.view');
 
 require __DIR__.'/auth.php';

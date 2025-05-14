@@ -80,6 +80,12 @@ class User extends Authenticatable implements HasMedia
         return $this->hasOne(BinaryTree::class, 'user_id');
     }
 
+    public function getMemberNumberAttribute()
+    {
+        // Safely return member_number from related BinaryTree model
+        return $this->binaryNode?->member_number;
+    }
+
     public function leftUsers()
     {
         return $this->hasMany(BinaryTree::class, 'parent_id')

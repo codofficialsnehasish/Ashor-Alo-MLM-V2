@@ -26,9 +26,6 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-body mb-n3">
-                                <a class="btn btn-outline-primary btn-sm px-4 mt-0 mb-3" wire:navigate href="{{ route('products.create')}}" >
-                                    Create Product <i class="ti-plus"></i> 
-                                </a>
 
                                 <div class="row mb-3">
                                     <div class="col-md-6 d-flex align-items-end">
@@ -39,8 +36,13 @@
                                             <i class="fas fa-file-excel me-1"></i> Excel Export
                                         </button>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <input wire:model.live="search" type="search" class="form-control" placeholder="Search products...">
+                                    </div>
+                                    <div class="col-md-2 text-end">
+                                        <a class="btn btn-outline-primary btn-sm px-4 mt-0 mb-3" wire:navigate href="{{ route('products.create')}}" >
+                                            Create <i class="ti-plus"></i> 
+                                        </a>
                                     </div>
                                 </div>
 
@@ -52,6 +54,7 @@
                                                 <th>Title</th>
                                                 <th>Category</th>
                                                 <th>Price</th>
+                                                <th>Stock</th>
                                                 <th>Image</th>
                                                 <th>Visibility</th>
                                                 <th>Actions</th>
@@ -64,6 +67,13 @@
                                                     <td>{{ $product->title }}</td>
                                                     <td>{{ $product->category->name ?? 'N/A' }}</td>
                                                     <td>{{ number_format($product->price, 2) }}</td>
+                                                    <td>
+                                                        @if($product->stock <= 5)
+                                                            <span style="color: red; font-weight: bold;">{{ $product->stock }} (Low Stock!)</span>
+                                                        @else
+                                                            <span style="color: green; font-weight: bold;">{{ $product->stock }} (In Stock!)</span>
+                                                        @endif
+                                                    </td>
                                                     <td>
                                                         @if ($product->getFirstMediaUrl('products'))
                                                             <img src="{{ $product->getFirstMediaUrl('products') }}" width="50" height="50">

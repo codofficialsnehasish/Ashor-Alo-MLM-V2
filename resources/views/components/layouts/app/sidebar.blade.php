@@ -26,7 +26,7 @@
 
                 <li><a class="sidebar-sub-toggle"><i class="ti-harddrives"></i> Master Data<span class="badge badge-primary">5</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
                     <ul>
-                        <li><a href="javascript:void(0);">Monthly Return</a></li>
+                        <li><a wire:navigate href="{{ route('monthly-return.index') }}">Monthly Return</a></li>
                         <li><a wire:navigate href="{{ route('level-bonus.index') }}">Level Bonus</a></li>
                         <li><a wire:navigate href="{{ route('remuneration-benefit.index') }}">Remuneration</a></li>
                         <li><a href="javascript:void(0);">Award Master</a></li>

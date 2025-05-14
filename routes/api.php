@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\{
     KYCController,
     LocationApiController,
     UserProfileController,
+    Documents,
+    BinaryTreeApiController,
 };
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -37,4 +39,14 @@ Route::middleware('auth:sanctum')->group( function () {
         Route::post('/update-nominee-details', [UserProfileController::class, 'update_nominee_details']);
         Route::post('/change-password', [UserProfileController::class, 'change_password']);
     });
+
+    Route::get('/welcome-letter', [Documents::class, 'welcome_letter']);
+    Route::get('/id-card', [Documents::class, 'id_card']);
+
+    Route::get('/direct', [BinaryTreeApiController::class, 'direct']);
+    // Route::get('/all-team', [User_management::class, 'all_members']);
+    // Route::get('/left-members', [User_management::class, 'left_side_members']);
+    // Route::get('/right-members', [User_management::class, 'right_side_members']);
+    // Route::get('/tree-view/{q_user_id?}', [User_management::class, 'tree_view_array']);
+    // Route::get('/level-view', [User_management::class, 'level_view_api']);
 });

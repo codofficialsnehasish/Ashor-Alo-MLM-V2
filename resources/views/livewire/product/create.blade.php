@@ -53,10 +53,16 @@
                                         </select>
                                         @error('category_id') <small class="text-danger">{{ $message }}</small> @enderror
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-2">
                                         <label>SKU</label>
                                         <input type="text" wire:model="sku" class="form-control">
                                         @error('sku') <small class="text-danger">{{ $message }}</small> @enderror
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <label>Stock</label>
+                                        <input type="text" wire:model="stock" class="form-control">
+                                        @error('stock') <small class="text-danger">{{ $message }}</small> @enderror
                                     </div>
 
                                 </div>

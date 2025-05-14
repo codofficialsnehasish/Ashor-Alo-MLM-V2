@@ -12,6 +12,21 @@
     src: url(../fonts/glyphicons-halflings-regular.eot?#iefix) format('embedded-opentype'), url(../fonts/glyphicons-halflings-regular.woff) format('woff'), url(../fonts/glyphicons-halflings-regular.ttf) format('truetype'), url(../fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular) format('svg')
 }
 
+.breadcrumb>li+li:before {
+    padding: 0 5px;
+    color: #ccc;
+    content: "/\00a0";
+    font-size: 12px;
+}
+.breadcrumb>li {
+    display: inline-block !important;
+}
+.breadcrumb{
+    display: block !important;
+}
+ol.breadcrumb.text-right {
+    text-align: right;
+}
 .icon-name {
     color: #000
 }
@@ -980,7 +995,7 @@ div.dt-button:active:not(.disabled) {
 
 .main .page-header .breadcrumb {
     margin: 0;
-    padding: 14px 15px;
+    padding: 13px 15px;
     background: #fff
 }
 
