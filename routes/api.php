@@ -44,9 +44,9 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::get('/id-card', [Documents::class, 'id_card']);
 
     Route::get('/direct', [BinaryTreeApiController::class, 'direct']);
-    // Route::get('/all-team', [User_management::class, 'all_members']);
-    // Route::get('/left-members', [User_management::class, 'left_side_members']);
-    // Route::get('/right-members', [User_management::class, 'right_side_members']);
+    Route::get('/left-members', [BinaryTreeApiController::class, 'left_side_members']);
+    Route::get('/right-members', [BinaryTreeApiController::class, 'right_side_members']);
+    Route::get('/all-members', [BinaryTreeApiController::class, 'all_members']);
     // Route::get('/tree-view/{q_user_id?}', [User_management::class, 'tree_view_array']);
     // Route::get('/level-view', [User_management::class, 'level_view_api']);
 });

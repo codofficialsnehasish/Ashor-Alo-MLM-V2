@@ -22,7 +22,7 @@ class LocationCitieSeeder extends Seeder
     public function run(): void
     {
         // Clear existing data if needed
-        DB::table('location_cities')->truncate();
+        // DB::table('location_cities')->truncate();
 
         foreach ($this->dataFiles as $file) {
             $this->command->info("Processing file: {$file}");

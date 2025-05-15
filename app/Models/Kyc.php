@@ -82,7 +82,7 @@ class Kyc extends Model implements HasMedia
             ];
         }
 
-        return $data;
+        return $data; 
     }
 
 

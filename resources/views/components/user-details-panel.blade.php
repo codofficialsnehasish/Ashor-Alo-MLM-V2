@@ -9,7 +9,7 @@
     <div class="left">
         <div class="element">
             <label>Sponsor ID :</label> 
-            <strong>{{ $user->agent_id }}</strong>
+            <strong>{{ $user->id }}</strong>
         </div>
         <div class="element">
             <label>Joining Date :</label> 

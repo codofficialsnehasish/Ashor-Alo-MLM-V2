@@ -19,6 +19,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PermissionSeeder::class,
             RoleSeeder::class,
+            LocationCountriesSeeder::class,
+            LocationStatesSeeder::class,
+            LocationCitieSeeder::class,
         ]);
 
         // Create a default Super Admin user
@@ -33,9 +36,9 @@ class DatabaseSeeder extends Seeder
         // Assign the "Super Admin" role to the created user
         $user->assignRole('Super Admin');
 
-        $this->call([
-            BinaryTreeSeeder::class,
-        ]);
+        // $this->call([
+        //     BinaryTreeSeeder::class,
+        // ]);
     }
 
 }

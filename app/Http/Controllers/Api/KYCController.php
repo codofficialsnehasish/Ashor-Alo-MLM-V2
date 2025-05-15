@@ -15,10 +15,58 @@ class KYCController extends Controller
         $kyc = Kyc::where('user_id', $request->user()->id)->first();
 
         if (!$kyc) {
-            return apiResponse(false, 'KYC not submitted yet.', null, 404);
+            return apiResponse(false, 'KYC not submitted yet.', [
+                                                            'status_info' => [
+                                                                ['status = 0'=>"Pending"],
+                                                                ['status = 1'=>"Completed"],
+                                                                ['status = 2'=>"Cancelled"],
+                                                            ],
+                                                            'identy_proof_type'=>[
+                                                                ["recive_value"=>"Aadhar_Card","show_name"=>"Aadhar Card"],
+                                                                ["recive_value"=>"Voter_Card","show_name"=>"Voter Card"],
+                                                                ["recive_value"=>"Pan_Card","show_name"=>"Pan Card"],
+                                                                ["recive_value"=>"Passport","show_name"=>"Passport"],
+                                                                ["recive_value"=>"Driving_Licence","show_name"=>"Driving Licence"],
+                                                            ],
+                                                            'address_proof_type'=>[
+                                                                ["recive_value"=>"Aadhar_Card","show_name"=>"Aadhar Card"],
+                                                                ["recive_value"=>"Voter_Card","show_name"=>"Voter Card"],
+                                                                ["recive_value"=>"Passport","show_name"=>"Passport"],
+                                                                ["recive_value"=>"Driving_Licence","show_name"=>"Driving Licence"],
+                                                            ],
+                                                            'bank_proof_type'=>[
+                                                                ["recive_value"=>"Passbook","show_name"=>"Passbook"],
+                                                                ["recive_value"=>"Cheque","show_name"=>"Cheque"],
+                                                            ],
+                                                        ], 200);
         }
 
-        return apiResponse(true, 'KYC get successfully.', ['kyc' => $kyc,'proofs' => $kyc->getAllProofs()], 200);
+        return apiResponse(true, 'KYC get successfully.', [
+                                                            'status_info' => [
+                                                                ['status = 0'=>"Pending"],
+                                                                ['status = 1'=>"Completed"],
+                                                                ['status = 2'=>"Cancelled"],
+                                                            ],
+                                                            'identy_proof_type'=>[
+                                                                ["recive_value"=>"Aadhar_Card","show_name"=>"Aadhar Card"],
+                                                                ["recive_value"=>"Voter_Card","show_name"=>"Voter Card"],
+                                                                ["recive_value"=>"Pan_Card","show_name"=>"Pan Card"],
+                                                                ["recive_value"=>"Passport","show_name"=>"Passport"],
+                                                                ["recive_value"=>"Driving_Licence","show_name"=>"Driving Licence"],
+                                                            ],
+                                                            'address_proof_type'=>[
+                                                                ["recive_value"=>"Aadhar_Card","show_name"=>"Aadhar Card"],
+                                                                ["recive_value"=>"Voter_Card","show_name"=>"Voter Card"],
+                                                                ["recive_value"=>"Passport","show_name"=>"Passport"],
+                                                                ["recive_value"=>"Driving_Licence","show_name"=>"Driving Licence"],
+                                                            ],
+                                                            'bank_proof_type'=>[
+                                                                ["recive_value"=>"Passbook","show_name"=>"Passbook"],
+                                                                ["recive_value"=>"Cheque","show_name"=>"Cheque"],
+                                                            ],
+                                                            'kyc' => $kyc,
+                                                            'proofs' => $kyc->getAllProofs()
+                                                        ], 200);
     }
     
     public function upload(Request $request)

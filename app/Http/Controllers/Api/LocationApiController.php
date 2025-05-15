@@ -31,7 +31,7 @@ class LocationApiController extends Controller
             $country = LocationCountrie::find($country_id);
 
             if (!$country) {
-                return apiResponse(false, 'Invalid country ID.', null, 404);
+                return apiResponse(false, 'Invalid country ID.', null, 200);
             }
 
             $states = LocationState::where('country_id', $country_id)
@@ -60,7 +60,7 @@ class LocationApiController extends Controller
             $state = LocationState::find($state_id);
 
             if (!$state) {
-                return apiResponse(false, 'Invalid state ID.', null, 404);
+                return apiResponse(false, 'Invalid state ID.', null, 200);
             }
 
             $cities = LocationCitie::where('state_id', $state_id)

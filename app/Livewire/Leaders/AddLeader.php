@@ -68,6 +68,15 @@ class AddLeader extends Component
             $this->preferredPosition
         );
 
+        // $result = $binaryTreeService->addMember([
+        //     'sponsor_id' => $this->sponsorId, // user_id of the sponsor
+        //     'position'   => $this->preferredPosition, // or 'right'
+        //     'name'       => $this->name,
+        //     'email'      => $this->email,
+        //     'phone'      => $this->phone,
+        //     'password'   => 'secret123',
+        // ]);
+
         $this->showConfirmation = false;
         $this->resetForm();
         

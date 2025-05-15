@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Kalnoy\Nestedset\NestedSet;
 
 return new class extends Migration
 {
@@ -14,7 +15,7 @@ return new class extends Migration
         Schema::create('binary_trees', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('user_id')->unsigned()->notNullable(); // user id from the users table
-            $table->bigInteger('parent_id')->unsigned()->nullable(); // parent user (parent node)
+            // $table->bigInteger('parent_id')->unsigned()->nullable(); // parent user (parent node)
             $table->enum('position', ['left', 'right'])->nullable(); // Position in the tree (left or right)
             
             // Left and Right user ids - nullable for flexibility
@@ -23,9 +24,10 @@ return new class extends Migration
             
             $table->timestamps(); // Laravel timestamps for created_at and updated_at
         
+            NestedSet::columns($table);
             // Foreign key constraints 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('parent_id')->references('id')->on('binary_trees')->onDelete('set null');
+            // $table->foreign('parent_id')->references('id')->on('binary_trees')->onDelete('set null');
             $table->foreign('left_user_id')->references('id')->on('binary_trees')->onDelete('set null');
             $table->foreign('right_user_id')->references('id')->on('binary_trees')->onDelete('set null');
         });

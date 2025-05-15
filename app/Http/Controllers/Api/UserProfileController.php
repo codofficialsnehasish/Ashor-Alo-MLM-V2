@@ -24,23 +24,18 @@ class UserProfileController extends Controller
         try {
             $user = User::findOrFail($request->user()->id);
 
-            return response()->json([
-                'success' => true,
-                'data' => [
+            return apiResponse(true, 'Profile details of '.$user->name, [
                     'user' => $user,
                     'profile' => $user->profile ?? null,
                     'address' => $user->address ?? null,
                     'bank_details' => $user->bankDetails ?? null,
                     'nominee' => $user->nominee ?? null,
                     'profile_image_url' => $user->getFirstMediaUrl('profile-image') ?? null
-                ]
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'User profile not found',
-                'error' => $e->getMessage()
-            ], 404);
+                ], 200);
+        } catch (\Exception $e) {  
+            return apiResponse(false, 'User profile not found', [
+                    'error' => $e->getMessage()
+                ], 200);
         }
     }
 

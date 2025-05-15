@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Kalnoy\Nestedset\NodeTrait;
 
 class BinaryTree extends Model
 {
-    use LogsActivity;
+    use LogsActivity, NodeTrait;
 
     protected $fillable = [
         'user_id', 
@@ -41,14 +42,25 @@ class BinaryTree extends Model
     {
         return $this->belongsTo(BinaryTree::class, 'parent_id');
     }
+
+    // public function left()
+    // {
+    //     return $this->hasOne(BinaryTree::class, 'id', 'left_user_id')->with('left', 'right', 'user');
+    // }
+
+    // public function right()
+    // {
+    //     return $this->hasOne(BinaryTree::class, 'id', 'right_user_id')->with('left', 'right', 'user');
+    // }
+
     public function left()
     {
-        return $this->hasOne(BinaryTree::class, 'id', 'left_user_id')->with('left', 'right', 'user');
+        return $this->hasOne(BinaryTree::class, 'parent_id', 'id')->where('position', 'left')->with('user');
     }
 
     public function right()
     {
-        return $this->hasOne(BinaryTree::class, 'id', 'right_user_id')->with('left', 'right', 'user');
+        return $this->hasOne(BinaryTree::class, 'parent_id', 'id')->where('position', 'right')->with('user');
     }
 
     public function sponsor()
@@ -61,5 +73,16 @@ class BinaryTree extends Model
     {
         // All nodes this user has sponsored
         return $this->hasMany(BinaryTree::class, 'sponsor_id');
+    }
+
+    // Recursive relationships for counts
+    public function leftUsers()  
+    {
+        return $this->descendants()->where('position', 'left')->with('user');
+    }
+
+    public function rightUsers()
+    {
+        return $this->descendants()->where('position', 'right')->with('user');
     }
 }

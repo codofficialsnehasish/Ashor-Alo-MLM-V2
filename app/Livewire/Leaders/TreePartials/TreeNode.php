@@ -19,8 +19,13 @@ class TreeNode extends Component
         $this->currentDepth = $currentDepth;
         $this->maxDepth = $maxDepth;
 
-        $this->dispatch('test-event', message: 'Component mounted');
+        // $this->dispatch('test-event', message: 'Component mounted');
     }
+
+    // public function setAsRoot($userId)
+    // {
+    //     $this->loadTree($userId);
+    // }
 
     public function render()
     {
