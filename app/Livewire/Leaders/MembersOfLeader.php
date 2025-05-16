@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Excel;
 use App\Exports\BinaryTreeExport;
 use PDF;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class MembersOfLeader extends Component
 {
@@ -19,10 +20,12 @@ class MembersOfLeader extends Component
     public $memberNumber;
     public $tableSearch = '';
     public $perPage = 10;
+    public $page = 1;
     public $sortField = 'activated_at';
     public $sortDirection = 'desc';
     public $selectedRows = [];
     public $selectAll = false;
+    public $filtersApplied = false;
 
     protected $queryString = [
         'startDate' => ['except' => ''],
@@ -30,7 +33,7 @@ class MembersOfLeader extends Component
         'memberNumber' => ['except' => ''],
         'sortField',
         'sortDirection',
-        'perPage'
+        'perPage',
     ];
 
     public function mount()
@@ -39,13 +42,10 @@ class MembersOfLeader extends Component
         $this->endDate = now()->format('Y-m-d');
     }
 
-    public function updatedSelectAll($value)
+    public function applyFilters()
     {
-        if ($value) {
-            $this->selectedRows = $this->members->pluck('id')->toArray();
-        } else {
-            $this->selectedRows = [];
-        }
+        $this->filtersApplied = true;
+        $this->resetPage();
     }
 
     public function sortBy($field)
@@ -66,54 +66,125 @@ class MembersOfLeader extends Component
             'memberNumber',
             'tableSearch',
             'selectedRows',
-            'selectAll'
+            'selectAll',
+            'filtersApplied'
         ]);
         $this->startDate = now()->subMonth()->format('Y-m-d');
         $this->endDate = now()->format('Y-m-d');
+        $this->resetPage();
     }
 
     public function exportExcel()
     {
-        $data = $this->getQuery()->get();
-        return Excel::download(new BinaryTreeExport($data), 'binary-tree-report-'.now()->format('Y-m-d').'.xlsx');
+        $data = $this->getAllMembersCollection();
+        return Excel::download(new BinaryTreeExport($data), 'binary-tree-report-' . now()->format('Y-m-d') . '.xlsx');
     }
-
+ 
     public function exportPDF()
     {
-        $data = $this->getQuery()->get();
-        $pdf = PDF::loadView('exports.binary-tree-pdf', ['members' => $data]);
-        return $pdf->download('binary-tree-report-'.now()->format('Y-m-d').'.pdf');
+        $leader = BinaryTree::where('member_number', $this->memberNumber)->first();
+        $members = $this->getMembersProperty();
+
+        // print($members);die;
+        $totalMembers = $members->total();
+        $activeMembers = $members->filter(fn($m) => $m->status == 1)->count();
+        $inactiveMembers = $members->filter(fn($m) => $m->status == 0)->count();
+
+        $pdf = PDF::loadView('exports.member-of-leader-pdf', ['members' => $members,
+            'leader' => $leader,
+            'totalMembers' => $totalMembers,
+            'activeMembers' => $activeMembers,
+            'inactiveMembers' => $inactiveMembers,]);
+            
+        return $pdf->download('member-of-leader-report-' . now()->format('Y-m-d') . '.pdf');
     }
 
-    private function getQuery()
+    private function getAllMembersCollection()
     {
-        return BinaryTree::with(['user', 'sponsor.user', 'parent.user'])
-            ->when($this->startDate, function ($query) {
-                $query->whereDate('activated_at', '>=', $this->startDate);
-            })
-            ->when($this->endDate, function ($query) {
-                $query->whereDate('activated_at', '<=', $this->endDate);
-            })
-            ->when($this->memberNumber, function ($query) {
-                $query->where('member_number', 'like', '%' . $this->memberNumber . '%');
-            })
-            ->orderBy($this->sortField, $this->sortDirection);
+        if (!$this->memberNumber) {
+            return collect();
+        }
+
+        $leader = BinaryTree::where('member_number', $this->memberNumber)->first();
+
+        $leftMembers = $leader->leftUsers ?? collect();
+        $rightMembers = $leader->rightUsers ?? collect();
+
+        $allMembers = $leftMembers->merge($rightMembers);
+        
+        // Apply date filters if they're set and filters have been applied
+        if ($this->filtersApplied && $this->startDate && $this->endDate) {
+            $allMembers = $allMembers->filter(function ($member) {
+                $created = Carbon::parse($member->created_at)->format('Y-m-d');
+                return $created >= $this->startDate && $created <= $this->endDate;
+            });
+        }
+
+        // Apply search filter
+        if (!empty($this->tableSearch)) {
+            $searchTerm = strtolower($this->tableSearch);
+            // Check if search term is specifically "left" or "right"
+            if ($searchTerm === 'left') {
+                $allMembers = $allMembers->filter(fn($m) => $m->position === 'left');
+            } elseif ($searchTerm === 'right') {
+                $allMembers = $allMembers->filter(fn($m) => $m->position === 'right');
+            } elseif ($searchTerm === 'active') {
+                $allMembers = $allMembers->filter(fn($m) => $m->status == 1);
+            } elseif ($searchTerm === 'inactive') {
+                $allMembers = $allMembers->filter(fn($m) => $m->status == 0);
+            } else {
+                $allMembers = $allMembers->filter(function ($member) use ($searchTerm) {
+                    return str_contains(strtolower($member->user->name), $searchTerm) ||
+                        str_contains(strtolower($member->member_number), $searchTerm) ||
+                        str_contains(strtolower($member->user->phone), $searchTerm) ||
+                        (isset($member->sponsor->user->name) && str_contains(strtolower($member->sponsor->user->name), $searchTerm)) ||
+                        (isset($member->sponsor->member_number) && str_contains(strtolower($member->sponsor->member_number), $searchTerm));
+                });
+            }   
+        }
+
+        // Apply sorting
+        $sorted = $allMembers->sortBy(function ($member) {
+            return $member->{$this->sortField};
+        }, SORT_REGULAR, $this->sortDirection === 'desc');
+
+        return $sorted->values();
+    }
+
+    private function paginateCollection($items)
+    {
+        $page = $this->page ?: 1;
+        $perPage = $this->perPage;
+        $total = $items->count();
+
+        $results = $items->slice(($page - 1) * $perPage, $perPage)->values();
+
+        return new LengthAwarePaginator($results, $total, $perPage, $page, [
+            'path' => request()->url(),
+            'query' => request()->query(),
+        ]);
     }
 
     public function getMembersProperty()
     {
-        return $this->getQuery()->paginate($this->perPage);
+        $collection = $this->getAllMembersCollection();
+        return $this->paginateCollection($collection);
     }
 
     public function render()
     {
-        $query = $this->getQuery();
-        
+        $members = $this->getMembersProperty();
+
+        // print($members);die;
+        $totalMembers = $members->total();
+        $activeMembers = $members->filter(fn($m) => $m->status == 1)->count();
+        $inactiveMembers = $members->filter(fn($m) => $m->status == 0)->count();
+
         return view('livewire.leaders.members-of-leader', [
-            'members' => $this->members,
-            'totalMembers' => $query->count(),
-            'activeMembers' => $query->clone()->where('status', 'active')->count(),
-            'inactiveMembers' => $query->clone()->where('status', 'inactive')->count(),
+            'members' => $members,
+            'totalMembers' => $totalMembers,
+            'activeMembers' => $activeMembers,
+            'inactiveMembers' => $inactiveMembers,
         ]);
     }
 }

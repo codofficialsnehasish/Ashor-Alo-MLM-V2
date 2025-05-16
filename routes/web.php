@@ -93,7 +93,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/leaders-create', AddLeader::class)->name('leaders.create');
     Route::get('/binary-tree', BinaryTreeView::class)->name('binary.tree');
     Route::get('/transfer-sub-tree', TransferSubtree::class)->name('binary.transfer');
-    Route::get('/.members-of-leader', MembersOfLeader::class)->name('leaders.members-of-leader');
+    Route::get('/members-of-leader', MembersOfLeader::class)->name('leaders.members-of-leader');
 
     Route::prefix('master-data/level-bonus')->name('level-bonus.')->group(function () {
         Route::get('/', LevelBonusIndex::class)->name('index');

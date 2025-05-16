@@ -5,7 +5,7 @@
                 <div class="col-lg-8 p-r-0 title-margin-right">
                     <div class="page-header">
                         <div class="page-title">
-                            <h1>System Users</h1>
+                            <h1>Members of Leader</h1>
                         </div>
                     </div>
                 </div><!-- /# column -->
@@ -14,7 +14,8 @@
                         <div class="page-title">
                             <ol class="breadcrumb text-right">
                                 <li><a wire:navigate href="{{ route('dashboard') }}">Dashboard</a></li>
-                                <li class="active">System Users</li>
+                                <li><a wire:navigate href="{{ route('leaders.all') }}">Leaders</a></li>
+                                <li class="active">Members of Leader</li>
                             </ol>
                         </div>
                     </div>
@@ -25,8 +26,6 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-body">
-                                <h2 class="card-title mb-4">Enhanced Binary Tree Report</h2>
-                
                                 <!-- Filters Section -->
                                 <div class="row mb-4">
                                     <div class="col-md-3 col-sm-6 mb-3">
@@ -39,20 +38,20 @@
                                     </div>
                                     <div class="col-md-3 col-sm-6 mb-3">
                                         <label class="form-label">Member Number</label>
-                                        <input type="text" wire:model.debounce.500ms="memberNumber" placeholder="Member number" class="form-control">
+                                        <input type="text" wire:model="memberNumber" placeholder="Member number" class="form-control">
                                     </div>
                                     <div class="col-md-3 col-sm-6 mb-3 d-flex align-items-end">
-                                        <button wire:click="resetFilters" class="btn btn-outline-secondary w-100">
-                                            <i class="fas fa-redo"></i> Reset Filters
+                                        <button wire:click="applyFilters" class="btn btn-primary me-2">
+                                             Apply Filters
+                                        </button>
+                                        <button wire:click="resetFilters" class="btn btn-outline-secondary">
+                                             Reset
                                         </button>
                                     </div>
                                 </div>
                                 
                                 <div class="row mb-4">
-                                    <div class="col-md-6 mb-3">
-                                        <input type="text" wire:model.debounce.300ms="tableSearch" placeholder="Search in table..." class="form-control">
-                                    </div>
-                                    <div class="col-md-6 mb-3 d-flex justify-content-end">
+                                    <div class="col-md-6 mb-3 d-flex ">
                                         <button wire:click="exportExcel" class="btn btn-success me-2">
                                             <i class="fas fa-file-excel"></i> Export Excel
                                         </button>
@@ -60,146 +59,62 @@
                                             <i class="fas fa-file-pdf"></i> Export PDF
                                         </button>
                                     </div>
+                                    <div class="col-md-6 mb-3">
+                                        <input type="text" wire:model.live="tableSearch" placeholder="Search in table..." class="form-control">
+                                    </div>
                                 </div>
                 
                                 <!-- Summary Cards -->
-                                <div class="row mb-4">
-                                    <div class="col-md-4 mb-3">
-                                        <div class="card bg-primary text-white">
-                                            <div class="card-body">
-                                                <h5 class="card-title">Total Members</h5>
-                                                <p class="card-text display-6">{{ number_format($totalMembers) }}</p>
-                                            </div>
-                                        </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-4 mb-2">
+                                        <h6 class="mb-1 text-muted">Total Members : {{ number_format($totalMembers) }}</h6>
                                     </div>
-                                    <div class="col-md-4 mb-3">
-                                        <div class="card bg-success text-white">
-                                            <div class="card-body">
-                                                <h5 class="card-title">Active Members</h5>
-                                                <p class="card-text display-6">{{ number_format($activeMembers) }}</p>
-                                            </div>
-                                        </div>
+                                    <div class="col-md-4 mb-2">
+                                        <h6 class="mb-1 text-muted">Active Members : {{ number_format($activeMembers) }}</h6>
                                     </div>
-                                    <div class="col-md-4 mb-3">
-                                        <div class="card bg-danger text-white">
-                                            <div class="card-body">
-                                                <h5 class="card-title">Inactive Members</h5>
-                                                <p class="card-text display-6">{{ number_format($inactiveMembers) }}</p>
-                                            </div>
-                                        </div>
+                                    <div class="col-md-4 mb-2">
+                                        <h6 class="mb-1 text-muted">Inactive Members : {{ number_format($inactiveMembers) }}</h6>
                                     </div>
                                 </div>
+
                 
                                 <!-- Results Table -->
                                 <div class="table-responsive">
                                     <table class="table table-striped table-hover" id="dataTable">
                                         <thead class="table-light">
                                             <tr>
-                                                <th>
-                                                    <input type="checkbox" wire:model="selectAll" class="form-check-input">
-                                                </th>
-                                                <th wire:click="sortBy('member_number')" style="cursor: pointer">
-                                                    Member # 
-                                                    @if($sortField === 'member_number')
-                                                        @if($sortDirection === 'asc')
-                                                            <i class="fas fa-sort-up"></i>
-                                                        @else
-                                                            <i class="fas fa-sort-down"></i>
-                                                        @endif
-                                                    @else
-                                                        <i class="fas fa-sort"></i>
-                                                    @endif
-                                                </th>
-                                                <th wire:click="sortBy('user.name')" style="cursor: pointer">
-                                                    Member Name
-                                                    @if($sortField === 'user.name')
-                                                        @if($sortDirection === 'asc')
-                                                            <i class="fas fa-sort-up"></i>
-                                                        @else
-                                                            <i class="fas fa-sort-down"></i>
-                                                        @endif
-                                                    @else
-                                                        <i class="fas fa-sort"></i>
-                                                    @endif
-                                                </th>
-                                                <th>Sponsor</th>
-                                                <th>Parent</th>
-                                                <th wire:click="sortBy('position')" style="cursor: pointer">
-                                                    Position
-                                                    @if($sortField === 'position')
-                                                        @if($sortDirection === 'asc')
-                                                            <i class="fas fa-sort-up"></i>
-                                                        @else
-                                                            <i class="fas fa-sort-down"></i>
-                                                        @endif
-                                                    @else
-                                                        <i class="fas fa-sort"></i>
-                                                    @endif
-                                                </th>
-                                                <th wire:click="sortBy('status')" style="cursor: pointer">
-                                                    Status
-                                                    @if($sortField === 'status')
-                                                        @if($sortDirection === 'asc')
-                                                            <i class="fas fa-sort-up"></i>
-                                                        @else
-                                                            <i class="fas fa-sort-down"></i>
-                                                        @endif
-                                                    @else
-                                                        <i class="fas fa-sort"></i>
-                                                    @endif
-                                                </th>
-                                                <th wire:click="sortBy('activated_at')" style="cursor: pointer">
-                                                    Activated Date
-                                                    @if($sortField === 'activated_at')
-                                                        @if($sortDirection === 'asc')
-                                                            <i class="fas fa-sort-up"></i>
-                                                        @else
-                                                            <i class="fas fa-sort-down"></i>
-                                                        @endif
-                                                    @else
-                                                        <i class="fas fa-sort"></i>
-                                                    @endif
-                                                </th>
+                                                <th>Reg Date</th>
+                                                <th>Name</th>
+                                                <th>ID</th>
+                                                <th>Phone Number</th>
+                                                <th>Position</th>
+                                                <th>Sponsor Name</th>
+                                                <th>Sponsor ID</th>
+                                                <th>Status</th>
+                                                <th>Activated Date</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @forelse($members as $member)
-                                                <tr wire:key="{{ $member->id }}">
-                                                    <td>
-                                                        <input type="checkbox" wire:model="selectedRows" value="{{ $member->id }}" class="form-check-input">
-                                                    </td>
+                                                <tr>
+                                                    <td>{{ format_datetime($member->created_at) }}</td>
+                                                    <td>{{ $member->user->name }}</td>
                                                     <td>{{ $member->member_number }}</td>
-                                                    <td>
-                                                        <div class="d-flex align-items-center">
-                                                            <img src="{{ $member->user->profile_photo_url ?? 'https://via.placeholder.com/40' }}" 
-                                                                 class="rounded-circle me-3" width="40" height="40" alt="Member">
-                                                            <div>
-                                                                <div class="fw-bold">{{ $member->user->name }}</div>
-                                                                <div class="text-muted small">{{ $member->user->email }}</div>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        @if($member->sponsor)
-                                                            {{ $member->sponsor->user->name ?? 'N/A' }}
-                                                            <span class="text-muted">({{ $member->sponsor->member_number }})</span>
-                                                        @else
-                                                            System
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        @if($member->parent)
-                                                            {{ $member->parent->user->name ?? 'N/A' }}
-                                                            <span class="text-muted">({{ $member->parent->member_number }})</span>
-                                                        @else
-                                                            Root
-                                                        @endif
-                                                    </td>
+                                                    <td>{{ $member->user->phone }}</td>
                                                     <td>
                                                         <span class="badge {{ $member->position === 'left' ? 'bg-success' : 'bg-info' }}">
                                                             {{ ucfirst($member->position) }}
                                                         </span>
                                                     </td>
+                                                    <td>
+                                                        @if($member->sponsor)
+                                                            {{ $member->sponsor->user->name ?? 'N/A' }}
+                                                        @else
+                                                            Root
+                                                        @endif
+                                                    </td>
+                                                    <td>{{ $member->sponsor->member_number }}</td>
+                                                    
                                                     <td>
                                                         <span class="badge {{ $member->status == 1 ? 'bg-success' : 'bg-danger' }}">
                                                             {{ $member->status == 1 ? 'Active' : 'Inactive' }}
@@ -211,7 +126,7 @@
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="8" class="text-center py-4 text-muted">
+                                                    <td colspan="9" class="text-center py-4 text-muted">
                                                         No members found matching your criteria.
                                                     </td>
                                                 </tr>
