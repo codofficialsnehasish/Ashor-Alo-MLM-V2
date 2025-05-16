@@ -55,6 +55,8 @@ use App\Livewire\Product\Index;
 use App\Livewire\Product\Create;
 use App\Livewire\Product\Edit;
 
+use App\Livewire\Order\AddOrder;
+
 
 use Illuminate\Support\Facades\Route;
 
@@ -127,6 +129,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', Index::class)->name('index');
         Route::get('/create', Create::class)->name('create');
         Route::get('/edit/{product}', Edit::class)->name('edit');
+    });
+
+    Route::prefix('orders')->name('orders.')->group(function () {
+        Route::get('/add', AddOrder::class)->name('add');
     });
 
 });

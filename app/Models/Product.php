@@ -20,12 +20,15 @@ class Product extends Model implements HasMedia
         'slug',
         'sku',
         'category_id',
+        'product_type', // 'simple', 'variable', 'combo'
+        'manages_variations',
         'price',
         'discount_rate',
         'no_discount',
         'discounted_price',
         'gst_rate',
         'gst_amount',
+        'total_price',
         'stock',
         'is_visible',
         'is_bestseller',
@@ -37,6 +40,7 @@ class Product extends Model implements HasMedia
         'is_provide_direct',
         'is_provide_roi',
         'is_provide_level',
+        'combo_price', // Added for combo products
     ];
 
     /**
@@ -45,6 +49,21 @@ class Product extends Model implements HasMedia
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function variations()
+    {
+        return $this->hasMany(ProductVariation::class);
+    }
+
+    public function comboItems()
+    {
+        return $this->hasMany(ComboItem::class, 'combo_id');
+    }
+
+    public function includedInCombos()
+    {
+        return $this->hasMany(ComboItem::class, 'product_id');
     }
 
     public function getActivitylogOptions(): LogOptions

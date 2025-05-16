@@ -61,7 +61,7 @@
 
                 <li><a class="sidebar-sub-toggle"><i class="ti-package"></i>  Orders & Products  <span class="badge badge-primary">3</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
                     <ul>
-                        <li><a href="javascript:void(0);">Orders</a></li>
+                        <li><a wire:navigate href="{{ route('orders.add') }}">Orders</a></li>
                         <li><a wire:navigate href="{{ route('categories.index') }}">Categories</a></li>
                         <li><a wire:navigate href="{{ route('products.index') }}">Products</a></li>
                     </ul>

@@ -169,7 +169,7 @@
                                             </div> -->
                                             <h3>ID : {{ $user->member_number }}</h3>
                                             <h3>Mobile : {{ $user->phone }}</h3>
-                                            <h3>Address: {{ $user->address->address }}</h3>
+                                            <h3>Address: {{ $user->address?->address ?? '' }}</h3>
                                             <hr>
                                             <p><strong>Ashor Alo</strong><p>
                                             <p>Thacker House, 35, Chittaranjan Avenue, 4th Floor, Kolkata 700012, Near 5 No Gate Chandni Metro, West Bengal</p>
