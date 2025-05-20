@@ -7,20 +7,27 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 use Spatie\Permission\Models\Role;
+use Livewire\Attributes\Url;
+use Livewire\WithFileUploads;
 
 class EditUser extends Component
 {
+    use WithFileUploads;
     public $name;
+    public $image;
     public $email;
     public $password;
     public $userId;
     public $roles = [];
     public $selectedRoles = [];
     public $user;
+    public $existingImage;
     public $data = [
         'name' => '',
         'email' => '',
+        'phone' => '',
         'password' => '',
+        'status' => false,
     ];
     public $userRoles;
     protected $listeners = ['selectedRoles' => 'HandleselectedRoles', 'refreshComponent' => 'loadUsers'];
@@ -37,8 +44,11 @@ class EditUser extends Component
             $this->data = [
                 'name' => $this->user->name,
                 'email' => $this->user->email,
+                'phone' => $this->user->phone,
+                'status' => (bool) $this->user->status,
             ];
             $this->userId = $decryptedId;
+            $this->existingImage = $this->user->getFirstMediaUrl('user');
         } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
             $this->dispatch('toastMessage', json_encode([
                 'type'=>'error',
@@ -67,6 +77,12 @@ class EditUser extends Component
             $this->user->update([
                 'password' => Hash::make($this->pull('password')),
             ]);
+        }
+
+        if ($this->image) {
+            $this->user->clearMediaCollection('user');
+            $this->user->addMedia($this->image)->toMediaCollection('user');
+            $this->existingImage = $this->user->getFirstMediaUrl('user');
         }
 
 

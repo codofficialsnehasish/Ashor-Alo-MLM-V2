@@ -125,7 +125,11 @@
                     </div>
                 </div>
             </li>
-            <li class="header-icon dib"><img class="avatar-img" src="{{ asset('assets/images/avatar/1.jpg') }}" alt="" /> <span class="user-avatar"> {{ auth()->user()->name }} <i class="ti-angle-down f-s-10"></i></span>
+            <li class="header-icon dib">
+                @if (auth()->user()->hasMedia('user'))
+                <img class="avatar-img" src="{{ auth()->user()->getFirstMediaUrl('user') }}" alt="" /> 
+                @endif
+                <span class="user-avatar"> {{ auth()->user()->name }} <i class="ti-angle-down f-s-10"></i></span>
                 <div class="drop-down dropdown-profile">
                     <div class="dropdown-content-heading">
                         <span class="text-left">{{ auth()->user()->name }}</span>

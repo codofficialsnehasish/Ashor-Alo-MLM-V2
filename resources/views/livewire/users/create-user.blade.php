@@ -30,9 +30,9 @@
                             </div>
                             <div class="card-body">
                                 <form wire:submit.prevent="addUser" enctype="multipart/form-data">
-                                <div class="row">
-                                    
-                                    <div class="col-lg-9">
+                                    <div class="row">
+                                        
+                                        <div class="col-lg-9">
                                             <div class="mb-3 row">
                                                 <label for="example-text-input" class="col-sm-2 col-form-label text-end">Name</label>
                                                 <div class="col-sm-10">
@@ -84,62 +84,56 @@
                                                 @enderror
                                                 </div>
                                             </div> 
-                                            
-                                    
-                                    </div>
-
-                                    <div class="col-lg-3">                                       
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h4 class="card-title">Image</h4>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="d-grid">
-                                                    <div wire:loading wire:target="image" wire:key="image"><i class="fa fa-spinner fa-spin mt-2 ml-2"></i> Uploading...</div>
-                                                    @if ($image)
-                                                    <img class="img-thumbnail rounded me-2" id="blah" alt="Image Preview" width="200" 
-                                                        src="{{ $image->temporaryUrl() }}" 
-                                                        style="display: {{ $image ? 'block' : 'none' }};">
-                                                    @endif 
-                                                    <input type="file" id="input-file" wire:model="image" accept="image/*"  hidden />
-                                                    <label class="btn-upload btn btn-outline-secondary mt-4" for="input-file"><i class="fas fa-cloud-upload-alt"></i> Browse Image</label>
-                                                    @error('image') 
-                                                    <span class="text-danger">{{ $image }}</span> 
-                                                @enderror
-
-                                                </div>                        
-                                            </div>
-                                    </div>
-                                    <div class="card">
-                                        <div class="card-header  ">
-                                            <h4 class="card-title ">Publish</h4>
                                         </div>
-                                        <div class="card-body">
-                                            <div class="form-group">
-                                                <div class="custom-control custom-switch">
-                                                    <input wire:model="status" type="checkbox" class="custom-control-input" id="is_visible" checked>
-                                                    <label class="custom-control-label" for="active">Active</label>
+
+                                        <div class="col-lg-3">                                       
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h4 class="card-title">Image</h4>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="d-grid">
+                                                        <div wire:loading wire:target="image" wire:key="image"><i class="fa fa-spinner fa-spin mt-2 ml-2"></i> Uploading...</div>
+                                                        @if ($image)
+                                                        <img class="img-thumbnail rounded me-2" id="blah" alt="Image Preview" width="200" 
+                                                            src="{{ $image->temporaryUrl() }}" 
+                                                            style="display: {{ $image ? 'block' : 'none' }};">
+                                                        @endif 
+                                                        <input type="file" id="input-file" wire:model="image" accept="image/*"  hidden />
+                                                        <label class="btn-upload btn btn-outline-secondary mt-4" for="input-file"><i class="fas fa-cloud-upload-alt"></i> Browse Image</label>
+                                                        @error('image') 
+                                                        <span class="text-danger">{{ $image }}</span> 
+                                                    @enderror
+
+                                                    </div>                        
                                                 </div>
                                             </div>
-                                            <div class="mb-3 float-end">
-                                            
-                                                <button type="submit" class="btn btn-primary btn-sm">
-                                                    <span wire:loading wire:target="addUser">
-                                                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...
-                                                    </span>
-                                                    <span wire:loading.remove wire:target="addUser">
-                                                        Save & Publish
-                                                    </span>
-                                                </button>
-                                            </div> 
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h4 class="card-title">Publish</h4>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="form-group">
+                                                        <div class="custom-control custom-switch">
+                                                            <input wire:model="status" type="checkbox" class="custom-control-input" id="status" checked>
+                                                            <label class="custom-control-label" for="status">Active</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3 float-end">
+                                                        <button type="submit" class="btn btn-primary btn-sm">
+                                                            <span wire:loading wire:target="addUser">
+                                                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...
+                                                            </span>
+                                                            <span wire:loading.remove wire:target="addUser">
+                                                                Save & Publish
+                                                            </span>
+                                                        </button>
+                                                    </div> 
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                
-                                    
-                                    </div>
-                                
-                                </div>
-                            </form>
+                                </form>
                             </div>
                         </div> <!-- end card -->                               
                     </div> <!-- end col -->                    

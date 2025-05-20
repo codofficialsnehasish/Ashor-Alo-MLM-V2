@@ -29,9 +29,9 @@
                                 Edit User
                             </div>
                             <div class="card-body">
-                                <div class="row">
-                                    <div class="col-lg-8">
-                                        <form wire:submit.prevent="updateUser">
+                                <form wire:submit.prevent="updateUser">
+                                    <div class="row">
+                                        <div class="col-lg-9">
                                             <div class="mb-3 row">
                                                 <label for="example-text-input" class="col-sm-2 col-form-label text-end">Name</label>
                                                 <div class="col-sm-10">
@@ -39,7 +39,6 @@
                                                     @error('data.name') 
                                                     <span class="text-danger">{{ $message }}</span> 
                                                 @enderror
-            
                                                 </div>
                                             </div>
                                             <div class="mb-3 row">
@@ -51,20 +50,21 @@
                                                 @enderror
                                                 </div>
                                             </div> 
+                                            <div class="mb-3 row">
+                                                <label for="example-phone-input" class="col-sm-2 col-form-label text-end">Phone</label>
+                                                <div class="col-sm-10">
+                                                    <input class="form-control" wire:model="data.phone" type="phone" id="example-phone-input">
+                                                    @error('data.phone') 
+                                                    <span class="text-danger">{{ $message }}</span> 
+                                                    @enderror
+                                                </div>
+                                            </div> 
                             
                                             <div class="mb-3 row">
                                                 <label for="example-password-input" class="col-sm-2 col-form-label text-end">Password</label>
                                                 <div class="col-sm-10 position-relative" x-data="{ showPassword: false }">
-                                                    <input 
-                                                        class="form-control" 
-                                                        :type="showPassword ? 'text' : 'password'" 
-                                                        wire:model="password" 
-                                                        id="example-password-input"
-                                                    >
-                                                    <span 
-                                                        class="position-absolute end-0 top-50 translate-middle-y me-2 cursor-pointer" 
-                                                        @click="showPassword = !showPassword"
-                                                    >
+                                                    <input class="form-control" :type="showPassword ? 'text' : 'password'" wire:model="password" id="example-password-input">
+                                                    <span class="position-absolute end-0 top-50 translate-middle-y me-2 cursor-pointer" @click="showPassword = !showPassword">
                                                         <i :class="showPassword ? 'ti-eye-slash' : 'ti-eye'" style="margin-right: 9px;color: #0b51b7;"></i>
                                                     </span>
                                                     @error('password') 
@@ -88,26 +88,58 @@
                                                 @enderror
 
                                                 </div>
-                                            </div> 
-                                            <div class="mb-3 float-end">
-                                                <button type="button" class="btn btn-outline-danger btn-sm">Cancel</button>
-                                                <button type="submit" class="btn btn-outline-primary btn-sm">
-                                                    <span wire:loading wire:target="updateUser">
-                                                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...
-                                                    </span>
-                                                    <span wire:loading.remove wire:target="updateUser">
-                                                        Save changes
-                                                    </span>
-                                                </button>
-                                            </div> 
-                                    </form>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">                                       
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h4 class="card-title">Image</h4>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="d-grid">
+                                                        <div wire:loading wire:target="image" wire:key="image"><i class="fa fa-spinner fa-spin mt-2 ml-2"></i> Uploading...</div>
+                                                        @if ($image)
+                                                        <img class="img-thumbnail rounded me-2" id="blah" alt="Image Preview" width="200" 
+                                                            src="{{ $image->temporaryUrl() }}" 
+                                                            style="display: {{ $image ? 'block' : 'none' }};">
+                                                        @elseif ($existingImage)
+                                                            <img class="img-thumbnail rounded me-2" alt="Image Preview" width="200" src="{{ $existingImage }}">
+                                                        @endif 
+                                                        <input type="file" id="input-file" wire:model="image" accept="image/*"  hidden />
+                                                        <label class="btn-upload btn btn-outline-secondary mt-4" for="input-file"><i class="fas fa-cloud-upload-alt"></i> Browse Image</label>
+                                                        @error('image') 
+                                                        <span class="text-danger">{{ $image }}</span> 
+                                                    @enderror
+        
+                                                    </div>                        
+                                                </div>
+                                            </div>
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h4 class="card-title">Publish</h4>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="form-group">
+                                                        <div class="custom-control custom-switch">
+                                                            <input wire:model="data.status" type="checkbox" class="custom-control-input" id="status" >
+                                                            <label class="custom-control-label" for="status">Active</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3 float-end">
+                                                        <button type="submit" class="btn btn-outline-primary btn-sm">
+                                                            <span wire:loading wire:target="updateUser">
+                                                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...
+                                                            </span>
+                                                            <span wire:loading.remove wire:target="updateUser">
+                                                                Save changes
+                                                            </span>
+                                                        </button>
+                                                    </div> 
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-
-
-                                    <div class="col-lg-4">                                       
-                                        
-                                    </div>
-                                </div>
+                                </form>
                             </div>
                         </div> <!-- end card -->                               
                     </div> <!-- end col -->                    
