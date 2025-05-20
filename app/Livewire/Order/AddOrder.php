@@ -36,8 +36,12 @@ class AddOrder extends Component
 
     public function mount()
     {
-        $this->customers = User::all();
-        $this->categories = Category::all();
+        // $this->customers = User::all();
+        $this->customers = User::whereHas('roles', function ($query) {
+            $query->whereIn('name', ['Leader']);
+        })->get();
+
+        $this->categories = Category::where('is_visible',1)->get();
     }
 
     public function updated($property, $value)
