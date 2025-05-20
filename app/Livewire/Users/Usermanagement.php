@@ -31,7 +31,7 @@ class Usermanagement extends Component
     public function render()
     {
         // $users = User::paginate(10);
-        $excludedRoles = ['Leader']; // Your array of role names
+        $excludedRoles = ['Leader']; // array of role names
 
         $users = User::whereDoesntHave('roles', function ($query) use ($excludedRoles) {
             $query->whereIn('name', $excludedRoles);

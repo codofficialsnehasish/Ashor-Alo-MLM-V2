@@ -3,7 +3,8 @@
 use App\Livewire\Settings\{
     Appearance,
     Password,
-    Profile
+    Profile,
+    MlmSettings
 };
 
 use App\Livewire\Dashboard;
@@ -81,6 +82,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/profile', Profile::class)->name('settings.profile');
     Route::get('settings/password', Password::class)->name('settings.password');
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
+    Route::get('settings/mlm-settings', MlmSettings::class)->name('settings.mlm-settings');
 
     Route::get('/roles', RoleManagement::class)->name('role');
     Route::get('/permissions', Permissions::class)->name('permissions');

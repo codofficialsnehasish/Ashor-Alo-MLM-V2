@@ -26,7 +26,12 @@ class ActivityLogTable extends Component
             ->latest()
             ->paginate(10);
 
-        $users = User::with('roles')->orderBy('name')->get();
+        // $users = User::with('roles')->orderBy('name')->get();
+        $excludedRoles = ['Leader'];
+
+        $users = User::whereDoesntHave('roles', function ($query) use ($excludedRoles) {
+            $query->whereIn('name', $excludedRoles);
+        })->get();
 
         return view('livewire.activity-log.activity-log-table', [
             'logs' => $logs,
