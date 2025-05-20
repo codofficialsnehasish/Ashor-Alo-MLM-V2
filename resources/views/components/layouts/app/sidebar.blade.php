@@ -29,7 +29,7 @@
                         <li><a wire:navigate href="{{ route('monthly-return.index') }}">Monthly Return</a></li>
                         <li><a wire:navigate href="{{ route('level-bonus.index') }}">Level Bonus</a></li>
                         <li><a wire:navigate href="{{ route('remuneration-benefit.index') }}">Remuneration</a></li>
-                        <li><a href="javascript:void(0);">Award Master</a></li>
+                        {{-- <li><a href="javascript:void(0);">Award Master</a></li> --}}
                         {{-- <li><a href="javascript:void(0);">Franchise Benefit</a></li> --}}
                     </ul>
                 </li>
@@ -61,7 +61,7 @@
 
                 <li><a class="sidebar-sub-toggle"><i class="ti-package"></i>  Orders & Products  <span class="badge badge-primary">3</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
                     <ul>
-                        <li><a wire:navigate href="{{ route('orders.add') }}">Orders</a></li>
+                        <li><a wire:navigate href="{{ route('orders.list') }}">Orders</a></li>
                         <li><a wire:navigate href="{{ route('categories.index') }}">Categories</a></li>
                         <li><a wire:navigate href="{{ route('products.index') }}">Products</a></li>
                     </ul>

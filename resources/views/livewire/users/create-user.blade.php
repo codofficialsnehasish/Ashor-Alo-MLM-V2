@@ -53,6 +53,15 @@
                                                 </div>
                                             </div> 
                                             <div class="mb-3 row">
+                                                <label for="example-phone-input" class="col-sm-2 col-form-label text-end">Phone</label>
+                                                <div class="col-sm-10">
+                                                    <input class="form-control" wire:model="phone" type="phone" value="" id="example-phone-input">
+                                                    @error('phone') 
+                                                    <span class="text-danger">{{ $message }}</span> 
+                                                    @enderror
+                                                </div>
+                                            </div> 
+                                            <div class="mb-3 row">
                                                 <label for="example-password-input" class="col-sm-2 col-form-label text-end">Password</label>
                                                 <div class="col-sm-10">
                                                     <input class="form-control" type="password" wire:model="password" value="" id="example-password-input">
@@ -65,7 +74,7 @@
                                             <div class="mb-3 row" >
                                                 <label for="example-email-input" class="col-sm-2 col-form-label text-end">Role</label>
                                                 <div class="col-sm-10" wire:ignore>
-                                                    <select wire:ignore.self class="form-select " id="rol"  multiple="multiple" wire:model="selectedRoles">
+                                                    <select wire:ignore.self class="form-select select2" id="rol"  multiple="multiple" wire:model="selectedRoles">
                                                     @foreach ($roles as $role)
                                                         <option value="{{ $role }}" >{{ $role }}</option>
                                                         @endforeach
@@ -106,9 +115,14 @@
                                             <h4 class="card-title ">Publish</h4>
                                         </div>
                                         <div class="card-body">
+                                            <div class="form-group">
+                                                <div class="custom-control custom-switch">
+                                                    <input wire:model="status" type="checkbox" class="custom-control-input" id="is_visible" checked>
+                                                    <label class="custom-control-label" for="active">Active</label>
+                                                </div>
+                                            </div>
                                             <div class="mb-3 float-end">
                                             
-                                                <button type="button" class="btn btn-de-danger">Cancel</button>
                                                 <button type="submit" class="btn btn-primary btn-sm">
                                                     <span wire:loading wire:target="addUser">
                                                         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...

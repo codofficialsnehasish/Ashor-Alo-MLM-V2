@@ -35,10 +35,14 @@
                                     <table class="table mb-0">
                                         <thead class="thead-light">
                                             <tr>
-                                                <th>Sl No.</th>
+                                                <th>#</th>
+                                                <th>Reg Date</th>
                                                 <th>Name</th>
-                                                <th>Email</th>
                                                 <th>Role</th>
+                                                <th>Phone</th>
+                                                <th>Email</th>
+                                                <th>Password</th>
+                                                <th>Status</th>
                                                 <th class="text-end">Action</th>
                                             </tr>
                                         </thead>
@@ -49,18 +53,30 @@
                                         
                                             @foreach ($users as $user)
                                                 <tr>
-                                                    <td>{{$i++}}</td>
-                                                    <td> <img src="{{ $user->getFirstMediaUrl('user') }}" alt="" class="thumb-sm rounded-circle me-2"> {{ $user->name }} 
-                                                    
-                                                    
+                                                    <td>{{ $i++ }}</td>
+                                                    <td>{{ format_datetime($user->created_at) }}</td>
+                                                    <td> 
+                                                        @if ($user->hasMedia('user'))
+                                                        <img src="{{ $user->getFirstMediaUrl('user') }}" alt="" 
+                                                            style="width: 40px; height: 40px; object-fit: cover;" 
+                                                            class="rounded-circle me-2"> 
+                                                        @endif
+                                                        {{ $user->name }} 
                                                     </td>
-                                                    <td> {{ $user->email }}</td>
                                                     <td>
                                                         @if (!empty($user->getRoleNames()))
                                                             @foreach ($user->getRoleNames() as $role)
                                                             <span class="badge badge-primary">{{ $role }}</span>
                                                             @endforeach
                                                         @endif
+                                                    </td>
+                                                    <td>{{ $user->phone }}</td>
+                                                    <td>{{ $user->email }}</td>
+                                                    <td>{{ $user->decoded_password }}</td>
+                                                    <td>
+                                                        <span class="badge {{ $user->status == 1 ? 'bg-success' : 'bg-danger' }}">
+                                                            {{ $user->status == 1 ? 'Active' : 'Inactive' }}
+                                                        </span>
                                                     </td>
                                                     <td class="text-end">
                                                         <a href="{{ route('user.edit', ['id' => Crypt::encryptString($user->id)]) }}" wire:navigate><i class="ti-pencil-alt text-secondary font-16 text-info"></i></a>
@@ -69,8 +85,8 @@
                                                 </tr>
                                             @endforeach
                                         </tbody>
-                    </table>           
-                    {{ $users->links(data: ['scrollTo' => false]) }}         
+                                    </table>           
+                                    {{ $users->links(data: ['scrollTo' => false]) }}         
                                 </div>                                         
                             </div><!--end card-body--> 
                         </div><!--end card--> 

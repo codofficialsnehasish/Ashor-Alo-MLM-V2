@@ -33,7 +33,7 @@
                                     </div>
                                     <div class="col-md-4 text-right">
                                         <a href="{{ route('monthly-return.index') }}" class="btn btn-secondary">
-                                            <i class="fas fa-arrow-left"></i> Back to List
+                                             Back to List
                                         </a>
                                     </div>
                                 </div>
@@ -51,17 +51,16 @@
                                             @error('category') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                         </div>
 
-                                        <div class="form-group col-md-4">
+                                        {{-- <div class="form-group col-md-4">
                                             <label for="product">Product <span class="text-danger">*</span></label>
                                             <select wire:model="product" id="product" class="form-control @error('product') is-invalid @enderror" {{ empty($products) ? 'disabled' : '' }}>
                                                 <option value="">Select Product</option>
                                                 @foreach($products as $prod)
-                                                {{-- <option value="{{ $prod->id }}">{{ $prod->title }}</option> --}}
                                                 <option value="{{ $prod->id }}" {{ $prod->id == $product ? 'selected' : '' }}>{{ $prod->title }}</option>
                                                 @endforeach
                                             </select>
                                             @error('product') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                                        </div>
+                                        </div> --}}
                                         <div class="form-group col-md-4">
                                             <label for="form_amount">From Amount <span class="text-danger">*</span></label>
                                             <input wire:model="form_amount" type="number" step="0.01" class="form-control @error('form_amount') is-invalid @enderror" id="form_amount">
@@ -95,7 +94,7 @@
 
                                     <div class="form-group text-right">
                                         <button type="submit" class="btn btn-primary">
-                                            <i class="fas fa-save"></i> Save
+                                            Save
                                         </button>
                                     </div>
                                 </form>

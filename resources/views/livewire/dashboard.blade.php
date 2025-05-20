@@ -24,7 +24,7 @@
                 <div class="row">
                     <div class="col-md-3">
                         <div class="card">
-                            <a href="">
+                            <a wire:navigate href="{{ route('leaders.all') }}">
                                 <div class="media p-3">
                                     <div class="media-left me-3">
                                         <img src="{{ asset('assets/images/services-icon/14.1.png') }}" width="40" alt="">
@@ -40,7 +40,7 @@
                     
                     <div class="col-md-3">
                         <div class="card">
-                            <a href="">
+                            <a wire:navigate href="{{ route('leaders.all') }}">
                                 <div class="media p-3">
                                     <div class="media-left me-3">
                                         <img src="{{ asset('assets/images/services-icon/25.png') }}" width="40" alt="">
@@ -168,7 +168,7 @@
 
                     <div class="col-md-3">
                         <div class="card">
-                            <a href="{{ route('kyc.pending') }}">
+                            <a wire:navigate href="{{ route('kyc.pending') }}">
                                 <div class="media p-3">
                                     <div class="media-left me-3">
                                         <img src="{{ asset('assets/images/services-icon/23.png') }}" width="40" alt="">

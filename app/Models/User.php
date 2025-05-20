@@ -13,11 +13,12 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable implements HasMedia
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles, InteractsWithMedia, LogsActivity, HasApiTokens;
+    use HasFactory, Notifiable, HasRoles, InteractsWithMedia, LogsActivity, HasApiTokens, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -30,6 +31,7 @@ class User extends Authenticatable implements HasMedia
         'phone',
         'password',
         'decoded_password',
+        'status'
     ];
 
     /**

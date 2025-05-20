@@ -16,7 +16,9 @@ class CreateUser extends Component
     public $image;
     public $name;
     public $email;
+    public $phone;
     public $password;
+    public $status;
     public $roles = [];
     public $selectedRoles  = [];
     public $user;
@@ -26,7 +28,8 @@ class CreateUser extends Component
     protected $rules = [
         'name' => 'required|string|min:3',
         'email' => 'required|string|email|max:255|unique:users,email',
-        'password' => 'required|string|min:6|regex:/[a-z]/|regex:/[A-Z]/|regex:/[0-9]/|regex:/[@$!%*?&]/',
+        'phone' => 'required|digits:10|regex:/^[6789]/|unique:users,phone',
+        'password' => 'required|string|min:8',
         'selectedRoles' => 'required',
         // 'image' => 'required'
     ];
@@ -59,7 +62,10 @@ class CreateUser extends Component
         $model = $this->user = User::create([
             'name' => $this->name,
             'email' => $this->email,
+            'phone' => $this->phone,
             'password' => Hash::make($this->password),
+            'decoded_password' => $this->password,
+            'status' => $this->status ?? 0
         ]);
         if ($this->image) {
         $model->addMedia($this->image->getRealPath())

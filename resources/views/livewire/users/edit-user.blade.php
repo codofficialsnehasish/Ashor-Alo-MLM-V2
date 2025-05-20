@@ -15,7 +15,7 @@
                             <ol class="breadcrumb text-right">
                                 <li><a wire:navigate href="{{ route('dashboard') }}">Dashboard</a></li>
                                 <li><a wire:navigate href="{{ route('users') }}">System Users</a></li>
-                                <li class="active">Create</li>
+                                <li class="active">Edit</li>
                             </ol>
                         </div>
                     </div>
@@ -65,7 +65,7 @@
                                                         class="position-absolute end-0 top-50 translate-middle-y me-2 cursor-pointer" 
                                                         @click="showPassword = !showPassword"
                                                     >
-                                                        <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'" style="margin-right: 9px;color: #0b51b7;"></i>
+                                                        <i :class="showPassword ? 'ti-eye-slash' : 'ti-eye'" style="margin-right: 9px;color: #0b51b7;"></i>
                                                     </span>
                                                     @error('password') 
                                                         <span class="text-danger">{{ $message }}</span> 
@@ -77,7 +77,7 @@
                                                 <label for="example-email-input" class="col-sm-2 col-form-label text-end">Role</label>
                                                 <div class="col-sm-10" x-data x-init="$nextTick(() => { $('.js-example-basic-multiple').select2(); })">
                                                 <div wire:ignore>
-                                                    <select id="rol" class="form-select " multiple="multiple" wire:model="selectedRoles">
+                                                    <select id="rol" class="form-select select2" multiple="multiple" wire:model="selectedRoles">
                                                         @foreach ($roles as $role)
                                                         <option value="{{ $role }}" >{{ $role }}</option>
                                                         @endforeach

@@ -56,6 +56,7 @@ use App\Livewire\Product\Create;
 use App\Livewire\Product\Edit;
 
 use App\Livewire\Order\AddOrder;
+use App\Livewire\Order\OrderList;
 
 
 use Illuminate\Support\Facades\Route;
@@ -132,7 +133,9 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::prefix('orders')->name('orders.')->group(function () {
+        Route::get('/list', OrderList::class)->name('list');
         Route::get('/add', AddOrder::class)->name('add');
+        Route::get('/print/{order}', [AddOrder::class, 'print'])->name('print');
     });
 
 });

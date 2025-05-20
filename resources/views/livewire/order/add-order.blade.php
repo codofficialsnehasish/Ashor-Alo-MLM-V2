@@ -15,7 +15,7 @@
                             <ol class="breadcrumb text-end">
                                 <li><a wire:navigate href="{{ route('dashboard') }}">Dashboard</a></li>
                                 <li><a href="javascript:void(0);">Orders & Products</a></li>
-                                <li><a wire:navigate href="">Orders</a></li>
+                                <li><a wire:navigate href="{{ route('orders.list') }}">Orders</a></li>
                                 <li class="active">Place Order</li>
                             </ol>
                         </div>
@@ -134,8 +134,7 @@
 
                         <div class="card mt-3">
                             <div class="card-body">
-                                <h5 class="card-title">Order Summary</h5>
-                                <p class="card-text">
+                                <p class="card-text text-end">
                                     <strong>Subtotal:</strong> ₹{{ number_format($subtotal, 2) }}<br>
                                     <strong>Total:</strong> ₹{{ number_format($total, 2) }}
                                 </p>
@@ -145,13 +144,22 @@
     
                         <h5 class="mt-4">Payment Details</h5>
                         <div class="row mb-3">
-                            <div class="col-md-6">
+                            <div class="col-md-6 mb-3">
                                 <label class="form-label">Payment Method</label>
-                                <select class="form-select" wire:model="paymentMethod">
+                                <select class="form-select" wire:model.live="paymentMethod">
                                     <option value="">-- Select --</option>
                                     <option value="cash">Cash</option>
                                     <option value="online">Online</option>
                                 </select>
+                            </div>
+                            <div class="col-md-6">
+                                @if($paymentMethod === 'online')
+                                    <div class="col-md-12">
+                                        <label class="form-label">Transaction Number</label>
+                                        <input type="text" class="form-control" wire:model="transactionNumber" placeholder="Enter transaction number">
+                                        @error('transactionNumber') <span class="text-danger">{{ $message }}</span> @enderror
+                                    </div>
+                                @endif
                             </div>
     
                             <div class="col-md-6">
@@ -162,6 +170,7 @@
                                     <option value="awaiting">Awaiting Payment</option>
                                 </select>
                             </div>
+
                         </div>
     
                         <div class="mt-4">

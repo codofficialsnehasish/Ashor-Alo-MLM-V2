@@ -40,6 +40,16 @@ class Login extends Component
             ]);
         }
 
+        // Check if the authenticated user is active (status = 1)
+        if (Auth::user()->status != 1) {
+            // Log the user out immediately since they're not active
+            Auth::logout();
+            
+            throw ValidationException::withMessages([
+                'email' => __('Your account is inactive. Please contact administrator.'),
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
         Session::regenerate();
 

@@ -177,10 +177,15 @@ class BinaryTreeApiController extends Controller
         $levelData = [];
         $this->collectLevelData($root, 0, $maxLevels, $withClosure, $levelData);
 
+        $formattedLevels = [];
+        foreach ($levelData as $level => $nodes) {
+            $formattedLevels[(string)($level + 1)] = $nodes; // Level numbers start at 1
+        }
+
         return response()->json([
             'root' => $rootId,
             // 'max_levels' => $maxLevels,
-            'levels' => $levelData
+            'levels' => $formattedLevels
         ]);
     }
 

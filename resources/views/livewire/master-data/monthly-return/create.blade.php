@@ -33,7 +33,7 @@
                                     </div>
                                     <div class="col-md-4 text-right">
                                         <a href="{{ route('monthly-return.index') }}" class="btn btn-secondary">
-                                            <i class="fas fa-arrow-left"></i> Back to List
+                                             Back to List
                                         </a>
                                     </div>
                                 </div>
@@ -50,7 +50,7 @@
                                             @error('category') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                         </div>
 
-                                        <div class="form-group col-md-4">
+                                        {{-- <div class="form-group col-md-4">
                                             <label for="product">Product <span class="text-danger">*</span></label>
                                             <select wire:model="product" id="product" class="form-control @error('product') is-invalid @enderror" {{ empty($products) ? 'disabled' : '' }}>
                                                 <option value="">Select Product</option>
@@ -59,7 +59,7 @@
                                                 @endforeach
                                             </select>
                                             @error('product') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                                        </div>
+                                        </div> --}}
                                         <div class="form-group col-md-4">
                                             <label for="form_amount">From Amount <span class="text-danger">*</span></label>
                                             <input wire:model="form_amount" type="number" step="0.01" class="form-control @error('form_amount') is-invalid @enderror" id="form_amount">
@@ -86,14 +86,14 @@
 
                                     <div class="form-group">
                                         <div class="custom-control custom-switch">
-                                            <input wire:model="is_visible" type="checkbox" class="custom-control-input" id="is_visible" checked>
+                                            <input wire:model="status" type="checkbox" class="custom-control-input" id="is_visible" checked>
                                             <label class="custom-control-label" for="is_visible">Visible</label>
                                         </div>
                                     </div>
 
                                     <div class="form-group text-right">
                                         <button type="submit" class="btn btn-primary">
-                                            <i class="fas fa-save"></i> Save
+                                            Save
                                         </button>
                                     </div>
                                 </form>

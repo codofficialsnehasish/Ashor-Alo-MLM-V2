@@ -10,6 +10,8 @@ use App\Http\Controllers\Api\{
     UserProfileController,
     Documents,
     BinaryTreeApiController,
+    UserDashboardAPI,
+    ReportAPIController,
 };
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -24,6 +26,9 @@ Route::prefix('locations')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group( function () {
+
+    Route::get('/dashboard', [UserDashboardAPI::class, 'dashboard']);
+    
     Route::get('/kyc-details', [KYCController::class, 'index']);
     Route::post('/kyc-upload', [KYCController::class, 'upload']);
 
@@ -49,4 +54,6 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::get('/all-members', [BinaryTreeApiController::class, 'all_members']);
     Route::get('/tree-view/{rootId?}', [BinaryTreeApiController::class, 'getTree']);
     Route::get('/level-view', [BinaryTreeApiController::class, 'getTreeLevels']);
+
+    Route::post('/topup-report', [ReportAPIController::class, 'topup_report']);
 });

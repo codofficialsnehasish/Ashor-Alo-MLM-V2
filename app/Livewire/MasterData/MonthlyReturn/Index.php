@@ -25,7 +25,7 @@ class Index extends Component
 
     public function render()
     {
-        $returns = MonthlyReturnMaster::with(['category', 'product'])
+        $returns = MonthlyReturnMaster::with(['category']) //, 'product'
             ->when($this->search, function($query) {
                 return $query->where(function($q) {
                     $q->where('form_amount', 'like', '%'.$this->search.'%')
@@ -34,10 +34,10 @@ class Index extends Component
                       ->orWhere('return_persentage', 'like', '%'.$this->search.'%')
                       ->orWhereHas('category', function($q) {
                           $q->where('name', 'like', '%'.$this->search.'%');
-                      })
-                      ->orWhereHas('product', function($q) {
-                          $q->where('title', 'like', '%'.$this->search.'%');
                       });
+                    //   ->orWhereHas('product', function($q) {
+                    //       $q->where('title', 'like', '%'.$this->search.'%');
+                    //   });
                 });
             })
             ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
@@ -75,7 +75,7 @@ class Index extends Component
 
     public function exportPDF()
     {
-        $data = MonthlyReturnMaster::with(['category', 'product'])
+        $data = MonthlyReturnMaster::with(['category']) //, 'product'
             ->whereIn('id', $this->selectedRows)
             ->get();
 

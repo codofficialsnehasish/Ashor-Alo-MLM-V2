@@ -57,7 +57,7 @@
                                                 Sl.No.
                                             </th>
                                             <th>Category</th>
-                                            <th>Product</th>
+                                            {{-- <th>Product</th> --}}
                                             <th wire:click="sortBy('form_amount')" style="cursor: pointer;">
                                                 From Amount
                                             </th>
@@ -74,7 +74,7 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $return->category?->name }}</td>
-                                            <td>{{ $return->product?->title }}</td>
+                                            {{-- <td>{{ $return->product?->title }}</td> --}}
                                             <td>{{ number_format($return->form_amount, 2) }}</td>
                                             <td>{{ number_format($return->to_amount, 2) }}</td>
                                             <td>{{ $return->return_persentage }}%</td>

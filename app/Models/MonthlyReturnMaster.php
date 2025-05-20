@@ -14,7 +14,7 @@ class MonthlyReturnMaster extends Model
 
     protected $fillable = [
         'category_id',
-        'product_id',
+        // 'product_id',
         'form_amount',
         'to_amount',
         'percentage',
@@ -42,8 +42,8 @@ class MonthlyReturnMaster extends Model
         return $this->belongsTo(Category::class, 'category_id');
     }
 
-    public function product()
-    {
-        return $this->belongsTo(Product::class, 'product_id');
-    }
+    // public function product()
+    // {
+    //     return $this->belongsTo(Product::class, 'product_id');
+    // }
 }

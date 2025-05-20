@@ -10,7 +10,7 @@ use App\Models\Product;
 class Create extends Component
 {
     public $category;
-    public $product;
+    // public $product;
     public $form_amount = 0.00;
     public $to_amount = 0.00;
     public $percentage;
@@ -21,7 +21,7 @@ class Create extends Component
 
     protected $rules = [
         'category' => 'required|exists:categories,id',
-        'product' => 'required|exists:products,id',
+        // 'product' => 'required|exists:products,id',
         'form_amount' => 'required|numeric|min:0',
         'to_amount' => 'required|numeric|min:0|gte:form_amount',
         'percentage' => 'nullable|integer|min:0',
@@ -36,10 +36,10 @@ class Create extends Component
     // }
     public function updated($property, $value)
     {
-        if ($property === 'category') {
-            $this->products = Product::where('category_id', $value)->get();
-            $this->reset('product');
-        }
+        // if ($property === 'category') {
+        //     $this->products = Product::where('category_id', $value)->get();
+        //     $this->reset('product');
+        // }
     }
 
     public function save()
@@ -48,7 +48,7 @@ class Create extends Component
 
         MonthlyReturnMaster::create([
             'category_id' => $this->category,
-            'product_id' => $this->product,
+            // 'product_id' => $this->product,
             'form_amount' => $this->form_amount,
             'to_amount' => $this->to_amount,
             'percentage' => $this->percentage,
@@ -65,7 +65,7 @@ class Create extends Component
         $categories = Category::all();
         return view('livewire.master-data.monthly-return.create', [
             'categories' => $categories,
-            'products' => $this->products,
+            // 'products' => $this->products,
         ]);
     }
 }
