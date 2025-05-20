@@ -64,8 +64,10 @@
                                             <th wire:click="sortBy('to_amount')" style="cursor: pointer;">
                                                 To Amount
                                             </th>
-                                            <th>Return %</th>
+                                            <th>Percentage %</th>
+                                            <th>Return Percentage %</th>
                                             <th>Visible</th>
+                                            <th>Created At</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -77,12 +79,14 @@
                                             {{-- <td>{{ $return->product?->title }}</td> --}}
                                             <td>{{ number_format($return->form_amount, 2) }}</td>
                                             <td>{{ number_format($return->to_amount, 2) }}</td>
+                                            <td>{{ $return->percentage }}%</td>
                                             <td>{{ $return->return_persentage }}%</td>
                                             <td>
                                                 <span class="badge badge-{{ $return->is_visible ? 'success' : 'danger' }}">
                                                     {{ $return->is_visible ? 'Yes' : 'No' }}
                                                 </span>
                                             </td>
+                                            <td>{{ format_datetime($return->created_at) }}</td>
                                             <td>
                                                 <a href="{{ route('monthly-return.edit', $return->id) }}" class="btn btn-sm btn-primary">
                                                     Edit
@@ -94,7 +98,7 @@
                                         </tr>
                                         @empty
                                         <tr>
-                                            <td colspan="8" class="text-center">No records found</td>
+                                            <td colspan="9" class="text-center">No records found</td>
                                         </tr>
                                         @endforelse
                                     </tbody>

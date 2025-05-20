@@ -43,6 +43,7 @@
                                         <th>Name</th>
                                         <th>Percentage (%)</th>
                                         <th>Visible</th>
+                                        <th>Created At</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -53,6 +54,7 @@
                                             <td>{{ $bonus->level_name }}</td>
                                             <td>{{ $bonus->level_percentage }}</td>
                                             <td>{{ $bonus->is_visible ? 'Yes' : 'No' }}</td>
+                                            <td>{{ format_datetime($bonus->created_at) }}</td>
                                             <td>
                                                 <a href="{{ route('level-bonus.edit', $bonus->id) }}" class="btn btn-sm btn-info">Edit</a>
                                                 <button class="btn btn-sm btn-danger" wire:click="delete({{ $bonus->id }})"
@@ -61,7 +63,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="5">No records found.</td>
+                                            <td colspan="6" class="text-center">No records found.</td>
                                         </tr>
                                     @endforelse
                                 </tbody>

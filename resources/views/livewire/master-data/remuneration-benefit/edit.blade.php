@@ -2,21 +2,21 @@
     <div class="main">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-lg-8 p-r-0 title-margin-right">
+                <div class="col-lg-4 p-r-0 title-margin-right">
                     <div class="page-header">
                         <div class="page-title">
                             <h1>Remuneration Benefit</h1>
                         </div>
                     </div>
                 </div><!-- /# column -->
-                <div class="col-lg-4 p-l-0 title-margin-left">
+                <div class="col-lg-8 p-l-0 title-margin-left">
                     <div class="page-header">
                         <div class="page-title">
                             <ol class="breadcrumb text-right">
                                 <li><a wire:navigate href="{{ route('dashboard') }}">Dashboard</a></li>
                                 <li><a href="javascript:void(0);">Master Data</a></li>
                                 <li><a wire:navigate href="{{ route('remuneration-benefit.index') }}">Remuneration Benefit</a></li>
-                                <li class="active">Remuneration Benefit</li>
+                                <li class="active">Edit</li>
                             </ol>
                         </div>
                     </div>
@@ -26,7 +26,6 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <h4>Edit Remuneration Benefit</h4>
 
                             @if (session()->has('success'))
                                 <div class="alert alert-success">{{ session('success') }}</div>
