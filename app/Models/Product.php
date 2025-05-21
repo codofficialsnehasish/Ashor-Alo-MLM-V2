@@ -37,9 +37,6 @@ class Product extends Model implements HasMedia
         'meta_title',
         'meta_keyword',
         'meta_description',
-        'is_provide_direct',
-        'is_provide_roi',
-        'is_provide_level',
         'combo_price', // Added for combo products
     ];
 

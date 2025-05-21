@@ -33,10 +33,10 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label class="form-label">Customer</label>
-                                <select class="form-select" wire:model="selectedCustomer">
+                                <select class="form-select js-example-basic-single" wire:model.live="selectedCustomer">
                                     <option value="">-- Choose Customer --</option>
                                     @foreach ($customers as $customer)
-                                        <option value="{{ $customer->id }}">{{ $customer->name }}</option>
+                                        <option value="{{ $customer->id }}">{{ $customer->name }} ({{$customer->getMemberNumberAttribute() }})</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -51,6 +51,15 @@
                                 </select>
                             </div>
                         </div>
+                        @if(!empty($addon_orders))
+                        <div class="d-flex justify-content-center">
+                        @foreach($addon_orders as $order)
+                            <div class="addon-order-item" wire:click="selectAddonOrder({{ $order->id }})" style="cursor: pointer;margin-right: 10px;border: 1px solid #99999961;padding: 5px;">
+                                <b>₹{{ number_format($order->total_amount, 2) }}</b>
+                            </div>
+                        @endforeach
+                            </div>
+                        @else
                         <h5 class="mt-4">Select Products</h5>
                         <table class="table table-bordered">
                             <thead class="table-light">
@@ -65,6 +74,7 @@
                             </thead>
                             <tbody>
                                 @php $index = 1; @endphp
+                                
                                 @foreach($products as $product)
                                     @if($product->product_type == 'simple')
                                         <tr>
@@ -131,12 +141,19 @@
                                 @endforeach
                             </tbody>
                         </table>
+                        @endif
 
                         <div class="card mt-3">
                             <div class="card-body">
                                 <p class="card-text text-end">
                                     <strong>Subtotal:</strong> ₹{{ number_format($subtotal, 2) }}<br>
-                                    <strong>Total:</strong> ₹{{ number_format($total, 2) }}
+                                    <strong>Total:</strong> ₹{{ number_format($total, 2) }}<br>
+                                    @if(empty($addon_orders))
+                                    @if(!empty($last_top_up_amount))
+                                    <strong class="text-success">Last Paid Amount : {{ $last_top_up_amount }}</strong><br>
+                                    <strong class="text-danger">Minimum Required Amount : {{ number_format($last_top_up_amount * 2, 2) }}</strong>
+                                    @endif
+                                    @endif
                                 </p>
                             </div>
                         </div>
@@ -183,3 +200,17 @@
         </div>
     </div>
 </div>
+@script()
+<script>
+    $(document).ready(function() {
+        $('.js-example-basic-single').select2();
+
+        $('.js-example-basic-single').on('change', function(e) {
+            let data = $(this).val();
+            // console.log(data)
+            $wire.set('selectedCustomer', data)
+            $wire.selectedCustomer = data;
+        });
+    });
+</script>
+@endscript

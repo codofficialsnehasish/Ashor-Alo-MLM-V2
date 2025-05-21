@@ -20,6 +20,7 @@ class TopUp extends Model
         'is_provide_direct',
         'is_provide_roi',
         'is_provide_level',
+        'is_show_on_business',
         'start_date',
         'end_date',
         'total_amount',
@@ -58,6 +59,11 @@ class TopUp extends Model
     public function addOnAgainstOrder()
     {
         return $this->belongsTo(Order::class, 'add_on_against_order_id');
+    }
+
+    public function addonChildren()
+    {
+        return $this->hasMany(TopUp::class, 'add_on_against_order_id');
     }
 
     public function getActivitylogOptions(): LogOptions

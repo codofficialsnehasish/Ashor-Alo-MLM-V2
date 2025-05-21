@@ -16,7 +16,7 @@ class Create extends Component
     public $title, $slug, $sku, $category_id, $price = 0, $discount_rate, $no_discount = false, $discounted_price;
     public $gst_rate, $gst_amount, $stock = 0, $is_visible = 1, $is_bestseller = 0;
     public $short_desc, $description, $meta_title, $meta_keyword, $meta_description;
-    public $is_provide_direct = 0, $is_provide_roi = 0, $is_provide_level = 0;
+    // public $is_provide_direct = 0, $is_provide_roi = 0, $is_provide_level = 0;
     public $image;
     public $total_price = 0;
 
@@ -217,9 +217,9 @@ class Create extends Component
             'meta_title' => $this->meta_title,
             'meta_keyword' => $this->meta_keyword,
             'meta_description' => $this->meta_description,
-            'is_provide_direct' => $this->is_provide_direct,
-            'is_provide_roi' => $this->is_provide_roi,
-            'is_provide_level' => $this->is_provide_level,
+            // 'is_provide_direct' => $this->is_provide_direct,
+            // 'is_provide_roi' => $this->is_provide_roi,
+            // 'is_provide_level' => $this->is_provide_level,
         ]);
 
         // Handle variations for variable products

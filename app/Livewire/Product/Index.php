@@ -19,7 +19,6 @@ class Index extends Component
     public function delete($id)
     {
         Product::findOrFail($id)->delete();
-        $this->mount(); // Reload the list
         $this->dispatch('toastMessage', json_encode([
             'type'=>'success',
             'message' => 'Product deleted successfully.'

@@ -60,7 +60,7 @@
                                         <th>Log Name</th>
                                         <th>Description</th>
                                         <th>User</th>
-                                        <th>Properties</th>
+                                        {{-- <th>Properties</th> --}}
                                         <th>Date</th>
                                     </tr>
                                 </thead>
@@ -78,7 +78,7 @@
                                             <td>{{ ucwords(str_replace('-', ' ', $log->log_name)) }}</td>
                                             <td>{{ $log->description }}</td>
                                             <td>{{ $log->causer ? $log->causer->name : 'System' }}</td>
-                                            <td><pre>{{ json_encode($log->properties, JSON_PRETTY_PRINT) }}</pre></td>
+                                            {{-- <td><pre>{{ json_encode($log->properties, JSON_PRETTY_PRINT) }}</pre></td> --}}
                                             <td>{{ format_datetime($log->created_at) }}</td>
                                         </tr>
                                     @endforeach

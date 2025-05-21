@@ -59,6 +59,10 @@ use App\Livewire\Product\Edit;
 use App\Livewire\Order\AddOrder;
 use App\Livewire\Order\OrderList;
 
+use App\Livewire\Report\{
+    IdActivationReport,
+};
+
 
 use Illuminate\Support\Facades\Route;
 

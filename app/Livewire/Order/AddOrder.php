@@ -11,6 +11,7 @@ use App\Models\ComboItem;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\TopUp;
+use App\Models\MlmSetting;
 use App\Models\MonthlyReturnMaster;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
@@ -34,6 +35,11 @@ class AddOrder extends Component
     public $subtotal = 0;
     public $total = 0;
 
+    public $last_top_up_amount = 0.00;
+    public $addon_orders;
+    public $selectedAddonOrder = null;
+    public $selectedAddonOrder_id = null;
+
     public function mount()
     {
         // $this->customers = User::all();
@@ -44,10 +50,44 @@ class AddOrder extends Component
         $this->categories = Category::where('is_visible',1)->get();
     }
 
+    public function selectAddonOrder($orderId)
+    {
+        $this->selectedAddonOrder = TopUp::find($orderId);
+        $add_on_percentage = optional(MlmSetting::first())->add_on_percentage ?? 0;
+        // Calculate subtotal and total based on the selected order
+        $this->subtotal = optional($this->selectedAddonOrder)->total_amount ? $this->selectedAddonOrder->total_amount * ($add_on_percentage / 100) : 0;
+
+        $this->total = $this->subtotal;
+        $this->selectedAddonOrder_id = $this->selectedAddonOrder->order_id;
+    }
+
     public function updated($property, $value)
     {
         // dd($property);
+        if($property === 'selectedCustomer'){
+            
+            $this->last_top_up_amount = TopUp::where('user_id',$value)->whereNull('add_on_against_order_id')->latest()->value('total_amount');
+            $this->selectedCustomer = $value;
+            // dd($this->addonable_orders); 
+        }
         if ($property === 'category') {
+            $category = Category::find($value);
+            if($category->is_provide_roi ==1 && ($category->is_provide_direct == 0 && $category->is_provide_level == 0 && $category->is_show_on_business == 0)){
+                $this->addon_orders = TopUp::where('user_id', $this->selectedCustomer)
+                                            ->whereNull('add_on_against_order_id') // Not an addon
+                                            ->whereHas('order', function ($query) {
+                                                $query->where('status', '!=', 1);
+                                            })
+                                            ->whereNotIn('order_id', function($query) {
+                                                $query->select('add_on_against_order_id')
+                                                    ->from('top_ups')
+                                                    ->whereNotNull('add_on_against_order_id');
+                                            })
+                                            ->with('order')
+                                            ->get();
+            }else{
+                $this->addon_orders = null;
+            }
             $this->loadProducts();
         }
 
@@ -246,6 +286,7 @@ class AddOrder extends Component
             $orderItemData['total_price'] = ($orderItemData['product_unit_price'] * $qty) + $orderItemData['product_gst'];
 
             OrderItem::create($orderItemData);
+            $this->selectedAddonOrder_id = null;
         }
 
         $this->make_id_green($this->category, $order->id, $this->selectedCustomer, $this->total, now());
@@ -266,13 +307,6 @@ class AddOrder extends Component
                         ->where('category_id',$category)
                         ->first();
 
-        // $product = get_products_by_order_id($order_id,'addon');
-        // print_r($product); die;
-
-        // $percentage = DB::table('monthly_returns')->where('form_amount', '<=', $total_amount)
-        // ->where('to_amount', '>=', $total_amount)
-        // ->where('category',$category)
-        // ->first();
         $data_array = [];
         if (!empty($percentage->percentage)) {
             // Calculate monthly installment and total months
@@ -305,30 +339,6 @@ class AddOrder extends Component
             $data_array['start_date'] = $start_date->toDateString();
             $data_array['end_date_of_completion'] = $end_date->toDateString();
             
-            // for add on product, not provide direct bonus
-            // $data_array['is_provide_direct'] = $category == 10? 0 : 1; 
-            // for add on product, not provide direct bonus
-            // if($product->is_addon == 1){
-            //     $data_array['is_provide_direct'] = 0; 
-            // }else{
-            //     $data_array['is_provide_direct'] = 1; 
-            // }
-
-            // if($product->is_dilse == 1){
-            //     $data_array['is_personal_business'] = 1;
-            //     $data_array['is_provide_direct'] = 0; 
-            // }else{
-            //     $data_array['is_personal_business'] = 0;
-            // }
-
-            // if($product->is_special_product == 1){
-            //     $data_array['is_special_business'] = 1;
-            //     $data_array['is_personal_business'] = 0;
-            //     $data_array['is_provide_direct'] = 0; 
-            // }else{
-            //     $data_array['is_special_business'] = 0;
-            // }
-            
             return $data_array;
         }else{
             return array();
@@ -354,14 +364,14 @@ class AddOrder extends Component
         $total_acumulation = $this->get_accumulation_business($user_id, $category);
 
         $ROI = $this->calculate_ROI($total_amount, $category, $order_id, $total_acumulation);
-        // print_r($ROI);die;
-        // dd($ROI);
         
         if(!empty($ROI)){
+            $category = Category::find($category);
             $top_up = new TopUp();
             $top_up->entry_by = Auth::user()->name.'('.get_role(Auth::id()).')';
             $top_up->user_id = $user_id;
             $top_up->order_id = $order_id;
+            $top_up->add_on_against_order_id = $this->selectedAddonOrder_id;
             $top_up->start_date = $date;
             $top_up->end_date = $ROI['end_date_of_completion'];
             $top_up->total_amount = $total_amount;
@@ -372,9 +382,10 @@ class AddOrder extends Component
             $top_up->installment_amount_per_month = $ROI['installment_amount_per_month'];
             $top_up->installment_amount_per_day = $ROI['installment_amount_per_day'];
             $top_up->total_installment_days = $ROI['total_installment_days'];
-            // $top_up->is_provide_direct = $ROI['is_provide_direct'];
-            // $top_up->is_personal_business = $ROI['is_personal_business'];
-            // $top_up->is_special_business = $ROI['is_special_business'];
+            $top_up->is_provide_direct = $category->is_provide_direct;
+            $top_up->is_provide_roi = $category->is_provide_roi;
+            $top_up->is_provide_level = $category->is_provide_level;
+            $top_up->is_show_on_business = $category->is_show_on_business;
             $top_up->save();
     
             $custo = User::find($user_id);

@@ -19,6 +19,7 @@ class CategoryManager extends Component
 
     public $parentcategories;
     public $categoryId, $name, $description, $parent_id, $is_visible = 1;
+    public $is_provide_direct = 0, $is_provide_roi = 0, $is_provide_level = 0, $is_show_on_business = 0;
     public $isEdit = false;
     public $search = '';
 
@@ -32,13 +33,13 @@ class CategoryManager extends Component
         }
 
         return view('livewire.category-manager', [
-            'categories' => $query->paginate(10)
+            'categories' => $query->orderBy('id','desc')->paginate(10)
         ]);
     }
 
     public function resetForm()
     {
-        $this->reset(['categoryId', 'name', 'description', 'parent_id', 'is_visible', 'isEdit']);
+        $this->reset(['categoryId', 'name', 'description', 'parent_id', 'is_visible', 'is_provide_direct', 'is_provide_roi', 'is_provide_level', 'is_show_on_business', 'isEdit']);
         $this->is_visible = true;
     }
 
@@ -48,12 +49,19 @@ class CategoryManager extends Component
             'name' => 'required|unique:categories,name',
             'description' => 'nullable',
             'parent_id' => 'nullable|exists:categories,id',
-            'is_visible' => 'integer',
+            // 'is_visible' => 'integer',
+            // 'is_provide_direct' => 'integer',
+            // 'is_provide_roi' => 'integer',
+            // 'is_provide_level' => 'integer',
+            // 'is_show_on_business' => 'integer',
         ]);
 
-        Category::create($this->only(['name', 'description', 'parent_id', 'is_visible']));
+        Category::create($this->only(['name', 'description', 'parent_id', 'is_visible', 'is_provide_direct', 'is_provide_roi', 'is_provide_level', 'is_show_on_business']));
 
-        session()->flash('success', 'Category created successfully.');
+        $this->dispatch('toastMessage', json_encode([
+            'type'=>'success',
+            'message' => 'Category created successfully.'
+        ]));
         $this->resetForm();
     }
 
@@ -65,6 +73,10 @@ class CategoryManager extends Component
         $this->description = $category->description;
         $this->parent_id = $category->parent_id;
         $this->is_visible = $category->is_visible;
+        $this->is_provide_direct = (bool) $category->is_provide_direct;
+        $this->is_provide_roi = (bool) $category->is_provide_roi;
+        $this->is_provide_level = (bool) $category->is_provide_level;
+        $this->is_show_on_business = (bool) $category->is_show_on_business;
         $this->isEdit = true;
     }
 
@@ -74,11 +86,11 @@ class CategoryManager extends Component
             'name' => ['required', Rule::unique('categories', 'name')->ignore($this->categoryId)],
             'description' => 'nullable',
             'parent_id' => 'nullable|exists:categories,id',
-            'is_visible' => 'integer',
+            // 'is_visible' => 'integer',
         ]);
 
         $category = Category::findOrFail($this->categoryId);
-        $category->update($this->only(['name', 'description', 'parent_id', 'is_visible']));
+        $category->update($this->only(['name', 'description', 'parent_id', 'is_visible', 'is_provide_direct', 'is_provide_roi', 'is_provide_level', 'is_show_on_business']));
 
         session()->flash('success', 'Category updated successfully.');
         $this->resetForm();

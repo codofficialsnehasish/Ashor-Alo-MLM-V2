@@ -63,6 +63,22 @@
                                             <label class="form-check-label" for="isVisible">Visible</label>
                                         </div>
                                     </div>
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input" type="checkbox" wire:model="is_provide_direct" id="is_provide_direct">
+                                        <label class="form-check-label" for="is_provide_direct">Provide Direct</label>
+                                    </div>
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input" type="checkbox" wire:model="is_provide_roi" id="is_provide_roi">
+                                        <label class="form-check-label" for="is_provide_roi">Provide ROI</label>
+                                    </div>
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input" type="checkbox" wire:model="is_provide_level" id="is_provide_level">
+                                        <label class="form-check-label" for="is_provide_level">Provide Level</label>
+                                    </div>
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input" type="checkbox" wire:model="is_show_on_business" id="is_show_on_business">
+                                        <label class="form-check-label" for="is_show_on_business">Is Show On Business</label>
+                                    </div>
 
                                     <!-- Submit Buttons -->
                                     <div class="col-md-1 d-flex align-items-center mt-3">
@@ -104,6 +120,10 @@
                                             <th scope="col" class="px-4 py-2">Name</th>
                                             <th scope="col" class="px-4 py-2">Parent</th>
                                             <th scope="col" class="px-4 py-2">Visible</th>
+                                            <th scope="col" class="px-4 py-2">Provide Direct</th>
+                                            <th scope="col" class="px-4 py-2">Provide ROI</th>
+                                            <th scope="col" class="px-4 py-2">Provide Level</th>
+                                            <th scope="col" class="px-4 py-2">Is Show On Business</th>
                                             <th scope="col" class="px-4 py-2">Actions</th>
                                         </tr>
                                     </thead>
@@ -115,6 +135,26 @@
                                                 <td class="px-4 py-2">
                                                     <span class="{{ $cat->is_visible ? 'text-success' : 'text-danger' }}">
                                                         {{ $cat->is_visible ? 'Yes' : 'No' }}
+                                                    </span>
+                                                </td>
+                                                <td class="px-4 py-2">
+                                                    <span class="{{ $cat->is_provide_direct ? 'text-success' : 'text-danger' }}">
+                                                        {{ $cat->is_provide_direct ? 'Yes' : 'No' }}
+                                                    </span>
+                                                </td>
+                                                <td class="px-4 py-2">
+                                                    <span class="{{ $cat->is_provide_roi ? 'text-success' : 'text-danger' }}">
+                                                        {{ $cat->is_provide_roi ? 'Yes' : 'No' }}
+                                                    </span>
+                                                </td>
+                                                <td class="px-4 py-2">
+                                                    <span class="{{ $cat->is_provide_level ? 'text-success' : 'text-danger' }}">
+                                                        {{ $cat->is_provide_level ? 'Yes' : 'No' }}
+                                                    </span>
+                                                </td>
+                                                <td class="px-4 py-2">
+                                                    <span class="{{ $cat->is_show_on_business ? 'text-success' : 'text-danger' }}">
+                                                        {{ $cat->is_show_on_business ? 'Yes' : 'No' }}
                                                     </span>
                                                 </td>
                                                 <td class="px-4 py-2">

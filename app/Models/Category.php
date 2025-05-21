@@ -25,6 +25,10 @@ class Category extends Model
         'description',
         'parent_id',
         'is_visible',
+        'is_provide_direct',
+        'is_provide_roi',
+        'is_provide_level',
+        'is_show_on_business',
     ];
 
     /**

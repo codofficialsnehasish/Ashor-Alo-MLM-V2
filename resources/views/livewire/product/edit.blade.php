@@ -282,12 +282,12 @@
                                     Publish
                                 </div>
                                 <div class="card-body">
-                                    @foreach (['is_provide_direct' => 'Provide Direct', 'is_provide_roi' => 'Provide ROI', 'is_provide_level' => 'Provide Level', 'is_visible' => 'Visible', 'is_bestseller' => 'Bestseller'] as $field => $label)
+                                    {{-- @foreach (['is_provide_direct' => 'Provide Direct', 'is_provide_roi' => 'Provide ROI', 'is_provide_level' => 'Provide Level', 'is_visible' => 'Visible', 'is_bestseller' => 'Bestseller'] as $field => $label)
                                         <div class="form-check form-switch mb-2">
                                             <input class="form-check-input" type="checkbox" wire:model="{{ $field }}" id="{{ $field }}" @checked(${$field})>
                                             <label class="form-check-label" for="{{ $field }}">{{ $label }}</label>
                                         </div>
-                                    @endforeach
+                                    @endforeach --}}
                                     <div class="mb-0">
                                         <button type="submit" class="btn btn-primary waves-effect waves-light me-1">
                                             Update Product

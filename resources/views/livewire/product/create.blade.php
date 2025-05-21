@@ -282,7 +282,7 @@
                                     Publish
                                 </div>
                                 <div class="card-body">
-                                    <div class="form-check form-switch mb-2">
+                                    {{-- <div class="form-check form-switch mb-2">
                                         <input class="form-check-input" type="checkbox" wire:model="is_provide_direct" id="is_provide_direct">
                                         <label class="form-check-label" for="is_provide_direct">Provide Direct</label>
                                     </div>
@@ -293,7 +293,7 @@
                                     <div class="form-check form-switch mb-2">
                                         <input class="form-check-input" type="checkbox" wire:model="is_provide_level" id="is_provide_level">
                                         <label class="form-check-label" for="is_provide_level">Provide Level</label>
-                                    </div>
+                                    </div> --}}
                                     <div class="form-check form-switch mb-2">
                                         <input class="form-check-input" type="checkbox" wire:model="is_visible" id="is_visible">
                                         <label class="form-check-label" for="is_visible">Visible</label>
