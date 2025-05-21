@@ -28,5 +28,10 @@ class RemunerationBenefitMaster extends Model
             ->dontSubmitEmptyLogs()
             ->useLogName('remuneration-benefit-master');
     }
+
+    public function salaryBonuses()
+    {
+        return $this->hasMany(SalaryBonus::class);
+    }
 }
  

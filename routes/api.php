@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\{
     BinaryTreeApiController,
     UserDashboardAPI,
     ReportAPIController,
+    PayoutApiController,
 };
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -56,4 +57,9 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::get('/level-view', [BinaryTreeApiController::class, 'getTreeLevels']);
 
     Route::post('/topup-report', [ReportAPIController::class, 'topup_report']);
+    Route::get('/remuneration-report', [ReportAPIController::class, 'remuneration_report']);
+
+    Route::get('/payouts', [PayoutApiController::class, 'all_payouts']);
+    Route::get('/payout-details/{id}', [PayoutApiController::class, 'payout_details']);
+    Route::get('/payout-history', [PayoutApiController::class, 'payout_history']);
 });

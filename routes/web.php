@@ -30,7 +30,8 @@ use App\Livewire\Leaders\{
 };
 
 use App\Http\Controllers\Api\{
-    Documents
+    Documents,
+    PayoutApiController,
 };
 
 use App\Livewire\MasterData\LevelBonus\Index as LevelBonusIndex;
@@ -148,5 +149,6 @@ Route::middleware(['auth'])->group(function () {
 
 Route::get("/web/welcome-letter/{user_id}",[Documents::class,"welcome_letter_view"])->name('my-documents.welcome-letter.view');
 Route::get("/web/id-card/{user_id}",[Documents::class,"id_card_view"])->name('my-documents.id-card.view');
-
+Route::get('payout/payout-statement/{id}',[PayoutApiController::class,'payout_statement_app'])->name('payout.payout-statement.app');
 require __DIR__.'/auth.php';
+require __DIR__.'/mlm_daily.php';

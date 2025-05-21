@@ -105,6 +105,11 @@ class User extends Authenticatable implements HasMedia
         return $this->hasOne(BinaryTree::class, 'user_id');
     }
 
+    public function getSponsorAttribute()
+    {
+        return $this->binaryTreeNode->sponsor;
+    }
+
     public function kyc()
     {
         return $this->hasOne(Kyc::class);
@@ -158,6 +163,31 @@ class User extends Authenticatable implements HasMedia
     public function generatedAgainstTransactions()
     {
         return $this->hasMany(AccountTransaction::class, 'generated_against_user_id');
+    }
+
+    public function payouts()
+    {
+        return $this->hasMany(Payout::class);
+    }
+
+    public function tdsAccounts()
+    {
+        return $this->hasMany(TDSAccount::class);
+    }
+
+    public function serviceChargeAccounts()
+    {
+        return $this->hasMany(ServiceChargeAccount::class);
+    }
+
+    public function repurchaseAccounts()
+    {
+        return $this->hasMany(RepurchaseAccount::class);
+    }
+
+    public function salaryBonuses()
+    {
+        return $this->hasMany(SalaryBonus::class);
     }
 
 }

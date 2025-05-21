@@ -108,9 +108,9 @@
                                                     {{ $order->order_status }}
                                                 </span>
                                             </td>
-                                            <td>
+                                            <td class="d-flex">
                                                 <a href="{{ route('orders.print', $order->id) }}" 
-                                                class="btn btn-sm btn-primary" title="View">
+                                                class="btn btn-sm btn-primary me-2" title="View">
                                                     <i class="ti-eye"></i>
                                                 </a>
                                                 <a wire:click="delete({{ $order->id }})" 
