@@ -150,4 +150,14 @@ class User extends Authenticatable implements HasMedia
         return $this->belongsTo(Media::class, 'profile_image_id');
     }
 
+    public function accountTransactions()
+    {
+        return $this->hasMany(AccountTransaction::class);
+    }
+
+    public function generatedAgainstTransactions()
+    {
+        return $this->hasMany(AccountTransaction::class, 'generated_against_user_id');
+    }
+
 }

@@ -79,7 +79,7 @@
                                             <td>{{ $log->description }}</td>
                                             <td>{{ $log->causer ? $log->causer->name : 'System' }}</td>
                                             {{-- <td><pre>{{ json_encode($log->properties, JSON_PRETTY_PRINT) }}</pre></td> --}}
-                                            <td>{{ format_datetime($log->created_at) }}</td>
+                                            <td class="text-start">{{ format_datetime($log->created_at) }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>

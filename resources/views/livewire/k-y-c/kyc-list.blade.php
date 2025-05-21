@@ -82,7 +82,7 @@
                                             </td>
                                             <td>{{ $kyc->created_at->format('d M Y') }}</td>
                                             <td>
-                                                <a href="{{ route('kyc.details', $kyc) }}" class="btn btn-sm btn-info">Details</a>
+                                                <a href="{{ route('kyc.details', $kyc) }}" class="btn btn-sm btn-info" style="font-size: 1rem;">Details</a>
                                                 @if($kyc->activities->count())
                                                 <button 
                                                     wire:click="showActivity({{ $kyc->id }})"

@@ -59,40 +59,55 @@
                                 <table class="table table-bordered table-hover">
                                     <thead class="thead-light">
                                         <tr>
-                                            <th wire:click="sortBy('order_number')" style="cursor: pointer;">
-                                                Order #
-                                            </th>
                                             <th wire:click="sortBy('created_at')" style="cursor: pointer;">
                                                 Date
                                             </th>
+                                            <th wire:click="sortBy('order_number')" style="cursor: pointer;">
+                                                Order ID #
+                                            </th>
                                             <th>Customer</th>
+                                            <th>Customer ID</th>
+                                            <th>Category</th>
                                             <th wire:click="sortBy('price_total')" style="cursor: pointer;">
                                                 Amount
                                             </th>
-                                            <th wire:click="sortBy('payment_status')" style="cursor: pointer;">
-                                                Status
-                                            </th>
                                             <th>Payment Method</th>
+                                            <th wire:click="sortBy('payment_status')" style="cursor: pointer;">
+                                                Payment Status
+                                            </th>
+                                            <th>Order Status</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @forelse($orders as $order)
                                         <tr>
+                                            <td>{{ format_datetime($order->created_at) }}</td>
                                             <td>{{ $order->order_number }}</td>
-                                            <td>{{ $order->created_at->format('d/m/Y H:i') }}</td>
                                             <td>{{ $order->user->name }}</td>
+                                            <td>{{ $order->user->getMemberNumberAttribute() }}</td>
+                                            <td>{{ $order->category->name }}</td>
                                             <td>{{ number_format($order->price_total, 2) }}</td>
+                                            <td>{{ $order->payment_method }}</td>
                                             <td>
                                                 <span class="badge 
-                                                    @if($order->payment_status === 'paid') badge-success
-                                                    @elseif($order->payment_status === 'pending') badge-warning
-                                                    @else badge-danger
+                                                    @if($order->payment_status === 'Paid') badge-success
+                                                    @elseif($order->payment_status === 'Awaiting Payment') badge-warning
+                                                    @elseif($order->payment_status === 'Under Checking') badge-danger
                                                     @endif">
-                                                    {{ ucfirst($order->payment_status) }}
+                                                    {{ $order->payment_status }}
                                                 </span>
                                             </td>
-                                            <td>{{ ucfirst($order->payment_method) }}</td>
+                                            <td>
+                                                <span class="badge 
+                                                    @if($order->order_status === 'Order Placed') badge-info
+                                                    @elseif($order->order_status === 'Order Procesing') badge-warning
+                                                    @elseif($order->order_status === 'Order Shipped') badge-danger
+                                                    @elseif($order->order_status === 'Order Completed') badge-success
+                                                    @endif">
+                                                    {{ $order->order_status }}
+                                                </span>
+                                            </td>
                                             <td>
                                                 <a href="{{ route('orders.print', $order->id) }}" 
                                                 class="btn btn-sm btn-primary" title="View">

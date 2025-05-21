@@ -54,7 +54,7 @@
                         @if(!empty($addon_orders))
                         <div class="d-flex justify-content-center">
                         @foreach($addon_orders as $order)
-                            <div class="addon-order-item" wire:click="selectAddonOrder({{ $order->id }})" style="cursor: pointer;margin-right: 10px;border: 1px solid #99999961;padding: 5px;">
+                            <div class="addon-order-item" wire:click="selectAddonOrder({{ $order->id }})" style="cursor: pointer;margin-right: 10px;border: 1px solid #99999961;padding: 5px;border-radius: 7px;">
                                 <b>₹{{ number_format($order->total_amount, 2) }}</b>
                             </div>
                         @endforeach

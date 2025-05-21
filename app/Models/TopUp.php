@@ -74,4 +74,9 @@ class TopUp extends Model
             ->dontSubmitEmptyLogs()
             ->useLogName('top-up');
     }
+
+    public function transactions()
+    {
+        return $this->hasMany(AccountTransaction::class);
+    }
 }

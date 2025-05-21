@@ -87,8 +87,8 @@
                                                 </span>
                                             </td>
                                             <td>{{ format_datetime($return->created_at) }}</td>
-                                            <td>
-                                                <a href="{{ route('monthly-return.edit', $return->id) }}" class="btn btn-sm btn-primary">
+                                            <td class="d-flex">
+                                                <a href="{{ route('monthly-return.edit', $return->id) }}" class="btn btn-sm btn-primary me-2">
                                                     Edit
                                                 </a>
                                                 <button wire:click="delete({{ $return->id }})" class="btn btn-sm btn-danger" onclick="confirm('Are you sure?') || event.stopImmediatePropagation()">

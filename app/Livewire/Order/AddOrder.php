@@ -11,6 +11,8 @@ use App\Models\ComboItem;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\TopUp;
+use App\Models\AccountTransaction;
+
 use App\Models\MlmSetting;
 use App\Models\MonthlyReturnMaster;
 use Illuminate\Support\Str;
@@ -36,7 +38,7 @@ class AddOrder extends Component
     public $total = 0;
 
     public $last_top_up_amount = 0.00;
-    public $addon_orders;
+    public $addon_orders = null;
     public $selectedAddonOrder = null;
     public $selectedAddonOrder_id = null;
 
@@ -72,21 +74,23 @@ class AddOrder extends Component
         }
         if ($property === 'category') {
             $category = Category::find($value);
-            if($category->is_provide_roi ==1 && ($category->is_provide_direct == 0 && $category->is_provide_level == 0 && $category->is_show_on_business == 0)){
-                $this->addon_orders = TopUp::where('user_id', $this->selectedCustomer)
-                                            ->whereNull('add_on_against_order_id') // Not an addon
-                                            ->whereHas('order', function ($query) {
-                                                $query->where('status', '!=', 1);
-                                            })
-                                            ->whereNotIn('order_id', function($query) {
-                                                $query->select('add_on_against_order_id')
-                                                    ->from('top_ups')
-                                                    ->whereNotNull('add_on_against_order_id');
-                                            })
-                                            ->with('order')
-                                            ->get();
-            }else{
-                $this->addon_orders = null;
+            if($category){
+                if($category->is_provide_roi ==1 && ($category->is_provide_direct == 0 && $category->is_provide_level == 0 && $category->is_show_on_business == 0)){
+                    $this->addon_orders = TopUp::where('user_id', $this->selectedCustomer)
+                                                ->whereNull('add_on_against_order_id') // Not an addon
+                                                ->whereHas('order', function ($query) {
+                                                    $query->where('status', '!=', 1);
+                                                })
+                                                ->whereNotIn('order_id', function($query) {
+                                                    $query->select('add_on_against_order_id')
+                                                        ->from('top_ups')
+                                                        ->whereNotNull('add_on_against_order_id');
+                                                })
+                                                ->with('order')
+                                                ->get();
+                }else{
+                    $this->addon_orders = null;
+                }
             }
             $this->loadProducts();
         }
@@ -401,14 +405,13 @@ class AddOrder extends Component
 
                 $binaryNode->update(); // returns true or false
     
-                //joining amount transaction
-                // $transactionAdded = $this->transaction->make_transaction(
-                //     $user_id,
-                //     $total_amount,
-                //     'Joining Amount',
-                //     1
-                // );
-
+                $transaction = AccountTransaction::create([
+                    'user_id' => $user_id,
+                    'amount' => $total_amount,
+                    'which_for' => 'Joining Amount',
+                    'status' => 1,
+                    'topup_id' => $top_up->id,
+                ]);
             }
         }else{
             if($total_amount == 0 || $total_amount == 1){

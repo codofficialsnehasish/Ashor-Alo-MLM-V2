@@ -22,16 +22,18 @@
     }
     
     .receipt-header-container {
-        display: flex;
-        align-items: stretch;
+        /*display: flex;*/
+        /*align-items: stretch;*/
         min-height: 180px;
+        width: 650px;
     }
     
     .order-info-section, .customer-info-section {
         padding: 25px;
-        flex: 1;
-        display: flex;
-        flex-direction: column;
+        /*flex: 1;*/
+        /*display: flex;*/
+        /*flex-direction: column;*/
+        float: left;
     }
     
     .vertical-divider {
@@ -140,10 +142,10 @@
         .receipt-container {
             display: flex;
             width: 100%;
-            gap: 20px;
+            /*gap: 20px;*/
         }
         .receipt-copy {
-            width: 48%;
+            width: 50%;
             border: 1px dashed #ccc;
             padding: 15px;
             box-sizing: border-box;
@@ -238,7 +240,7 @@
                     </div>
                     
                     <!-- Vertical Divider -->
-                    <div class="vertical-divider"></div>
+                    <!--<div class="vertical-divider"></div>-->
                     
                     <!-- Right Side - Customer Information -->
                     <div class="customer-info-section">
@@ -343,7 +345,7 @@
                     </div>
                     
                     <!-- Vertical Divider -->
-                    <div class="vertical-divider"></div>
+                    <!--<div class="vertical-divider"></div>-->
                     
                     <!-- Right Side - Customer Information -->
                     <div class="customer-info-section">

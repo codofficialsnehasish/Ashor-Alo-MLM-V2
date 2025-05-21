@@ -63,21 +63,29 @@
                                             <label class="form-check-label" for="isVisible">Visible</label>
                                         </div>
                                     </div>
+                                    <div class="col-md-3">
                                     <div class="form-check form-switch mb-2">
                                         <input class="form-check-input" type="checkbox" wire:model="is_provide_direct" id="is_provide_direct">
                                         <label class="form-check-label" for="is_provide_direct">Provide Direct</label>
                                     </div>
+                                    </div>
+                                      <div class="col-md-3">
                                     <div class="form-check form-switch mb-2">
                                         <input class="form-check-input" type="checkbox" wire:model="is_provide_roi" id="is_provide_roi">
                                         <label class="form-check-label" for="is_provide_roi">Provide ROI</label>
                                     </div>
+                                    </div>
+                                      <div class="col-md-3">
                                     <div class="form-check form-switch mb-2">
                                         <input class="form-check-input" type="checkbox" wire:model="is_provide_level" id="is_provide_level">
                                         <label class="form-check-label" for="is_provide_level">Provide Level</label>
                                     </div>
+                                    </div>
+                                      <div class="col-md-3">
                                     <div class="form-check form-switch mb-2">
                                         <input class="form-check-input" type="checkbox" wire:model="is_show_on_business" id="is_show_on_business">
                                         <label class="form-check-label" for="is_show_on_business">Is Show On Business</label>
+                                    </div>
                                     </div>
 
                                     <!-- Submit Buttons -->
@@ -157,7 +165,7 @@
                                                         {{ $cat->is_show_on_business ? 'Yes' : 'No' }}
                                                     </span>
                                                 </td>
-                                                <td class="px-4 py-2">
+                                                <td class="px-4 py-2 d-flex">
                                                     <button wire:click="edit({{ $cat->id }})" class="btn btn-outline-success btn-sm">Edit</button>
                                                     <button wire:click="delete({{ $cat->id }})" onclick="return confirm('Are you sure?')"
                                                         class="btn btn-outline-danger btn-sm ms-2">Delete</button>
