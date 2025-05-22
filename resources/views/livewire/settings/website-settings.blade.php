@@ -87,7 +87,7 @@
                                                             </div>
                                                         @endif
                                                         
-                                                        <input class="form-control" type="file" wire:model="logo" accept="image/*">
+                                                        <input class="form-control" type="file" wire:model="logo">
                                                         @error('logo') <span class="text-danger">{{ $message }}</span> @enderror
                                                         <div class="form-text">Recommended size: 200x50 pixels</div>
                                                     </div>
@@ -102,7 +102,7 @@
                                                             </div>
                                                         @endif
                                                         
-                                                        <input class="form-control" type="file" wire:model="favicon" accept="image/*">
+                                                        <input class="form-control" type="file" wire:model="favicon">
                                                         @error('favicon') <span class="text-danger">{{ $message }}</span> @enderror
                                                         <div class="form-text">Recommended size: 32x32 pixels</div>
                                                     </div>
