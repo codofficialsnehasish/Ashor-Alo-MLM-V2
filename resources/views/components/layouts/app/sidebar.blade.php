@@ -124,6 +124,12 @@
                     </a>
                 </li>
 
+                <li class="">
+                    <a wire:navigate href="{{ route('notice-board') }}"> 
+                        <i class="ti-announcement"></i> Notice Board
+                    </a>
+                </li>
+
                 
                 {{-- <li>
                     <a href="{{ route('logout') }}"

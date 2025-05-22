@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\{
     ContactUsApiController,
     WebsiteApiController,
     ProductsApiController,
+    NoticeApiController,
 };
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -79,3 +80,5 @@ Route::get('/terms-and-conditions', [WebsiteApiController::class, 'terms_and_con
 
 Route::get('products', [ProductsApiController::class, 'index']);
 Route::get('products/{id}', [ProductsApiController::class, 'show']);
+
+Route::get('/notices', [NoticeApiController::class, 'index']);

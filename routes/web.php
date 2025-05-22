@@ -11,6 +11,7 @@ use App\Livewire\Settings\{
 };
 
 use App\Livewire\Dashboard;
+use App\Livewire\NoticeBoard;
 
 use App\Livewire\RolesPermission\{
     AsignPermission,
@@ -92,6 +93,7 @@ Route::get('/', function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
+    
     Route::redirect('settings', 'settings/profile');
 
     Route::get('settings/profile', Profile::class)->name('settings.profile');
@@ -167,6 +169,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/certificates/{certificate}/edit', CertificatesForm::class)->name('certificates.edit');
 
     Route::get('/contact-us-list', ContactUsList::class)->name('ContactUsList.index');
+
+    Route::get('/notice-board', NoticeBoard::class)->name('notice-board');
 
 });
 
