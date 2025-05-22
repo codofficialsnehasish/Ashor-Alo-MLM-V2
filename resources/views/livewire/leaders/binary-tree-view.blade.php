@@ -26,10 +26,10 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-body table-responsive" style="/*display:flex;justify-content:center;*/">       
-                                <div class="d-flex justify-content-between align-items-center">
+                                {{-- <div class="d-flex justify-content-between align-items-center">
                                     <!-- Search Form -->
                                     <div>
-                                        <form action="https://ashoralo.in/admin/reports/tree-wise" method="get" class="d-flex" id="search-form">
+                                        <form action="" method="get" class="d-flex" id="search-form">
                                             <input type="search" id="search-query" class="form-control form-control-sm me-2" placeholder="Search by name or ID" name="query" aria-controls="datatable-buttons" minlength="3" autocomplete="off">
                                         </form>
                                         
@@ -37,15 +37,8 @@
                                         <div id="suggestions" class="list-group position-absolute" style="display: none; z-index: 999;"></div>
                                         
                                     </div>
-                
-                                    <!-- Back Button -->
-                                    <div>
-                                        <button onclick="history.back()" class="btn btn-outline-success">
-                                            <img src="https://ashoralo.in/public/dashboard_assets/images/back.png" width="36px" height="26px" alt=""> Back
-                                        </button>
-                                    </div>
                                 
-                                </div>
+                                </div> --}}
                                 <div class="body genealogy-body genealogy-scroll">
                                     <!-- Loading overlay - shows during Livewire updates -->
                                     <div wire:loading class="loading-overlay">
