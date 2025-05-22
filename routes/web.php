@@ -160,6 +160,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/print/{order}', [AddOrder::class, 'print'])->name('print');
     });
 
+    Route::prefix('reports')->name('report.')->group(function () {
+        Route::get('/id-activation-report', IdActivationReport::class)->name('id-activation-report');
+    });
+
+
     Route::get('/photo-galleries', GalleryIndex::class)->name('photo-galleries.index');
     Route::get('/photo-galleries/create', GalleryForm::class)->name('photo-galleries.create');
     Route::get('/photo-galleries/{gallery}/edit', GalleryForm::class)->name('photo-galleries.edit');

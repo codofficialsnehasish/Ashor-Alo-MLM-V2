@@ -85,4 +85,9 @@ class BinaryTree extends Model
     {
         return $this->descendants()->where('position', 'right')->with('user');
     }
+
+    public function joinedBy()
+    {
+        return $this->belongsTo(User::class, 'join_by');
+    }
 }

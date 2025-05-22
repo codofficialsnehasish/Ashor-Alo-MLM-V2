@@ -69,7 +69,7 @@
 
                 <li><a class="sidebar-sub-toggle"><i class="ti-stats-up"></i>  Reports  <span class="badge badge-primary">18</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
                     <ul>
-                        <li><a href="javascript:void(0);">ID Activation</a></li>
+                        <li><a wire:navigate href="{{ route('report.id-activation-report') }}">ID Activation</a></li>
                         <li><a href="javascript:void(0);">Sales</a></li>
                         <li><a href="javascript:void(0);">TDS</a></li>
                         <li><a href="javascript:void(0);">Repurchase</a></li>
