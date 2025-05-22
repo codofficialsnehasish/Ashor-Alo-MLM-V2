@@ -102,24 +102,24 @@
 
                 <li class="label">Website Management</li>
                 <li class="">
-                    <a href="javascript:void(0);"> 
+                    <a wire:navigate href="{{ route('settings.site-settings') }}"> 
                         <i class="ti-settings"></i> Site Settings
                     </a>
                 </li>
                 <li><a class="sidebar-sub-toggle"><i class="ti-briefcase"></i>  Legal  <span class="badge badge-primary">3</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
                     <ul>
-                        <li><a href="javascript:void(0);">Certificates</a></li>
-                        <li><a href="javascript:void(0);">Terms & Conditions</a></li>
-                        <li><a href="javascript:void(0);">Privacy Policy</a></li>
+                        <li><a wire:navigate href="{{ route('certificates.index') }}">Certificates</a></li>
+                        <li><a wire:navigate href="{{ route('settings.terms') }}">Terms & Conditions</a></li>
+                        <li><a wire:navigate href="{{ route('settings.privacy') }}">Privacy Policy</a></li>
                     </ul>
                 </li>
                 <li class="">
-                    <a href="javascript:void(0);"> 
+                    <a wire:navigate href="{{ route('ContactUsList.index') }}"> 
                         <i class="ti-email"></i> Contact Requests
                     </a>
                 </li>
                 <li class="">
-                    <a href="javascript:void(0);"> 
+                    <a wire:navigate href="{{ route('photo-galleries.index') }}"> 
                         <i class="ti-gallery"></i> Photo Gallery
                     </a>
                 </li>

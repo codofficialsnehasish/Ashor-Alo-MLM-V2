@@ -4,7 +4,10 @@ use App\Livewire\Settings\{
     Appearance,
     Password,
     Profile,
-    MlmSettings
+    MlmSettings,
+    WebsiteSettings,
+    TermsAndConditions,
+    PrivacyPolicy,
 };
 
 use App\Livewire\Dashboard;
@@ -64,6 +67,13 @@ use App\Livewire\Report\{
     IdActivationReport,
 };
 
+use App\Livewire\PhotoGallery\Index as GalleryIndex;
+use App\Livewire\PhotoGallery\Form as GalleryForm;
+
+use App\Livewire\Certificates\Index as CertificatesIndex;
+use App\Livewire\Certificates\Form as CertificatesForm;
+
+use App\Livewire\ContactUsList;
 
 use Illuminate\Support\Facades\Route;
 
@@ -88,6 +98,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/password', Password::class)->name('settings.password');
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
     Route::get('settings/mlm-settings', MlmSettings::class)->name('settings.mlm-settings');
+    Route::get('settings/site-settings', WebsiteSettings::class)->name('settings.site-settings');
+    Route::get('settings/terms', TermsAndConditions::class)->name('settings.terms');
+    Route::get('settings/privacy', PrivacyPolicy::class)->name('settings.privacy');
 
     Route::get('/roles', RoleManagement::class)->name('role');
     Route::get('/permissions', Permissions::class)->name('permissions');
@@ -144,6 +157,16 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/add', AddOrder::class)->name('add');
         Route::get('/print/{order}', [AddOrder::class, 'print'])->name('print');
     });
+
+    Route::get('/photo-galleries', GalleryIndex::class)->name('photo-galleries.index');
+    Route::get('/photo-galleries/create', GalleryForm::class)->name('photo-galleries.create');
+    Route::get('/photo-galleries/{gallery}/edit', GalleryForm::class)->name('photo-galleries.edit');
+
+    Route::get('/certificates', CertificatesIndex::class)->name('certificates.index');
+    Route::get('/certificates/create', CertificatesForm::class)->name('certificates.create');
+    Route::get('/certificates/{certificate}/edit', CertificatesForm::class)->name('certificates.edit');
+
+    Route::get('/contact-us-list', ContactUsList::class)->name('ContactUsList.index');
 
 });
 

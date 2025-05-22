@@ -13,6 +13,9 @@ use App\Http\Controllers\Api\{
     UserDashboardAPI,
     ReportAPIController,
     PayoutApiController,
+    ContactUsApiController,
+    WebsiteApiController,
+    ProductsApiController,
 };
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -62,4 +65,17 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::get('/payouts', [PayoutApiController::class, 'all_payouts']);
     Route::get('/payout-details/{id}', [PayoutApiController::class, 'payout_details']);
     Route::get('/payout-history', [PayoutApiController::class, 'payout_history']);
+
+
 });
+
+
+Route::post('/contact-us', [ContactUsApiController::class, 'store']);
+Route::get('/photo-gallary', [WebsiteApiController::class, 'photo_gallary']);
+Route::get('/certificates', [WebsiteApiController::class, 'certificates']);
+Route::get('/website-settings', [WebsiteApiController::class, 'website_settings']);
+Route::get('/privacy-policy', [WebsiteApiController::class, 'privacy_policy']);
+Route::get('/terms-and-conditions', [WebsiteApiController::class, 'terms_and_conditions']);
+
+Route::get('products', [ProductsApiController::class, 'index']);
+Route::get('products/{id}', [ProductsApiController::class, 'show']);
