@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\BinaryTree;
 use App\Models\TopUp;
+use App\Models\AccountTransaction;
 use App\Models\BankDetail;
 use App\Models\Nominee;
 use Illuminate\Http\Request;
@@ -52,5 +53,17 @@ class ReportAPIController extends Controller
             "visiblity"=> 1,
             "is_deleted"=> 0];
         return apiResponse(true, 'Remuneration Report', $data, 200);
+    }
+
+    public function daily_roi_report(Request $request){
+        $startDate = $request->start_date;
+        $endDate = $request->end_date;
+        if(!empty($startDate) && !empty($endDate)){
+            $data['rois'] = AccountTransaction::whereIn('which_for',['ROI Daily','ROI Dailys'])->whereDate('created_at', '>=', $startDate)->whereDate('created_at', '<=', $endDate)->where('user_id',$request->user()->id)->get();
+        }else{
+            $data['rois'] = AccountTransaction::whereIn('which_for',['ROI Daily','ROI Dailys'])->where('user_id',$request->user()->id)->get();
+        }
+
+        return apiResponse(true, 'Daily Roi Report', $data, 200);
     }
 }
