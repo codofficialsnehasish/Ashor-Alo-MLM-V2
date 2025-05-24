@@ -77,6 +77,7 @@ Route::get('/certificates', [WebsiteApiController::class, 'certificates']);
 Route::get('/website-settings', [WebsiteApiController::class, 'website_settings']);
 Route::get('/privacy-policy', [WebsiteApiController::class, 'privacy_policy']);
 Route::get('/terms-and-conditions', [WebsiteApiController::class, 'terms_and_conditions']);
+Route::get('/business-plan', [WebsiteApiController::class, 'business_plan']);
 
 Route::get('products', [ProductsApiController::class, 'index']);
 Route::get('products/{id}', [ProductsApiController::class, 'show']);

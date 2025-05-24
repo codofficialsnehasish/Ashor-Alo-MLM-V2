@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Certificate;
 use App\Models\PhotoGallary;
 use App\Models\WebsiteSetting;
+use Illuminate\Support\Facades\Storage;
 
 class WebsiteApiController extends Controller
 {
@@ -75,5 +76,34 @@ class WebsiteApiController extends Controller
                                 ])->first();
 
         return apiResponse(true, 'Terms And Conditions', ['terms_and_conditions'=>$setting->terms_and_conditions], 200);
+    }
+
+    // public function business_plan(){
+    //     return apiResponse(true, 'Business Plan', ['plan_pdf'=>asset('web_directory/business_plan/Ashor Alo Print New Plan.pdf')], 200);
+    // }
+
+    public function business_plan(){
+        $filePath = 'business_plan/Ashor-Alo-Business-Plan.pdf';
+        
+        // Check if file exists (optional)
+        if (!file_exists(public_path($filePath))) {
+            return apiResponse(false, 'Business plan not found', null, 404);
+        }
+
+        return apiResponse(
+            true,
+            'Business Plan',
+            ['plan_pdf' => asset($filePath)],
+            200
+        );
+    }
+ 
+    public function about_us(){
+        return apiResponse(
+            true,
+            'About Us',
+            ['text' => asset($filePath)],
+            200
+        );
     }
 }
