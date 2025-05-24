@@ -45,6 +45,11 @@ class TopUp extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function binaryNode()
+    {
+        return $this->hasOne(BinaryTree::class, 'user_id', 'user_id');
+    }
+
     /**
      * The main order associated with the top-up.
      */

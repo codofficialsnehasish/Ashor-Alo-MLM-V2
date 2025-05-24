@@ -66,6 +66,7 @@ use App\Livewire\Order\OrderList;
 
 use App\Livewire\Report\{
     IdActivationReport,
+    SalesReport,
 };
 
 use App\Livewire\PhotoGallery\Index as GalleryIndex;
@@ -162,6 +163,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('reports')->name('report.')->group(function () {
         Route::get('/id-activation-report', IdActivationReport::class)->name('id-activation-report');
+        Route::get('/sales-report', SalesReport::class)->name('sales-report');
     });
 
 
