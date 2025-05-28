@@ -67,6 +67,11 @@ use App\Livewire\Order\OrderList;
 use App\Livewire\Report\{
     IdActivationReport,
     SalesReport,
+    DirectBonusReport,
+    LevelBonusReport,
+    TDSReport,
+    RepurchaseReport,
+    ProductSupportReport,
 };
 
 use App\Livewire\PhotoGallery\Index as GalleryIndex;
@@ -164,6 +169,11 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('reports')->name('report.')->group(function () {
         Route::get('/id-activation-report', IdActivationReport::class)->name('id-activation-report');
         Route::get('/sales-report', SalesReport::class)->name('sales-report');
+        Route::get('/direct-bonus-report', DirectBonusReport::class)->name('direct-bonus-report');
+        Route::get('/level-bonus-report', LevelBonusReport::class)->name('level-bonus-report');
+        Route::get('/tds-report', TDSReport::class)->name('tds-report');
+        Route::get('/repurchase-report', RepurchaseReport::class)->name('repurchase-report');
+        Route::get('/product-support-report', ProductSupportReport::class)->name('product-support-report');
     });
 
 

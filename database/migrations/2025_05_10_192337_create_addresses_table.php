@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('addresses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->text('shipping_address');
-            $table->string('country');
-            $table->string('address');
-            $table->string('state');
-            $table->string('city');
-            $table->string('pin_code');
+            $table->text('shipping_address')->nullable();
+            $table->string('country')->nullable();
+            $table->string('address')->nullable();
+            $table->string('state')->nullable();
+            $table->string('city')->nullable();
+            $table->string('pin_code')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

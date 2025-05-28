@@ -4,17 +4,17 @@ namespace App\Livewire\Report;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\AccountTransaction;
+use App\Models\RepurchaseAccount;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Excel;
 use PDF;
 
-class ProductSupportReport extends Component
+class RepurchaseReport extends Component
 {
     use WithPagination;
 
-    public $title = 'Product Support Report';
+    public $title = 'Repurchase Report';
     public $startDate;
     public $endDate;
     public $search = '';
@@ -55,7 +55,7 @@ class ProductSupportReport extends Component
     public function exportExcel()
     {
         $data = $this->getQuery()->get();
-        $fileName = 'product-support-report-' . now()->format('Y-m-d') . '.xlsx';
+        $fileName = 'repurchase-report-' . now()->format('Y-m-d') . '.xlsx';
 
         return Excel::download(new class($data) implements \Maatwebsite\Excel\Concerns\FromCollection, \Maatwebsite\Excel\Concerns\WithHeadings {
             protected $data;
@@ -84,7 +84,7 @@ class ProductSupportReport extends Component
     public function exportFullExcel()
     {
         $data = $this->getFullDetailsQuery()->get();
-        $fileName = 'product-support-full-report-' . now()->format('Y-m-d') . '.xlsx';
+        $fileName = 'repurchase-full-report-' . now()->format('Y-m-d') . '.xlsx';
 
         return Excel::download(new class($data) implements \Maatwebsite\Excel\Concerns\FromCollection, \Maatwebsite\Excel\Concerns\WithHeadings {
             protected $data;
@@ -121,28 +121,27 @@ class ProductSupportReport extends Component
             'endDate' => $this->endDate
         ];
 
-        $pdf = PDF::loadView('exports.product-support-report-pdf', $data);
-        return $pdf->download('product-support-report-' . now()->format('Y-m-d') . '.pdf');
+        $pdf = PDF::loadView('exports.repurchase-report-pdf', $data);
+        return $pdf->download('Repurchase-report-' . now()->format('Y-m-d') . '.pdf');
     }
 
     public function exportFullPDF()
     {
         $data = [
-            'title' => 'Product Support Full Report - ' . $this->selectedUserName,
+            'title' => 'Repurchase Full Report - ' . $this->selectedUserName,
             'items' => $this->getFullDetailsQuery()->get(),
             'startDate' => $this->startDate,
             'endDate' => $this->endDate,
             'userName' => $this->selectedUserName
         ];
 
-        $pdf = PDF::loadView('exports.product-support-full-report-pdf', $data);
-        return $pdf->download('product-support-full-report-' . $this->selectedUserId . '-' . now()->format('Y-m-d') . '.pdf');
+        $pdf = PDF::loadView('exports.repurchase-full-report-pdf', $data);
+        return $pdf->download('repurchase-full-report-' . $this->selectedUserId . '-' . now()->format('Y-m-d') . '.pdf');
     }
 
     protected function getQuery()
     {
-        return AccountTransaction::query()
-            ->whereIn('which_for', ['ROI Daily', 'ROI Dailys'])
+        return RepurchaseAccount::query()
             ->when($this->startDate && $this->endDate, function ($query) {
                 $query->whereDate('created_at', '>=', $this->startDate)
                       ->whereDate('created_at', '<=', $this->endDate);
@@ -165,8 +164,7 @@ class ProductSupportReport extends Component
 
     protected function getFullDetailsQuery()
     {
-        return AccountTransaction::query()
-            ->whereIn('which_for', ['ROI Daily', 'ROI Dailys'])
+        return RepurchaseAccount::query()
             ->where('user_id', $this->selectedUId)
             ->when($this->startDate && $this->endDate, function ($query) {
                 $query->whereDate('created_at', '>=', $this->startDate)
@@ -177,15 +175,15 @@ class ProductSupportReport extends Component
     public function render()
     {
         if ($this->showFullReport) {
-            return view('livewire.report.product-support-full-report', [
-                'title' => 'Product Support Full Report - ' . $this->selectedUserName,
+            return view('livewire.report.repurchase-full-report', [
+                'title' => 'Repurchase Full Report - ' . $this->selectedUserName,
                 'items' => $this->getFullDetailsQuery()->paginate($this->perPage),
                 'userName' => $this->selectedUserName,
                 'userId' => $this->selectedUserId
             ]);
         }
 
-        return view('livewire.report.product-support-report', [
+        return view('livewire.report.repurchase-report', [
             'title' => $this->title,
             'items' => $this->getQuery()->paginate($this->perPage),
         ]);

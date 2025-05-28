@@ -11,12 +11,12 @@
     src: url(../fonts/glyphicons-halflings-regular.eot);
     src: url(../fonts/glyphicons-halflings-regular.eot?#iefix) format('embedded-opentype'), url(../fonts/glyphicons-halflings-regular.woff) format('woff'), url(../fonts/glyphicons-halflings-regular.ttf) format('truetype'), url(../fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular) format('svg')
 }
-
+/*susmita*/
 .breadcrumb>li+li:before {
     padding: 0 5px;
     color: #ccc;
     content: "/\00a0";
-    font-size: 12px;
+      font-size: 12px;
 }
 .breadcrumb>li {
     display: inline-block !important;
@@ -27,6 +27,13 @@
 ol.breadcrumb.text-right {
     text-align: right;
 }
+.bcrumb>li{
+    display: inline-block;
+}
+.bcrumb{
+    display: block;
+}
+/*susmita end*/
 .icon-name {
     color: #000
 }
@@ -1004,7 +1011,7 @@ div.dt-button:active:not(.disabled) {
 .main .page-header .breadcrumb li:hover {
     font-family: MontserratLight, sans-serif;
     font-weight: 400;
-    font-size: 12px
+    font-size: 12px;
 }
 
 .main .page-header .breadcrumb li a {
@@ -5079,4 +5086,11 @@ html {
 	.full_grid{
 		display:inline-grid !important;
 	}
+}
+
+/*-------admin order susmita 20-05-25-----*/
+    .addon-order-item {
+    margin-right: 10px;
+    border: 1px solid #99999961;
+    padding: 5px;
 }

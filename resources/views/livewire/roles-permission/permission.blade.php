@@ -43,7 +43,7 @@
                                                 <th>Sl No.</th>
                                                 <th>Permission Name</th>
 
-                                                <th class="text-end">Action</th>
+                                                <th class="text-start">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -53,19 +53,19 @@
 
                                         @foreach ($permissions->groupBy('group_name') as $modelName => $groupedPermissions)
                                         <tr>
-                                            <td colspan="3" class="fw-bold">{{ $modelName }}</td> <!-- Model Name as a Header Row -->
+                                            <td colspan="3" class="fw-bold text-start">{{ $modelName }}</td> <!-- Model Name as a Header Row -->
                                         </tr>
                                         @php $i = 1; @endphp
                                         @foreach ($groupedPermissions as $permission)
                                             <tr>
                                                 <td>{{ $i++ }}</td>
                                                 <td>{{ $permission->name }}</td>
-                                                <td class="text-end">
-                                                    <a href="javascript:;" wire:click="edit({{ $permission->id }})">
-                                                        <i class="ti-pencil-alt text-secondary font-16 text-info"></i>
+                                                <td class="text-start">
+                                                    <a href="javascript:;" wire:click="edit({{ $permission->id }})" class="bg-info p-1 rounded me-1">
+                                                        <i class="ti-pencil-alt text-secondary font-16 text-white"></i>
                                                     </a>
-                                                    <a href="javascript:;" onclick="confirmDeletion({{ $permission->id }})">
-                                                        <i class="ti-trash text-secondary font-16 text-danger"></i>
+                                                    <a href="javascript:;" onclick="confirmDeletion({{ $permission->id }})" class="bg-danger p-1 rounded">
+                                                        <i class="ti-trash text-secondary font-16 text-white"></i>
                                                     </a>
                                                 </td>
                                             </tr>

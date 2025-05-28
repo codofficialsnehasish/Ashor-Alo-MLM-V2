@@ -42,11 +42,44 @@
     
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    
+
+      <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <x-layouts.app.tree_css />
 
+<style>
+/*-------admin order susmita 20-05-25-----*/
+    .addon-order-item {
+    margin-right: 10px;
+    border: 1px solid #99999961;
+    padding: 5px;
+}
+.table>:not(:last-child)>:last-child>* {
+    border-bottom-color: currentColor;
+    font-size: 12px;
+}
+.table .badge {
+    text-transform: uppercase;
+    font-size: 12px;
+}
+.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th
+ {
+    line-height: 24px;
+    vertical-align: top;
+    font-size: 12px;
+}
+td .btn{
+    font-size: 12px;
+}
+thead tr th:last-child {
+    text-align: left;
+}
+tbody tr td:last-child {
+    text-align: left;
+}
+.sidebar {
+    font-size: 12px;
+}
+</style>
     @livewireStyles
 </head>
 
@@ -63,6 +96,7 @@
 
     @yield('scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         document.addEventListener('livewire:init', function() {
             //  $('.js-example-basic-multiple').select2();

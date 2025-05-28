@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('nominees', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('nominee_name');
-            $table->string('nominee_relation');
-            $table->date('nominee_dob');
-            $table->text('nominee_address');
-            $table->unsignedBigInteger('nominee_state_id');
-            $table->unsignedBigInteger('nominee_city_id');
+            $table->string('nominee_name')->nullable();
+            $table->string('nominee_relation')->nullable();
+            $table->date('nominee_dob')->nullable();
+            $table->text('nominee_address')->nullable();
+            $table->unsignedBigInteger('nominee_state_id')->nullable();
+            $table->unsignedBigInteger('nominee_city_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -26,30 +26,30 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-                                <form wire:submit.prevent="">
-                                    <div class="row">
-                                        <div class="col-md-2">
-                                            <label for="startDate">Start Date</label>
-                                            <input type="date" class="form-control" id="startDate" wire:model="startDate">
-                                        </div>
-                                        <div class="col-md-2">
-                                            <label for="endDate">End Date</label>
-                                            <input type="date" class="form-control" id="endDate" wire:model="endDate">
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label for="searchs">Search User</label>
-                                            <input type="text" class="form-control" id="searchs" placeholder="Search by username or name" wire:model.live="search">
-                                        </div>
-                                        <div class="col-md-5">
-                                            <button wire:click="exportExcel" class="btn btn-success me-2">
-                                                 Export Excel
-                                            </button>
-                                            <button wire:click="exportPDF" class="btn btn-danger">
-                                                 Export PDF
-                                            </button>
-                                        </div>
+                                <div class="row align-item-center">
+                                    <div class="col-md-3">
+                                        <label for="startDate">Start Date</label>
+                                        <input type="date" class="form-control" id="startDate" wire:model="startDate">
                                     </div>
-                                </form>
+                                    <div class="col-md-3">
+                                        <label for="endDate">End Date</label>
+                                        <input type="date" class="form-control" id="endDate" wire:model="endDate">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button wire:click="backToSummary" class="btn btn-secondary me-2">
+                                             Back to Summary
+                                        </button>
+                                        <button wire:click="exportFullExcel" class="btn btn-success me-2">
+                                             Export Excel
+                                        </button>
+                                        <button wire:click="exportFullPDF" class="btn btn-danger">
+                                             Export PDF
+                                        </button>
+                                    </div>
+                                    <div class="col-md-6 d-flex align-items-end">
+                                        <h5>Showing transactions for: {{ $userName }} (ID: {{ $userId }})</h5>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -59,27 +59,21 @@
                                     <table class="table table-bordered table-hover">
                                         <thead class="table-light">
                                             <tr>
-                                                <th>Name</th>
-                                                <th>ID</th>
                                                 <th>Amount</th>
-                                                <th>Actions</th>
+                                                <th>Statement</th>
+                                                <th>Date</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @forelse($items as $item)
                                                 <tr>
-                                                    <td>{{ $item->user->name ?? 'N/A' }}</td>
-                                                    <td>{{ $item->user->member_number ?? 'N/A' }}</td>
-                                                    <td>{{ $item->total_amount }}</td>
-                                                    <td>
-                                                        <button wire:click="showFullDetails({{ $item->user_id }})" class="btn btn-sm btn-primary">
-                                                            View Details
-                                                        </button>
-                                                    </td>
+                                                    <td>{{ number_format($item->amount, 2) }}</td>
+                                                    <td>{{ $item->which_for }}</td>
+                                                    <td>{{ $item->created_at->format('d M Y H:i') }}</td>
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="6" class="text-center">No records found</td>
+                                                    <td colspan="3" class="text-center">No transactions found</td>
                                                 </tr>
                                             @endforelse
                                         </tbody>

@@ -86,7 +86,7 @@
                                             <td>{{ $order->order_number }}</td>
                                             <td>{{ $order->user->name }}</td>
                                             <td>{{ $order->user->getMemberNumberAttribute() }}</td>
-                                            <td>{{ $order->category->name }}</td>
+                                            <td>{{ $order->category?->name }}</td>
                                             <td>{{ number_format($order->price_total, 2) }}</td>
                                             <td>{{ $order->payment_method }}</td>
                                             <td>

@@ -61,7 +61,7 @@
                                         <th>Description</th>
                                         <th>User</th>
                                         {{-- <th>Properties</th> --}}
-                                        <th>Date</th>
+                                        <th class="text-start">Date</th>
                                     </tr>
                                 </thead>
                                 <tbody>

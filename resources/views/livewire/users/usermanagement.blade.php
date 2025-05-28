@@ -79,8 +79,8 @@
                                                         </span>
                                                     </td>
                                                     <td class="text-end">
-                                                        <a href="{{ route('user.edit', ['id' => Crypt::encryptString($user->id)]) }}" wire:navigate><i class="ti-pencil-alt text-secondary font-16 text-info"></i></a>
-                                                        <a href="javascript:;" onclick="confirmDeletion({{ $user->id }})"><i class="ti-trash text-secondary font-16 text-danger"></i></a>
+                                                        <a href="{{ route('user.edit', ['id' => Crypt::encryptString($user->id)]) }}" wire:navigate class="bg-info p-1 rounded"><i class="ti-pencil-alt text-secondary font-16 text-white"></i></a>
+                                                        <a href="javascript:;" onclick="confirmDeletion({{ $user->id }})" class="bg-danger p-1 rounded"><i class="ti-trash text-secondary font-16 text-white"></i></a>
                                                     </td>
                                                 </tr>
                                             @endforeach

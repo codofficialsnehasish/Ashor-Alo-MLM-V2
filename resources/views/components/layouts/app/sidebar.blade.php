@@ -71,12 +71,12 @@
                     <ul>
                         <li><a wire:navigate href="{{ route('report.id-activation-report') }}">ID Activation</a></li>
                         <li><a wire:navigate href="{{ route('report.sales-report') }}">Sales</a></li>
-                        <li><a href="javascript:void(0);">TDS</a></li>
-                        <li><a href="javascript:void(0);">Repurchase</a></li>
-                        <li><a href="javascript:void(0);">Direct Bonus</a></li>
-                        <li><a href="javascript:void(0);">Level Bonus</a></li>
+                        <li><a wire:navigate href="{{ route('report.tds-report') }}">TDS</a></li>
+                        <li><a wire:navigate href="{{ route('report.repurchase-report') }}">Repurchase</a></li>
+                        <li><a wire:navigate href="{{ route('report.direct-bonus-report') }}">Direct Bonus</a></li>
+                        <li><a wire:navigate href="{{ route('report.level-bonus-report') }}">Level Bonus</a></li>
                         <li><a href="javascript:void(0);">Investor Returns</a></li>
-                        <li><a href="javascript:void(0);">Product Support</a></li>
+                        <li><a wire:navigate href="{{ route('report.product-support-report') }}">Product Support</a></li>
                         <li><a href="javascript:void(0);">Payout</a></li>
                         <li><a href="javascript:void(0);">Payout History</a></li>
                         <li><a href="javascript:void(0);">Hold Amount</a></li>
@@ -123,7 +123,7 @@
                         <i class="ti-gallery"></i> Photo Gallery
                     </a>
                 </li>
-
+                
                 <li class="">
                     <a wire:navigate href="{{ route('notice-board') }}"> 
                         <i class="ti-announcement"></i> Notice Board

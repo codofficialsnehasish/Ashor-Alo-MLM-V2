@@ -97,7 +97,7 @@ class WebsiteApiController extends Controller
             200
         );
     }
- 
+
     public function about_us(){
         return apiResponse(
             true,

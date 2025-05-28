@@ -40,7 +40,7 @@
                                             <label for="search-report">Search</label>
                                             <input type="text" class="form-control" id="search-report" placeholder="Search..." wire:model.live="search">
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-4 mt-4">
                                             <button wire:click="exportExcel" class="btn btn-success me-2">
                                                 Export Excel
                                             </button>

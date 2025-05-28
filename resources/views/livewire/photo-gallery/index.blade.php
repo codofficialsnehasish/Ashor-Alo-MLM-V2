@@ -24,7 +24,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="flex justify-between items-center mb-4">
+                            <div class="d-flex justify-content-between items-center mb-4">
                                 <input type="text" wire:model.live="search" placeholder="Search..." class="input input-bordered">
                                 <a href="{{ route('photo-galleries.create') }}" class="btn btn-primary">
                                     Create Gallery

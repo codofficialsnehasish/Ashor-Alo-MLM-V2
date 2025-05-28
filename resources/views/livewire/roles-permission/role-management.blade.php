@@ -42,7 +42,7 @@
                                                 <th>Sl No.</th>
                                                 <th>Role Name</th>
                                                 <th>Asign Permission to Role</th>
-                                                <th class="text-end">Action</th>
+                                                <th class="text-start">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -53,9 +53,9 @@
                                                     <td>
                                                         <a href="{{ route('permissions.asign', $role->id) }}" class="btn btn-success" wire:navigate><i class="fas fa-tasks"></i> Asign Permission</a>
                                                     </td>
-                                                    <td style="text-align: center;">
-                                                        <a href="javascript:;" wire:click="edit({{ $role->id }})"><i class="ti-pencil-alt text-secondary font-16 text-info"></i></a>
-                                                        <a href="javascript:;" onclick="confirmDeletion({{ $role->id }})"><i class="ti-trash text-secondary font-16 text-danger"></i></a>
+                                                    <td style="text-align:left;">
+                                                        <a href="javascript:;" wire:click="edit({{ $role->id }})" class="bg-info p-1 rounded"><i class="ti-pencil-alt text-secondary font-16 text-white"></i></a>
+                                                        <a href="javascript:;" onclick="confirmDeletion({{ $role->id }})" class="bg-danger p-1 rounded"><i class="ti-trash text-secondary font-16 text-white"></i></a>
                                                     </td>
                                                 </tr>
                                             @endforeach

@@ -141,7 +141,7 @@ class BinaryTreeApiController extends Controller
         return $formatted;
     }
 
-    // public function getTreeLevels($rootId = null, $maxLevels = 4)
+// public function getTreeLevels($rootId = null, $maxLevels = 4)
     // {
     //     $withClosure = function ($query) {
     //         $query->withCount([

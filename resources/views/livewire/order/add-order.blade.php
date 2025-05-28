@@ -33,12 +33,14 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label class="form-label">Customer</label>
-                                <select class="form-select js-example-basic-single" wire:model.live="selectedCustomer">
+                                <div wire:ignore>
+                                <select class="form-select js-example-basic-single"  wire:model.live="selectedCustomer">
                                     <option value="">-- Choose Customer --</option>
                                     @foreach ($customers as $customer)
                                         <option value="{{ $customer->id }}">{{ $customer->name }} ({{$customer->getMemberNumberAttribute() }})</option>
                                     @endforeach
                                 </select>
+                                </div>
                             </div>
     
                             <div class="col-md-6">

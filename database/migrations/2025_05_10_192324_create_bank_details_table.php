@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('bank_details', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('bank_name');
-            $table->string('account_name');
-            $table->string('ifsc_code');
-            $table->string('account_number');
-            $table->enum('account_type', ['Saving', 'Current']);
+            $table->string('bank_name')->nullable();
+            $table->string('account_name')->nullable();
+            $table->string('ifsc_code')->nullable();
+            $table->string('account_number')->nullable();
+            $table->enum('account_type', ['Saving', 'Current'])->nullable();
             $table->string('upi_name')->nullable();
             $table->string('upi_number')->nullable();
             $table->enum('upi_type', ['Phone Pay', 'Google Pay', 'Paytm'])->nullable();

@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\BinaryTree;
 use App\Models\TopUp;
-use App\Models\AccountTransaction;
 use App\Models\BankDetail;
+use App\Models\AccountTransaction;
 use App\Models\Nominee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -54,7 +54,7 @@ class ReportAPIController extends Controller
             "is_deleted"=> 0];
         return apiResponse(true, 'Remuneration Report', $data, 200);
     }
-
+    
     public function daily_roi_report(Request $request){
         $startDate = $request->start_date;
         $endDate = $request->end_date;
