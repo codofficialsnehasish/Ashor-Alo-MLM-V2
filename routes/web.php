@@ -72,6 +72,7 @@ use App\Livewire\Report\{
     TDSReport,
     RepurchaseReport,
     ProductSupportReport,
+    InvestorReturnReport,
 };
 
 use App\Livewire\PhotoGallery\Index as GalleryIndex;
@@ -174,6 +175,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/tds-report', TDSReport::class)->name('tds-report');
         Route::get('/repurchase-report', RepurchaseReport::class)->name('repurchase-report');
         Route::get('/product-support-report', ProductSupportReport::class)->name('product-support-report');
+        Route::get('/investor-return-report', InvestorReturnReport::class)->name('investor-return-report');
     });
 
 

@@ -75,7 +75,7 @@
                         <li><a wire:navigate href="{{ route('report.repurchase-report') }}">Repurchase</a></li>
                         <li><a wire:navigate href="{{ route('report.direct-bonus-report') }}">Direct Bonus</a></li>
                         <li><a wire:navigate href="{{ route('report.level-bonus-report') }}">Level Bonus</a></li>
-                        <li><a href="javascript:void(0);">Investor Returns</a></li>
+                        <li><a wire:navigate href="{{ route('report.investor-return-report') }}">Investor Returns</a></li>
                         <li><a wire:navigate href="{{ route('report.product-support-report') }}">Product Support</a></li>
                         <li><a href="javascript:void(0);">Payout</a></li>
                         <li><a href="javascript:void(0);">Payout History</a></li>
