@@ -88,8 +88,8 @@
                         </li>
                         <li><a class="sidebar-sub-toggle"><i class="ti-bar-chart-alt"></i>  Remuneration  <span class="badge badge-primary">2</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
                             <ul>
-                                <li><a href="javascript:void(0);">Transactions</a></li>
-                                <li><a href="javascript:void(0);">Reports</a></li>
+                                <li><a wire:navigate href="{{ route('report.remuneration-transaction-report') }}">Transactions</a></li>
+                                <li><a wire:navigate href="{{ route('report.remuneration-report') }}">Reports</a></li>
                             </ul>
                         </li>
                         <li><a class="sidebar-sub-toggle"><i class="ti-bar-chart-alt"></i>  Business  <span class="badge badge-primary">2</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>

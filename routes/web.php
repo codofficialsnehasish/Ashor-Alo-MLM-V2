@@ -81,6 +81,8 @@ use App\Livewire\Report\{
     ProductDeliveryReport,
     PaidUnpaidPaymentReport,
     LessThanTwoHundredCommissionReport,
+    RemunerationTransactionReport,
+    RemunerationReport,
 };
 
 use App\Livewire\PhotoGallery\Index as GalleryIndex;
@@ -192,6 +194,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/product-delivery-report', ProductDeliveryReport::class)->name('product-delivery-report');
         Route::get('/paid-unpaid-payment-report', PaidUnpaidPaymentReport::class)->name('paid-unpaid-payment-report');
         Route::get('/less-than-two-hundred-commission-report', LessThanTwoHundredCommissionReport::class)->name('less-than-two-hundred-commission-report');
+        Route::get('/remuneration-transaction-report', RemunerationTransactionReport::class)->name('remuneration-transaction-report');
+        Route::get('/remuneration-report', RemunerationReport::class)->name('remuneration-report');
     });
 
 
