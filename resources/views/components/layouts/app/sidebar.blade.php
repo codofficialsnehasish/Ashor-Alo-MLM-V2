@@ -77,11 +77,15 @@
                         <li><a wire:navigate href="{{ route('report.level-bonus-report') }}">Level Bonus</a></li>
                         <li><a wire:navigate href="{{ route('report.investor-return-report') }}">Investor Returns</a></li>
                         <li><a wire:navigate href="{{ route('report.product-support-report') }}">Product Support</a></li>
-                        <li><a wire:navigate href="{{ route('report.payout-report') }}">Payout</a></li>
-                        <li><a wire:navigate href="{{ route('report.payout-history-report') }}">Payout History</a></li>
-                        <li><a wire:navigate href="{{ route('report.hold-amount-report') }}">Hold Amount</a></li>
-                        <li><a href="javascript:void(0);">Paid/Unpaid Payments</a></li>
-                        <li><a href="javascript:void(0);">Commission > 200</a></li>
+                        <li><a class="sidebar-sub-toggle"><i class="ti-bar-chart-alt"></i> All Payout <span class="badge badge-primary">2</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
+                            <ul>
+                                <li><a wire:navigate href="{{ route('report.payout-report') }}">Payout</a></li>
+                                <li><a wire:navigate href="{{ route('report.payout-history-report') }}">Payout History</a></li>
+                                <li><a wire:navigate href="{{ route('report.hold-amount-report') }}">Hold Amount</a></li>
+                                <li><a wire:navigate href="{{ route('report.paid-unpaid-payment-report') }}">Paid/Unpaid Payments</a></li>
+                                <li><a wire:navigate href="{{ route('report.less-than-two-hundred-commission-report') }}">Commission < 200</a></li>
+                            </ul>
+                        </li>
                         <li><a class="sidebar-sub-toggle"><i class="ti-bar-chart-alt"></i>  Remuneration  <span class="badge badge-primary">2</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
                             <ul>
                                 <li><a href="javascript:void(0);">Transactions</a></li>
@@ -94,9 +98,9 @@
                                 <li><a href="javascript:void(0);">Tree-wise</a></li>
                             </ul>
                         </li>
-                        <li><a href="javascript:void(0);">Dilse Plan</a></li>
-                        <li><a href="javascript:void(0);">Add-on</a></li>
-                        <li><a href="javascript:void(0);">Product Delivery</a></li>
+                        <li><a wire:navigate href="{{ route('report.dilse-plan-report') }}">Dilse Plan</a></li>
+                        <li><a wire:navigate href="{{ route('report.add-on-report') }}">Add-on</a></li>
+                        <li><a wire:navigate href="{{ route('report.product-delivery-report') }}">Product Delivery</a></li>
                     </ul>
                 </li>
 

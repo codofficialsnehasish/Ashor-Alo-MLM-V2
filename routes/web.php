@@ -75,7 +75,12 @@ use App\Livewire\Report\{
     InvestorReturnReport,
     PayoutReport,
     PayoutHistoryReport,
-    HoldAmountReport
+    HoldAmountReport,
+    AddOnReport,
+    DilsePlanReport,
+    ProductDeliveryReport,
+    PaidUnpaidPaymentReport,
+    LessThanTwoHundredCommissionReport,
 };
 
 use App\Livewire\PhotoGallery\Index as GalleryIndex;
@@ -182,6 +187,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/payout-report', PayoutReport::class)->name('payout-report');
         Route::get('/payout-history-report', PayoutHistoryReport::class)->name('payout-history-report');
         Route::get('/hold-amount-report', HoldAmountReport::class)->name('hold-amount-report');
+        Route::get('/add-on-report', AddOnReport::class)->name('add-on-report');
+        Route::get('/dilse-plan-report', DilsePlanReport::class)->name('dilse-plan-report');
+        Route::get('/product-delivery-report', ProductDeliveryReport::class)->name('product-delivery-report');
+        Route::get('/paid-unpaid-payment-report', PaidUnpaidPaymentReport::class)->name('paid-unpaid-payment-report');
+        Route::get('/less-than-two-hundred-commission-report', LessThanTwoHundredCommissionReport::class)->name('less-than-two-hundred-commission-report');
     });
 
 
