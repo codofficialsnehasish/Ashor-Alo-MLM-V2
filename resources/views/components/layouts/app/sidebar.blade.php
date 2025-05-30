@@ -79,7 +79,7 @@
                         <li><a wire:navigate href="{{ route('report.product-support-report') }}">Product Support</a></li>
                         <li><a wire:navigate href="{{ route('report.payout-report') }}">Payout</a></li>
                         <li><a wire:navigate href="{{ route('report.payout-history-report') }}">Payout History</a></li>
-                        <li><a href="javascript:void(0);">Hold Amount</a></li>
+                        <li><a wire:navigate href="{{ route('report.hold-amount-report') }}">Hold Amount</a></li>
                         <li><a href="javascript:void(0);">Paid/Unpaid Payments</a></li>
                         <li><a href="javascript:void(0);">Commission > 200</a></li>
                         <li><a class="sidebar-sub-toggle"><i class="ti-bar-chart-alt"></i>  Remuneration  <span class="badge badge-primary">2</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>

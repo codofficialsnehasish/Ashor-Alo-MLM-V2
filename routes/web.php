@@ -75,6 +75,7 @@ use App\Livewire\Report\{
     InvestorReturnReport,
     PayoutReport,
     PayoutHistoryReport,
+    HoldAmountReport
 };
 
 use App\Livewire\PhotoGallery\Index as GalleryIndex;
@@ -180,6 +181,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/investor-return-report', InvestorReturnReport::class)->name('investor-return-report');
         Route::get('/payout-report', PayoutReport::class)->name('payout-report');
         Route::get('/payout-history-report', PayoutHistoryReport::class)->name('payout-history-report');
+        Route::get('/hold-amount-report', HoldAmountReport::class)->name('hold-amount-report');
     });
 
 
