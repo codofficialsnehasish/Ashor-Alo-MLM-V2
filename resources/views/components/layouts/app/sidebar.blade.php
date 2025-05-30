@@ -77,8 +77,8 @@
                         <li><a wire:navigate href="{{ route('report.level-bonus-report') }}">Level Bonus</a></li>
                         <li><a wire:navigate href="{{ route('report.investor-return-report') }}">Investor Returns</a></li>
                         <li><a wire:navigate href="{{ route('report.product-support-report') }}">Product Support</a></li>
-                        <li><a href="javascript:void(0);">Payout</a></li>
-                        <li><a href="javascript:void(0);">Payout History</a></li>
+                        <li><a wire:navigate href="{{ route('report.payout-report') }}">Payout</a></li>
+                        <li><a wire:navigate href="{{ route('report.payout-history-report') }}">Payout History</a></li>
                         <li><a href="javascript:void(0);">Hold Amount</a></li>
                         <li><a href="javascript:void(0);">Paid/Unpaid Payments</a></li>
                         <li><a href="javascript:void(0);">Commission > 200</a></li>
