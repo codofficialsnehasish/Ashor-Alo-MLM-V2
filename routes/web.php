@@ -29,6 +29,7 @@ use App\Livewire\Leaders\{
     AllLeaders,
     BinaryTreeView,
     AddLeader,
+    EditLeader,
     TransferSubtree,
     MembersOfLeader,
 };
@@ -135,6 +136,7 @@ Route::middleware(['auth'])->group(function () {
     
     Route::get('/leaders', AllLeaders::class)->name('leaders.all');
     Route::get('/leaders-create', AddLeader::class)->name('leaders.create');
+    Route::get('/leaders/{id}/edit', EditLeader::class)->name('leaders.edit');
     Route::get('/binary-tree', BinaryTreeView::class)->name('binary.tree');
     Route::get('/transfer-sub-tree', TransferSubtree::class)->name('binary.transfer');
     Route::get('/members-of-leader', MembersOfLeader::class)->name('leaders.members-of-leader');

@@ -26,14 +26,14 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="row">
-                                <div class="col-md-4 d-flex align-items-end">
+                                {{-- <div class="col-md-4 d-flex align-items-end">
                                     <button wire:click="exportPdf" class="btn btn-danger me-2">
                                         <i class="fas fa-file-pdf me-1"></i> PDF Export
                                     </button>
                                     <button wire:click="exportExcel" class="btn btn-success">
                                         <i class="fas fa-file-excel me-1"></i> Excel Export
                                     </button>
-                                </div>
+                                </div> --}}
                                 <div class="col-md-6">
                                     <div class="input-group">
                                         <input wire:model.live="search" type="text" class="form-control" placeholder="Search...">

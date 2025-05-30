@@ -5,7 +5,7 @@
                 <div class="col-lg-8 p-r-0 title-margin-right">
                     <div class="page-header">
                         <div class="page-title">
-                            <h1>System Users</h1>
+                            <h1>Leader</h1>
                         </div>
                     </div>
                 </div><!-- /# column -->
@@ -14,7 +14,8 @@
                         <div class="page-title">
                             <ol class="breadcrumb text-right">
                                 <li><a wire:navigate href="{{ route('dashboard') }}">Dashboard</a></li>
-                                <li class="active">System Users</li>
+                                <li><a wire:navigate href="{{ route('leaders.all') }}">Leaders</a></li>
+                                <li class="active">All Leaders</li>
                             </ol>
                         </div>
                     </div>
@@ -84,7 +85,7 @@
                                                 <td>{!! check_status($user->binaryNode->status) !!}</td>
                                                 <td>{{ $user->binaryNode?->sponsor?->user?->name ?? '' }} @if($user->binaryNode?->sponsor)({{$user->binaryNode?->sponsor?->member_number}})@endif</td>
                                                 <td class="text-end d-flex">
-                                                    <a href="{{ route('user.edit', ['id' => Crypt::encryptString($user->id)]) }}" wire:navigate class="bg-info p-1 rounded me-1"><i class="ti-pencil-alt text-secondary font-16 text-white"></i></a>
+                                                    <a href="{{ route('leaders.edit', ['id' => Crypt::encryptString($user->id)]) }}" wire:navigate class="bg-info p-1 rounded me-1"><i class="ti-pencil-alt text-secondary font-16 text-white"></i></a>
                                                     <a href="javascript:;" onclick="confirmDeletion({{ $user->id }})" class="bg-danger p-1 rounded"><i class="ti-trash text-secondary font-16 text-white"></i></a>
                                                 </td>
                                             </tr>

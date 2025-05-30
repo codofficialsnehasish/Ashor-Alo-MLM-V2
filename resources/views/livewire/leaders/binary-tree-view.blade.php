@@ -5,7 +5,7 @@
                 <div class="col-lg-8 p-r-0 title-margin-right">
                     <div class="page-header">
                         <div class="page-title">
-                            <h1>Dashboard</h1>
+                            <h1>Tree View</h1>
                         </div>
                     </div>
                 </div><!-- /# column -->
@@ -14,8 +14,8 @@
                         <div class="page-title">
                             <ol class="breadcrumb text-end">
                                 <li><a wire:navigate href="{{ route('dashboard') }}">Dashboard</a></li>
-                                <li class="active">Home</li>
-                                 
+                                <li><a wire:navigate href="{{ route('leaders.all') }}">Leaders</a></li>
+                                <li class="active">Tree View</li>
                             </ol>
                         </div>
                     </div>
