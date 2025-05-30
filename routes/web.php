@@ -83,6 +83,8 @@ use App\Livewire\Report\{
     LessThanTwoHundredCommissionReport,
     RemunerationTransactionReport,
     RemunerationReport,
+    LevelWiseBusinessReport,
+    TreeWiseBusinessReport,
 };
 
 use App\Livewire\PhotoGallery\Index as GalleryIndex;
@@ -196,6 +198,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/less-than-two-hundred-commission-report', LessThanTwoHundredCommissionReport::class)->name('less-than-two-hundred-commission-report');
         Route::get('/remuneration-transaction-report', RemunerationTransactionReport::class)->name('remuneration-transaction-report');
         Route::get('/remuneration-report', RemunerationReport::class)->name('remuneration-report');
+        Route::get('/level-wise-business-report', LevelWiseBusinessReport::class)->name('level-wise-business-report');
+        Route::get('/tree-wise-business-report', TreeWiseBusinessReport::class)->name('tree-wise-business-report');
     });
 
 

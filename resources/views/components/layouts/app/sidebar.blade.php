@@ -94,8 +94,8 @@
                         </li>
                         <li><a class="sidebar-sub-toggle"><i class="ti-bar-chart-alt"></i>  Business  <span class="badge badge-primary">2</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
                             <ul>
-                                <li><a href="javascript:void(0);">Level-wise</a></li>
-                                <li><a href="javascript:void(0);">Tree-wise</a></li>
+                                <li><a wire:navigate href="{{ route('report.level-wise-business-report') }}">Level-wise</a></li>
+                                <li><a wire:navigate href="{{ route('report.tree-wise-business-report') }}">Tree-wise</a></li>
                             </ul>
                         </li>
                         <li><a wire:navigate href="{{ route('report.dilse-plan-report') }}">Dilse Plan</a></li>

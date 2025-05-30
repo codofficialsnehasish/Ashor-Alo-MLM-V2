@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 use Kalnoy\Nestedset\NodeTrait;
+use App\Models\TopUp;
 
 class BinaryTree extends Model
 {
@@ -89,5 +90,55 @@ class BinaryTree extends Model
     public function joinedBy()
     {
         return $this->belongsTo(User::class, 'join_by');
+    }
+
+    /**
+     * Calculate left side business volume
+     */
+    public function calculateLeftBusiness($start_date = null, $end_date = null): float
+    {
+        return $this->calculateSideBusiness($this->left(), $start_date, $end_date);
+    }
+
+    /**
+     * Calculate right side business volume
+     */
+    public function calculateRightBusiness($start_date = null, $end_date = null): float
+    {
+        return $this->calculateSideBusiness($this->right(), $start_date, $end_date);
+    }
+
+    /**
+     * Helper method to calculate business for a specific side
+     */
+    protected function calculateSideBusiness($sideRelation, $start_date = null, $end_date = null): float
+    {
+        $sideNode = $sideRelation->first();
+        
+        if (!$sideNode) {
+            return 0;
+        }
+
+        // Get all user IDs in this subtree (including the side node itself)
+        $userIds = BinaryTree::whereDescendantOf($sideNode)
+            ->orWhere('id', $sideNode->id)
+            ->pluck('user_id')
+            ->toArray();
+
+        if (empty($userIds)) {
+            return 0;
+        }
+
+        $query = TopUp::whereIn('user_id', $userIds)
+            ->where(function ($q) {
+                $q->where('is_show_on_business', 1);
+            });
+
+        if ($start_date && $end_date) {
+            $query->whereDate('start_date', '>=', $start_date)
+                  ->whereDate('start_date', '<=', $end_date);
+        }
+
+        return (float) $query->sum('total_amount');
     }
 }
