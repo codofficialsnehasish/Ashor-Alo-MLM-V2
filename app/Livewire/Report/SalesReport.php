@@ -47,26 +47,6 @@ class SalesReport extends Component
         $this->sortField = $field;
     }
 
-    // public function exportExcel()
-    // {
-    //     $data = $this->getQuery()->get();
-    //     $fileName = 'sales-report-' . now()->format('Y-m-d') . '.xlsx';
-
-    //     return Excel::download(new class($data) implements \Maatwebsite\Excel\Concerns\FromCollection {
-    //         protected $data;
-
-    //         public function __construct($data)
-    //         {
-    //             $this->data = $data;
-    //         }
-
-    //         public function collection()
-    //         {
-    //             return $this->data;
-    //         }
-    //     }, $fileName);
-    // }
-
     public function exportExcel()
     {
         $data = $this->getQuery()->get();
@@ -88,7 +68,11 @@ class SalesReport extends Component
         ];
 
         $pdf = PDF::loadView('exports.report.sales-report-pdf', $data);
-        return $pdf->download('sales-report-' . now()->format('Y-m-d') . '.pdf');
+        // return $pdf->download('sales-report-' . now()->format('Y-m-d') . '.pdf');
+        return response()->streamDownload(
+            fn () => print($pdf->output()),
+            "sales-report-".now()->format('Y-m-d').".pdf"
+        );
     }
 
     protected function getQuery()
