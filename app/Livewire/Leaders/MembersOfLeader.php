@@ -7,7 +7,7 @@ use Livewire\WithPagination;
 use App\Models\BinaryTree;
 use Carbon\Carbon;
 use Excel;
-use App\Exports\BinaryTreeExport;
+use App\Exports\MembersOfLeaderExport;
 use PDF;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -38,8 +38,8 @@ class MembersOfLeader extends Component
 
     public function mount()
     {
-        $this->startDate = now()->subMonth()->format('Y-m-d');
-        $this->endDate = now()->format('Y-m-d');
+        // $this->startDate = now()->subMonth()->format('Y-m-d');
+        // $this->endDate = now()->format('Y-m-d');
     }
 
     public function applyFilters()
@@ -77,7 +77,7 @@ class MembersOfLeader extends Component
     public function exportExcel()
     {
         $data = $this->getAllMembersCollection();
-        return Excel::download(new BinaryTreeExport($data), 'binary-tree-report-' . now()->format('Y-m-d') . '.xlsx');
+        return Excel::download(new MembersOfLeaderExport($data), 'member-of-leader-excel-' . now()->format('Y-m-d') . '.xlsx');
     }
  
     public function exportPDF()
@@ -90,13 +90,17 @@ class MembersOfLeader extends Component
         $activeMembers = $members->filter(fn($m) => $m->status == 1)->count();
         $inactiveMembers = $members->filter(fn($m) => $m->status == 0)->count();
 
-        $pdf = PDF::loadView('exports.member-of-leader-pdf', ['members' => $members,
+        $pdf = Pdf::loadView('exports.member-of-leader-pdf', ['members' => $members,
             'leader' => $leader,
             'totalMembers' => $totalMembers,
             'activeMembers' => $activeMembers,
             'inactiveMembers' => $inactiveMembers,]);
             
-        return $pdf->download('member-of-leader-report-' . now()->format('Y-m-d') . '.pdf');
+        // return $pdf->download('member-of-leader-report-' . now()->format('Y-m-d') . '.pdf');
+        return response()->streamDownload(
+            fn () => print($pdf->output()),
+            "member-of-leader-report-".now()->format('Y-m-d').".pdf"
+        );
     }
 
     private function getAllMembersCollection()

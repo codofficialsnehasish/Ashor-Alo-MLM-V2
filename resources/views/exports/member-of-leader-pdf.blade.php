@@ -3,7 +3,7 @@
 <head>
     <title>Leaders Export</title>
     <meta charset="utf-8">
-    {{-- <style>
+    <style>
         body { 
             font-family: Arial, sans-serif;
             font-size: 12px;
@@ -43,15 +43,15 @@
             font-size: 10px;
             color: #777;
         }
-    </style> --}}
+    </style>
 </head>
 <body>
-    {{-- <div class="header">         
-        <div class="title">Members of </div>
+    <div class="header">         
+        <div class="title">Members of Leader {{ $leader->user?->name }}</div>
         <div class="date">Generated on: {{ format_datetime(now()) }}</div>
-    </div> --}}
+    </div>
 
-    {{-- <div class="row mb-3">
+    <div style="display: flex;justify-content:space-between;">
         <div class="col-md-4 mb-2">
             <h6 class="mb-1 text-muted">Total Members : {{ number_format($totalMembers) }}</h6>
         </div>
@@ -61,9 +61,9 @@
         <div class="col-md-4 mb-2">
             <h6 class="mb-1 text-muted">Inactive Members : {{ number_format($inactiveMembers) }}</h6>
         </div>
-    </div> --}}
+    </div>
 
-    {{-- <table>
+    <table>
         <thead>
             <tr>
                 <th>Reg Date</th>
@@ -115,10 +115,10 @@
                 </tr>
             @endforelse
         </tbody>
-    </table> --}}
+    </table>
 
-    {{-- <div class="footer">
+    <div class="footer">
         Total Leaders: {{ $members->count() }} | Exported by {{ auth()->user()->name ?? 'System' }}
-    </div> --}}
+    </div>
 </body>
 </html>
