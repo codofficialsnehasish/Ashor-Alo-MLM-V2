@@ -185,13 +185,22 @@
     }
 
     if (!function_exists('paid_unpaid')) {
-        function paid_unpaid($payout_id, $user_id = null)
+        function paid_unpaid($payout_id, $user_id = null, $html = true)
         {
             if($user_id != null){
                 $lastPayout = Payout::where('user_id', $user_id)->latest()->first();
             }else{
                 $lastPayout = Payout::where('user_id', Auth::id())->latest()->first();
             }
+
+            if (!$html) {
+                if ($lastPayout->id == $payout_id) {
+                    return $lastPayout->paid_unpaid == 1 ? 'Paid' : 'Pending';
+                } else {
+                    return $payout->paid_unpaid == 1 ? 'Paid' : 'Forwarded to Next Payout';
+                }
+            }
+
             if($lastPayout->id == $payout_id){
                 if($lastPayout->paid_unpaid == 1){
                     $str='<span class="badge rounded-pill bg-success text-white">Paid</span>';

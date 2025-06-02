@@ -8,7 +8,7 @@ use App\Models\Payout;
 use Illuminate\Support\Facades\DB;
 use Excel;
 use PDF;
-use App\Exports\InvestorReturnReportExport;
+use App\Exports\HoldAmountReportExport;
 
 class HoldAmountReport extends Component
 {
@@ -50,10 +50,10 @@ class HoldAmountReport extends Component
     public function exportExcel()
     {
         $data = $this->getQuery()->get();
-        $fileName = 'investor-return-report-' . now()->format('Y-m-d') . '.xlsx';
+        $fileName = 'hold-amount-report-' . now()->format('Y-m-d') . '.xlsx';
         
         return Excel::download(
-            new InvestorReturnReportExport($data),
+            new HoldAmountReportExport($data),
             $fileName
         );
     }
@@ -67,8 +67,11 @@ class HoldAmountReport extends Component
             'endDate' => $this->endDate
         ];
 
-        $pdf = PDF::loadView('exports.report.sales-report-pdf', $data);
-        return $pdf->download('sales-report-' . now()->format('Y-m-d') . '.pdf');
+        $pdf = PDF::loadView('exports.report.hold-amount-report-pdf', $data);
+        return response()->streamDownload(
+            fn () => print($pdf->output()),
+            "hold-amount-report-".now()->format('Y-m-d').".pdf"
+        );
     }
 
     protected function getQuery()

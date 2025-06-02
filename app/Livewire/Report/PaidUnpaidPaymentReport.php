@@ -7,7 +7,7 @@ use Livewire\WithPagination;
 use App\Models\Payout;
 use Excel;
 use PDF;
-use App\Exports\SalesReportExport;
+use App\Exports\PaidUnpaidPaymentReportExport;
 
 class PaidUnpaidPaymentReport extends Component
 {
@@ -56,7 +56,7 @@ class PaidUnpaidPaymentReport extends Component
         $fileName = 'sales-report-' . now()->format('Y-m-d') . '.xlsx';
         
         return Excel::download(
-            new SalesReportExport($data),
+            new PaidUnpaidPaymentReportExport($data),
             $fileName
         );
     }
@@ -70,8 +70,11 @@ class PaidUnpaidPaymentReport extends Component
             'endDate' => $this->endDate
         ];
 
-        $pdf = PDF::loadView('exports.report.sales-report-pdf', $data);
-        return $pdf->download('sales-report-' . now()->format('Y-m-d') . '.pdf');
+        $pdf = PDF::loadView('exports.report.paid-unpaid-payment-report-pdf', $data);
+        return response()->streamDownload(
+            fn () => print($pdf->output()),
+            "paid-unpaid-payment-report-".now()->format('Y-m-d').".pdf"
+        );
     }
 
     protected function getQuery()

@@ -7,7 +7,7 @@ use Livewire\WithPagination;
 use App\Models\Payout;
 use Excel;
 use PDF;
-use App\Exports\SalesReportExport;
+use App\Exports\LessThanTwoHundredCommissionReportExport;
 
 class LessThanTwoHundredCommissionReport extends Component
 {
@@ -53,10 +53,10 @@ class LessThanTwoHundredCommissionReport extends Component
     public function exportExcel()
     {
         $data = $this->getQuery()->get();
-        $fileName = 'sales-report-' . now()->format('Y-m-d') . '.xlsx';
+        $fileName = 'less-than-two-hundred-commission-report-' . now()->format('Y-m-d') . '.xlsx';
         
         return Excel::download(
-            new SalesReportExport($data),
+            new LessThanTwoHundredCommissionReportExport($data),
             $fileName
         );
     }
@@ -70,8 +70,11 @@ class LessThanTwoHundredCommissionReport extends Component
             'endDate' => $this->endDate
         ];
 
-        $pdf = PDF::loadView('exports.report.sales-report-pdf', $data);
-        return $pdf->download('sales-report-' . now()->format('Y-m-d') . '.pdf');
+        $pdf = PDF::loadView('exports.report.less-than-two-hundred-commission-report-pdf', $data);
+        return response()->streamDownload(
+            fn () => print($pdf->output()),
+            "less-than-two-hundred-commission-report-".now()->format('Y-m-d').".pdf"
+        );
     }
 
     protected function getQuery()
