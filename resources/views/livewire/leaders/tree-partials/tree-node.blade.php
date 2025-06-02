@@ -30,14 +30,14 @@
                         :node="$node->left" 
                         :currentDepth="$currentDepth + 1" 
                         :maxDepth="$maxDepth"
-                        wire:key="node-left-{{ $node->user_id }}"
+                        wire:key="node-left-{{ $node->user_id }}-{{ uniqid() }}"
                     />
                     {{-- <x-tree-node  --}}
                     <livewire:leaders.tree-partials.tree-node
                         :node="$node->right" 
                         :currentDepth="$currentDepth + 1" 
                         :maxDepth="$maxDepth"
-                        wire:key="node-right-{{ $node->user_id }}"
+                        wire:key="node-right-{{ $node->user_id }}-{{ uniqid() }}"
                     />
                 </ul>
             @endif

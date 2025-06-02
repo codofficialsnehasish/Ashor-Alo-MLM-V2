@@ -41,21 +41,46 @@
                                 </div> --}}
                                 <div class="body genealogy-body genealogy-scroll">
                                     <!-- Loading overlay - shows during Livewire updates -->
-                                    <div wire:loading class="loading-overlay">
+                                    {{-- <div wire:loading class="loading-overlay">
                                         <div class="spinner-border text-primary" role="status">
                                             <span class="visually-hidden">Loading tree...</span>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                     @if($root)
-                                        <div class="d-flex justify-content-between mb-3">
-                                            @if($currentRootId)
-                                                <button wire:click="loadTree()" class="btn btn-sm btn-primary">
-                                                    Back to Root
-                                                </button>
-                                            @else
-                                                <div></div> <!-- Empty spacer -->
-                                            @endif
-                                        </div>
+                                        <form wire:submit.prevent="">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-5">
+                                                    <div class="search-container">
+                                                        <input type="text" class="form-control" id="search-report" 
+                                                            placeholder="Search by name or member number..." 
+                                                            wire:model.live="search"
+                                                            wire:keydown.escape="searchResults = []"
+                                                            autocomplete="off">
+                                                        
+                                                        @if(count($searchResults) > 0)
+                                                            <div class="search-results dropdown-menu show" style="display: block; width: 100%;">
+                                                                @foreach($searchResults as $result)
+                                                                    <a href="javascript:void(0)" 
+                                                                    class="dropdown-item" 
+                                                                    wire:click="setAsRoot({{ $result['id'] }})">
+                                                                        {{ $result['name'] }} ({{ $result['member_number'] }})
+                                                                    </a>
+                                                                @endforeach
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-7">
+                                                    @if($currentRootId)
+                                                        <button wire:click="loadTree()" class="btn btn-sm btn-primary float-end">
+                                                            Back to Root
+                                                        </button>
+                                                    @else
+                                                        <div></div> <!-- Empty spacer -->
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </form>
                                 
                                         <div class="genealogy-tree">
                                             <ul id="tree-container">
@@ -63,7 +88,7 @@
                                                     :node="$root" 
                                                     :currentDepth="1" 
                                                     :maxDepth="$levelsToShow"
-                                                    wire:key="node-{{ $root->user_id }}"
+                                                    wire:key="node-{{ $root->user_id }}-{{ uniqid() }}"
                                                 />
                                             </ul>
                                         </div>

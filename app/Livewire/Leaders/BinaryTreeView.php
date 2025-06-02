@@ -12,72 +12,44 @@ class BinaryTreeView extends Component
     public $root;
     public $currentRootId = null;
     public $levelsToShow = 4;
+    public $searchResults = [];
+    public $search = '';
 
     public function mount()
     {
         $this->loadTree();
     }
 
-    // public function loadTree($rootId = null)
-    // {
-    //     // Eager load user with all necessary relationships and counts
-    //     $withClosure = function ($query) {
-    //         $query->with([
-    //             // Add any direct relationships you need
-    //             // 'sponsor',     
-    //             // 'rank'
-    //         ])->withCount([
-    //             'leftUsers as register_left',
-    //             'rightUsers as register_right',
-    //             'leftUsers as activated_left' => function ($q) {
-    //                 $q->where('status', 1);
-    //             },
-    //             'rightUsers as activated_right' => function ($q) {
-    //                 $q->where('status', 1);
-    //             },
-    //             // Add other counts you need
-    //         ]);
-    //     };
+    public function updatedSearch($value)
+    {
+        if (strlen($value) < 2) {
+            $this->searchResults = [];
+            return;
+        }
 
-    //     if ($rootId) {
-    //         $this->currentRootId = $rootId;
-    //         $this->root = BinaryTree::with([
-    //             'user' => $withClosure,
-    //             'left.user' => $withClosure,
-    //             'right.user' => $withClosure,
-    //         ])->where('user_id',$rootId)->first();
-    //     } else {
-    //         $this->currentRootId = null;
-    //         $this->root = BinaryTree::with([
-    //             'user' => $withClosure,
-    //             'left.user' => $withClosure,
-    //             'right.user' => $withClosure,
-    //         ])->whereNull('parent_id')->first();
-    //     }
+        $this->searchResults = BinaryTree::with('user')
+            ->whereHas('user', function($query) use ($value) {
+                $query->where('name', 'like', '%'.$value.'%')
+                      ->orWhere('email', 'like', '%'.$value.'%')
+                      ->orWhere('member_number', 'like', '%'.$value.'%');
+            })
+            ->limit(10)
+            ->get()
+            ->map(function($tree) {
+                return [
+                    'id' => $tree->user_id,
+                    'name' => $tree->user->name,
+                    'member_number' => $tree->user->member_number,
+                    'email' => $tree->user->email
+                ];
+            });
+    }
 
-    //     // Load the next 4 levels with all required user data
-    //     if ($this->root) {
-    //         $this->loadLevels($this->root, $this->levelsToShow, $withClosure);
-    //     }
-    // }
-
-    // protected function loadLevels(&$node, $levelsRemaining, $withClosure)
-    // {
-    //     if ($levelsRemaining <= 0) return;
-
-    //     // Eager load left and right with their users and counts
-    //     $node->load([
-    //         'left.user' => $withClosure,
-    //         'right.user' => $withClosure,
-    //     ]);
-        
-    //     if ($node->left) {
-    //         $this->loadLevels($node->left, $levelsRemaining - 1, $withClosure);
-    //     }
-    //     if ($node->right) {
-    //         $this->loadLevels($node->right, $levelsRemaining - 1, $withClosure);
-    //     }
-    // }
+    public function resetSearch()
+    {
+        $this->searchResults = [];
+        $this->search = '';
+    }
 
     public function loadTree($rootId = null)
     {
@@ -99,6 +71,8 @@ class BinaryTreeView extends Component
         if ($this->root) {
             $this->loadLevels($this->root, $this->levelsToShow);
         }
+
+        $this->resetSearch();
     }
 
     protected function loadLevels(&$node, $levelsRemaining)
