@@ -66,8 +66,11 @@ class InvestorReturnReport extends Component
             'endDate' => $this->endDate
         ];
 
-        $pdf = PDF::loadView('exports.report.sales-report-pdf', $data);
-        return $pdf->download('sales-report-' . now()->format('Y-m-d') . '.pdf');
+        $pdf = PDF::loadView('exports.report.investor-return-report-pdf', $data);
+        return response()->streamDownload(
+            fn () => print($pdf->output()),
+            "investor-return-report-".now()->format('Y-m-d').".pdf"
+        );
     }
 
     protected function getQuery()

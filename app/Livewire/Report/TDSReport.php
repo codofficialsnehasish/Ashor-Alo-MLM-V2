@@ -9,6 +9,9 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Excel;
 use PDF;
+use App\Exports\TDSReportExport;
+use App\Exports\TDSReportFullExport;
+
 
 class TDSReport extends Component
 {
@@ -55,30 +58,13 @@ class TDSReport extends Component
     public function exportExcel()
     {
         $data = $this->getQuery()->get();
+        // dd($data);
         $fileName = 'tds-report-' . now()->format('Y-m-d') . '.xlsx';
 
-        return Excel::download(new class($data) implements \Maatwebsite\Excel\Concerns\FromCollection, \Maatwebsite\Excel\Concerns\WithHeadings {
-            protected $data;
-
-            public function __construct($data)
-            {
-                $this->data = $data;
-            }
-
-            public function collection()
-            {
-                return $this->data;
-            }
-
-            public function headings(): array
-            {
-                return [
-                    'User ID',
-                    'Total Amount',
-                    'First Transaction Date'
-                ];
-            }
-        }, $fileName);
+        return Excel::download(
+            new TDSReportExport($data),
+            $fileName
+        );
     }
 
     public function exportFullExcel()
@@ -86,30 +72,10 @@ class TDSReport extends Component
         $data = $this->getFullDetailsQuery()->get();
         $fileName = 'tds-full-report-' . now()->format('Y-m-d') . '.xlsx';
 
-        return Excel::download(new class($data) implements \Maatwebsite\Excel\Concerns\FromCollection, \Maatwebsite\Excel\Concerns\WithHeadings {
-            protected $data;
-
-            public function __construct($data)
-            {
-                $this->data = $data;
-            }
-
-            public function collection()
-            {
-                return $this->data;
-            }
-
-            public function headings(): array
-            {
-                return [
-                    'Transaction ID',
-                    'Amount',
-                    'Type',
-                    'Date',
-                    'Status'
-                ];
-            }
-        }, $fileName);
+        return Excel::download(
+            new TDSReportFullExport($data),
+            $fileName
+        );
     }
 
     public function exportPDF()
@@ -121,8 +87,12 @@ class TDSReport extends Component
             'endDate' => $this->endDate
         ];
 
-        $pdf = PDF::loadView('exports.tds-report-pdf', $data);
-        return $pdf->download('tds-report-' . now()->format('Y-m-d') . '.pdf');
+        $pdf = PDF::loadView('exports.report.tds-report-pdf', $data);
+        // return $pdf->download('tds-report-' . now()->format('Y-m-d') . '.pdf');
+        return response()->streamDownload(
+            fn () => print($pdf->output()),
+            "tds-report-".now()->format('Y-m-d').".pdf"
+        );
     }
 
     public function exportFullPDF()
@@ -135,8 +105,12 @@ class TDSReport extends Component
             'userName' => $this->selectedUserName
         ];
 
-        $pdf = PDF::loadView('exports.tds-full-report-pdf', $data);
-        return $pdf->download('tds-full-report-' . $this->selectedUserId . '-' . now()->format('Y-m-d') . '.pdf');
+        $pdf = PDF::loadView('exports.report.tds-full-report-pdf', $data);
+        // return $pdf->download('tds-full-report-' . $this->selectedUserId . '-' . now()->format('Y-m-d') . '.pdf');
+        return response()->streamDownload(
+            fn () => print($pdf->output()),
+            "tds-full-report-".now()->format('Y-m-d').".pdf"
+        );
     }
 
     protected function getQuery()

@@ -9,6 +9,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Excel;
 use PDF;
+use App\Exports\TDSReportExport;
+use App\Exports\TDSReportFullExport;
 
 class ProductSupportReport extends Component
 {
@@ -57,28 +59,10 @@ class ProductSupportReport extends Component
         $data = $this->getQuery()->get();
         $fileName = 'product-support-report-' . now()->format('Y-m-d') . '.xlsx';
 
-        return Excel::download(new class($data) implements \Maatwebsite\Excel\Concerns\FromCollection, \Maatwebsite\Excel\Concerns\WithHeadings {
-            protected $data;
-
-            public function __construct($data)
-            {
-                $this->data = $data;
-            }
-
-            public function collection()
-            {
-                return $this->data;
-            }
-
-            public function headings(): array
-            {
-                return [
-                    'User ID',
-                    'Total Amount',
-                    'First Transaction Date'
-                ];
-            }
-        }, $fileName);
+        return Excel::download(
+            new TDSReportExport($data),
+            $fileName
+        );
     }
 
     public function exportFullExcel()
@@ -86,30 +70,10 @@ class ProductSupportReport extends Component
         $data = $this->getFullDetailsQuery()->get();
         $fileName = 'product-support-full-report-' . now()->format('Y-m-d') . '.xlsx';
 
-        return Excel::download(new class($data) implements \Maatwebsite\Excel\Concerns\FromCollection, \Maatwebsite\Excel\Concerns\WithHeadings {
-            protected $data;
-
-            public function __construct($data)
-            {
-                $this->data = $data;
-            }
-
-            public function collection()
-            {
-                return $this->data;
-            }
-
-            public function headings(): array
-            {
-                return [
-                    'Transaction ID',
-                    'Amount',
-                    'Type',
-                    'Date',
-                    'Status'
-                ];
-            }
-        }, $fileName);
+        return Excel::download(
+            new TDSReportFullExport($data),
+            $fileName
+        );
     }
 
     public function exportPDF()
@@ -121,8 +85,11 @@ class ProductSupportReport extends Component
             'endDate' => $this->endDate
         ];
 
-        $pdf = PDF::loadView('exports.product-support-report-pdf', $data);
-        return $pdf->download('product-support-report-' . now()->format('Y-m-d') . '.pdf');
+        $pdf = PDF::loadView('exports.report.tds-report-pdf', $data);
+        return response()->streamDownload(
+            fn () => print($pdf->output()),
+            "product-support-report-".now()->format('Y-m-d').".pdf"
+        );
     }
 
     public function exportFullPDF()
@@ -135,8 +102,11 @@ class ProductSupportReport extends Component
             'userName' => $this->selectedUserName
         ];
 
-        $pdf = PDF::loadView('exports.product-support-full-report-pdf', $data);
-        return $pdf->download('product-support-full-report-' . $this->selectedUserId . '-' . now()->format('Y-m-d') . '.pdf');
+        $pdf = PDF::loadView('exports.report.tds-full-report-pdf', $data);
+        return response()->streamDownload(
+            fn () => print($pdf->output()),
+            "product-support-full-report-".now()->format('Y-m-d').".pdf"
+        );
     }
 
     protected function getQuery()

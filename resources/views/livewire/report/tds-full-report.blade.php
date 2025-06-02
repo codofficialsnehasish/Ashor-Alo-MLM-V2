@@ -37,13 +37,13 @@
                                     </div>
                                     <div class="col-md-6">
                                         <button wire:click="backToSummary" class="btn btn-secondary me-2">
-                                             Back to Summary
+                                            Back to Summary
                                         </button>
                                         <button wire:click="exportFullExcel" class="btn btn-success me-2">
-                                             Export Excel
+                                            Export Excel
                                         </button>
                                         <button wire:click="exportFullPDF" class="btn btn-danger">
-                                             Export PDF
+                                            Export PDF
                                         </button>
                                     </div>
                                     <div class="col-md-6 d-flex align-items-end">
@@ -75,7 +75,7 @@
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="5" class="text-center">No transactions found</td>
+                                                    <td colspan="4" class="text-center">No transactions found</td>
                                                 </tr>
                                             @endforelse
                                         </tbody>
