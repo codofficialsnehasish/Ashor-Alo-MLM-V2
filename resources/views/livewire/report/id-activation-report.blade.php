@@ -28,12 +28,12 @@
                             <div class="card-body">
                                 <form wire:submit.prevent="generateReport">
                                     <div class="row">
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <label for="startDate">Start Date</label>
                                             <input type="date" class="form-control" id="startDate" wire:model="startDate">
                                             @error('startDate') <span class="text-danger">{{ $message }}</span> @enderror
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <label for="endDate">End Date</label>
                                             <input type="date" class="form-control" id="endDate" wire:model="endDate">
                                             @error('endDate') <span class="text-danger">{{ $message }}</span> @enderror
@@ -47,8 +47,16 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div class="col-md-3 d-flex align-items-end">
+                                        <div class="col-md-2 d-flex align-items-end">
                                             <button type="submit" class="btn btn-primary">Generate Report</button>
+                                        </div>
+                                        <div class="col-md-3 d-flex align-items-end">
+                                            <button wire:click="exportExcel" class="btn btn-success me-2">
+                                                Export Excel
+                                            </button>
+                                            <button wire:click="exportPDF" class="btn btn-danger">
+                                                Export PDF
+                                            </button>
                                         </div>
                                     </div>
                                 </form>
@@ -74,8 +82,8 @@
                                                     <td>{{ $item->user?->name }}</td>
                                                     <td>{{ $item->member_number }}</td>
                                                     <td>{{ $item->joining_amount }}</td>
-                                                    <td>{{ $item->joinedBy->name ?? 'N/A' }}</td>
                                                     <td>{{ format_datetime($item->activated_at) }}</td>
+                                                    <td>{{ $item->joinedBy->name ?? 'N/A' }}</td>
                                                 </tr>
                                             @endforeach
                                         </tbody>

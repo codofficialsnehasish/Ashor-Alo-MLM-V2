@@ -5,6 +5,9 @@ namespace App\Livewire\Report;
 use Livewire\Component;
 use App\Models\User;
 use App\Models\BinaryTree;
+use Excel;
+use PDF;
+use App\Exports\IdActivationExport;
 
 class IdActivationReport extends Component
 {
@@ -50,6 +53,40 @@ class IdActivationReport extends Component
         ]);
 
         $this->loadData();
+    }
+
+     public function exportExcel()
+    {
+        $this->validate([
+            'startDate' => 'required|date',
+            'endDate' => 'required|date|after_or_equal:startDate',
+        ]);
+
+        $this->loadData();
+
+        return Excel::download(new IdActivationExport($this->items), 'id-activation-report.xlsx');
+    }
+
+    public function exportPDF()
+    {
+        $this->validate([
+            'startDate' => 'required|date',
+            'endDate' => 'required|date|after_or_equal:startDate',
+        ]);
+
+        $this->loadData();
+
+        $pdf = PDF::loadView('exports.report.id-activation-pdf', [
+            'title' => $this->title,
+            'items' => $this->items,
+            'startDate' => $this->startDate,
+            'endDate' => $this->endDate,
+        ]);
+
+        return response()->streamDownload(
+            fn () => print($pdf->output()),
+            "id-activation-report-".now()->format('Y-m-d').".pdf"
+        );
     }
 
     public function render()
