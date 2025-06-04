@@ -113,10 +113,10 @@
                                                 </select>
                                             </td>
                                             <td class="d-flex">
-                                                <a href="{{ route('orders.print', $order->id) }}" 
-                                                class="btn btn-sm btn-primary me-2" title="View">
+                                                <a href="{{ route('orders.print', $order->id) }}"  class="btn btn-sm btn-primary me-2" title="View">
                                                     <i class="ti-eye"></i>
                                                 </a>
+                                                <a href="{{ route('orders.payment-recipt',$order->id) }}"  class="btn btn-sm btn-info me-2" title="Payment Receipt"><i class="ti-agenda"></i></a>
                                                 <a wire:click="delete({{ $order->id }})" 
                                                 class="btn btn-sm btn-danger" title="Delete" onclick="confirm('Are you sure?') || event.stopImmediatePropagation()">
                                                     <i class="ti-trash"></i>

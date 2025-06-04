@@ -179,6 +179,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/list', OrderList::class)->name('list');
         Route::get('/add', AddOrder::class)->name('add');
         Route::get('/print/{order}', [AddOrder::class, 'print'])->name('print');
+        Route::get('/payment-recipt/{order}', [AddOrder::class, 'payment_recipt'])->name('payment-recipt');
     });
 
     Route::prefix('reports')->name('report.')->group(function () {

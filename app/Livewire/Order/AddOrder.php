@@ -512,6 +512,12 @@ class AddOrder extends Component
         return view('orders.print', compact('order'));
     }
 
+    public function payment_recipt(Order $order)
+    {
+        $order->load(['user', 'items.product', 'items.variation']);
+        return view('orders.payment_recipt', compact('order'));
+    }
+
     public function render()
     {
         return view('livewire.order.add-order');
