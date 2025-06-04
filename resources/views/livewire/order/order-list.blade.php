@@ -99,14 +99,18 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                <span class="badge 
-                                                    @if($order->order_status === 'Order Placed') badge-info
-                                                    @elseif($order->order_status === 'Order Procesing') badge-warning
-                                                    @elseif($order->order_status === 'Order Shipped') badge-danger
-                                                    @elseif($order->order_status === 'Order Completed') badge-success
-                                                    @endif">
-                                                    {{ $order->order_status }}
-                                                </span>
+                                                <select wire:change="updateOrderStatus('{{ $order->id }}', $event.target.value)" 
+                                                        class="form-select form-select-sm 
+                                                            @if($order->order_status === 'Order Placed') bg-info
+                                                            @elseif($order->order_status === 'Order Procesing') bg-warning
+                                                            @elseif($order->order_status === 'Order Shipped') bg-danger
+                                                            @elseif($order->order_status === 'Order Completed') bg-success
+                                                            @endif">
+                                                    <option value="Order Placed" @if($order->order_status === 'Order Placed') selected @endif>Order Placed</option>
+                                                    <option value="Order Procesing" @if($order->order_status === 'Order Procesing') selected @endif>Order Processing</option>
+                                                    <option value="Order Shipped" @if($order->order_status === 'Order Shipped') selected @endif>Order Shipped</option>
+                                                    <option value="Order Completed" @if($order->order_status === 'Order Completed') selected @endif>Order Completed</option>
+                                                </select>
                                             </td>
                                             <td class="d-flex">
                                                 <a href="{{ route('orders.print', $order->id) }}" 

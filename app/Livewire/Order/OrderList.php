@@ -5,6 +5,7 @@ namespace App\Livewire\Order;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Order;
+use Illuminate\Support\Facades\Auth;
 
 class OrderList extends Component
 {
@@ -64,6 +65,25 @@ class OrderList extends Component
                 ->orderBy($this->sortField, $this->sortDirection)
                 ->paginate($this->perPage)
         ]);
+    }
+
+    public function updateOrderStatus($orderId, $newStatus)
+    {
+        $order = Order::find($orderId);
+        if ($order) {
+            $order->order_status = $newStatus;
+            if($newStatus == 'Order Completed'){
+                $order->status = 1;
+                $order->delivered_date = now();
+                $order->delivered_by = Auth::user()->name.'('.get_role(Auth::id()).')';
+            }else{
+                $order->status = 0;
+                $order->delivered_date = null;
+                $order->delivered_by = null;
+            }
+            $order->save();
+            session()->flash('message', 'Order status updated successfully.');
+        }
     }
 
     public function delete($id)
