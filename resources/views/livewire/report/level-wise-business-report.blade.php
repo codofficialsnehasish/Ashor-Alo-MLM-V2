@@ -92,7 +92,6 @@
                                                     <th class="text-wrap">Sponsor Id</th>
                                                     <th class="text-wrap">Date</th>
                                                     <th class="text-wrap">Amount</th>
-                                                    <th class="text-wrap">Product</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -109,7 +108,6 @@
                                                     <td class="text-wrap">{{ $item['sponsor_id'] }}</td>
                                                     <td class="text-wrap">{{ formated_date($item['total_business']->start_date,'-') }}</td>
                                                     <td class="text-wrap">{{ $item['total_business']->total_amount }}</td>
-                                                    <td class="text-wrap"></td>
                                                 </tr>
                                                 @endforeach
                                             </tbody>
@@ -122,7 +120,6 @@
                                                     <td></td>
                                                     <td></td>
                                                     <td><b>Total Amount - {{ $amount }}</b></td>
-                                                    <td></td>
                                                 </tr>
                                             </tfoot>
                                         </table>

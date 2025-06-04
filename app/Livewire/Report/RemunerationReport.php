@@ -7,7 +7,7 @@ use Livewire\WithPagination;
 use App\Models\SalaryBonus;
 use Excel;
 use PDF;
-use App\Exports\InvestorReturnReportExport;
+use App\Exports\RemunerationReportExport;
 
 class RemunerationReport extends Component
 {
@@ -49,10 +49,10 @@ class RemunerationReport extends Component
     public function exportExcel()
     {
         $data = $this->getQuery()->get();
-        $fileName = 'investor-return-report-' . now()->format('Y-m-d') . '.xlsx';
+        $fileName = 'remuneration-report-' . now()->format('Y-m-d') . '.xlsx';
         
         return Excel::download(
-            new InvestorReturnReportExport($data),
+            new RemunerationReportExport($data),
             $fileName
         );
     }
@@ -66,8 +66,11 @@ class RemunerationReport extends Component
             'endDate' => $this->endDate
         ];
 
-        $pdf = PDF::loadView('exports.report.sales-report-pdf', $data);
-        return $pdf->download('sales-report-' . now()->format('Y-m-d') . '.pdf');
+        $pdf = PDF::loadView('exports.report.remuneration-report-pdf', $data);
+        return response()->streamDownload(
+            fn () => print($pdf->output()),
+            "remuneration-report-".now()->format('Y-m-d').".pdf"
+        );
     }
 
     protected function getQuery()

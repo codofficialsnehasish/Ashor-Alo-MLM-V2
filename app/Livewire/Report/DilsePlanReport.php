@@ -7,7 +7,7 @@ use Livewire\WithPagination;
 use App\Models\TopUp;
 use Excel;
 use PDF;
-use App\Exports\InvestorReturnReportExport;
+use App\Exports\DilsePlanReportExport;
 
 class DilsePlanReport extends Component
 {
@@ -49,10 +49,10 @@ class DilsePlanReport extends Component
     public function exportExcel()
     {
         $data = $this->getQuery()->get();
-        $fileName = 'investor-return-report-' . now()->format('Y-m-d') . '.xlsx';
+        $fileName = 'dilse-plan-report-' . now()->format('Y-m-d') . '.xlsx';
         
         return Excel::download(
-            new InvestorReturnReportExport($data),
+            new DilsePlanReportExport($data),
             $fileName
         );
     }
@@ -66,8 +66,11 @@ class DilsePlanReport extends Component
             'endDate' => $this->endDate
         ];
 
-        $pdf = PDF::loadView('exports.report.sales-report-pdf', $data);
-        return $pdf->download('sales-report-' . now()->format('Y-m-d') . '.pdf');
+        $pdf = PDF::loadView('exports.report.dilse-plan-report-pdf', $data);
+        return response()->streamDownload(
+            fn () => print($pdf->output()),
+            "dilse-plan-report-".now()->format('Y-m-d').".pdf"
+        );
     }
 
     protected function getQuery()

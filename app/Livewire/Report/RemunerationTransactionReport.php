@@ -9,6 +9,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Excel;
 use PDF;
+use App\Exports\TDSReportExport;
+use App\Exports\TDSReportFullExport;
 
 class RemunerationTransactionReport extends Component
 {
@@ -55,61 +57,23 @@ class RemunerationTransactionReport extends Component
     public function exportExcel()
     {
         $data = $this->getQuery()->get();
-        $fileName = 'direct-bonus-report-' . now()->format('Y-m-d') . '.xlsx';
+        $fileName = 'remuneration-transaction-report-' . now()->format('Y-m-d') . '.xlsx';
 
-        return Excel::download(new class($data) implements \Maatwebsite\Excel\Concerns\FromCollection, \Maatwebsite\Excel\Concerns\WithHeadings {
-            protected $data;
-
-            public function __construct($data)
-            {
-                $this->data = $data;
-            }
-
-            public function collection()
-            {
-                return $this->data;
-            }
-
-            public function headings(): array
-            {
-                return [
-                    'User ID',
-                    'Total Amount',
-                    'First Transaction Date'
-                ];
-            }
-        }, $fileName);
+        return Excel::download(
+            new TDSReportExport($data),
+            $fileName
+        );
     }
 
     public function exportFullExcel()
     {
         $data = $this->getFullDetailsQuery()->get();
-        $fileName = 'direct-bonus-full-report-' . now()->format('Y-m-d') . '.xlsx';
+        $fileName = 'remuneration-transaction-full-report-' . now()->format('Y-m-d') . '.xlsx';
 
-        return Excel::download(new class($data) implements \Maatwebsite\Excel\Concerns\FromCollection, \Maatwebsite\Excel\Concerns\WithHeadings {
-            protected $data;
-
-            public function __construct($data)
-            {
-                $this->data = $data;
-            }
-
-            public function collection()
-            {
-                return $this->data;
-            }
-
-            public function headings(): array
-            {
-                return [
-                    'Transaction ID',
-                    'Amount',
-                    'Type',
-                    'Date',
-                    'Status'
-                ];
-            }
-        }, $fileName);
+        return Excel::download(
+            new TDSReportFullExport($data),
+            $fileName
+        );
     }
 
     public function exportPDF()
@@ -121,22 +85,28 @@ class RemunerationTransactionReport extends Component
             'endDate' => $this->endDate
         ];
 
-        $pdf = PDF::loadView('exports.direct-bonus-report-pdf', $data);
-        return $pdf->download('direct-bonus-report-' . now()->format('Y-m-d') . '.pdf');
+        $pdf = PDF::loadView('exports.report.tds-report-pdf', $data);
+        return response()->streamDownload(
+            fn () => print($pdf->output()),
+            "remuneration-transaction-report-".now()->format('Y-m-d').".pdf"
+        );
     }
 
     public function exportFullPDF()
     {
         $data = [
-            'title' => 'Direct Bonus Full Report - ' . $this->selectedUserName,
+            'title' => 'Remuneration Transaction Full Report - ' . $this->selectedUserName,
             'items' => $this->getFullDetailsQuery()->get(),
             'startDate' => $this->startDate,
             'endDate' => $this->endDate,
             'userName' => $this->selectedUserName
         ];
 
-        $pdf = PDF::loadView('exports.direct-bonus-full-report-pdf', $data);
-        return $pdf->download('direct-bonus-full-report-' . $this->selectedUserId . '-' . now()->format('Y-m-d') . '.pdf');
+        $pdf = PDF::loadView('exports.report.tds-full-report-pdf', $data);
+        return response()->streamDownload(
+            fn () => print($pdf->output()),
+            "remuneration-transaction-full-report-".now()->format('Y-m-d').".pdf"
+        );
     }
 
     protected function getQuery()

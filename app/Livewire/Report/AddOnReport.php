@@ -7,7 +7,7 @@ use Livewire\WithPagination;
 use App\Models\TopUp;
 use Excel;
 use PDF;
-use App\Exports\SalesReportExport;
+use App\Exports\AddOnReportExport;
 
 class AddOnReport extends Component
 {
@@ -49,10 +49,10 @@ class AddOnReport extends Component
     public function exportExcel()
     {
         $data = $this->getQuery()->get();
-        $fileName = 'sales-report-' . now()->format('Y-m-d') . '.xlsx';
+        $fileName = 'addon-report-' . now()->format('Y-m-d') . '.xlsx';
         
         return Excel::download(
-            new SalesReportExport($data),
+            new AddOnReportExport($data),
             $fileName
         );
     }
@@ -66,8 +66,11 @@ class AddOnReport extends Component
             'endDate' => $this->endDate
         ];
 
-        $pdf = PDF::loadView('exports.report.sales-report-pdf', $data);
-        return $pdf->download('sales-report-' . now()->format('Y-m-d') . '.pdf');
+        $pdf = PDF::loadView('exports.report.addon-report-pdf', $data);
+        return response()->streamDownload(
+            fn () => print($pdf->output()),
+            "addon-report-".now()->format('Y-m-d').".pdf"
+        );
     }
 
     protected function getQuery()

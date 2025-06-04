@@ -7,7 +7,7 @@ use Livewire\WithPagination;
 use App\Models\Order;
 use Excel;
 use PDF;
-use App\Exports\SalesReportExport;
+use App\Exports\ProductDeliveryReportExport;
 
 class ProductDeliveryReport extends Component
 {
@@ -53,10 +53,10 @@ class ProductDeliveryReport extends Component
     public function exportExcel()
     {
         $data = $this->getQuery()->get();
-        $fileName = 'sales-report-' . now()->format('Y-m-d') . '.xlsx';
+        $fileName = 'product-delivery-report-' . now()->format('Y-m-d') . '.xlsx';
         
         return Excel::download(
-            new SalesReportExport($data),
+            new ProductDeliveryReportExport($data),
             $fileName
         );
     }
@@ -70,8 +70,11 @@ class ProductDeliveryReport extends Component
             'endDate' => $this->endDate
         ];
 
-        $pdf = PDF::loadView('exports.report.sales-report-pdf', $data);
-        return $pdf->download('sales-report-' . now()->format('Y-m-d') . '.pdf');
+        $pdf = PDF::loadView('exports.report.product-delivery-report-pdf', $data);
+        return response()->streamDownload(
+            fn () => print($pdf->output()),
+            'product-delivery-report-'.now()->format('Y-m-d').'.pdf'
+        );
     }
 
     protected function getQuery()

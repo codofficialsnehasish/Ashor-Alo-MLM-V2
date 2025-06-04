@@ -8,6 +8,10 @@ use App\Models\BinaryTree;
 use App\Models\TopUp;
 use Livewire\WithPagination;
 
+use Excel;
+use PDF;
+use App\Exports\LevelWiseBusinessExport;
+
 class LevelWiseBusinessReport extends Component
 {
     use WithPagination;
@@ -75,12 +79,12 @@ class LevelWiseBusinessReport extends Component
                 return [
                     'id' => $node->user_id,
                     'level' => $node->depth - $rootNode->depth, // Calculate level based on depth
-                    'user_id' => optional($node->user)->user_id,
+                    'user_id' => optional($node->user)->member_number,
                     'name' => optional($node->user)->name,
                     'phone' => optional($node->user)->phone,
                     'reg_date' => optional($node->user)->created_at,
                     'position' => $node->position,
-                    'sponsor_id' => $node->sponsor_id,
+                    'sponsor_id' => $node->sponsor?->member_number,
                     'status' => $node->status,
                 ];
             })
@@ -145,13 +149,56 @@ class LevelWiseBusinessReport extends Component
 
     public function exportPdf()
     {
-        // Implement PDF export logic similar to your original controller method
-        // You can reuse most of the code from level_wise_business_exportPdf
+        $data = [
+            'groupedBusiness' => $this->groupedBusiness,
+            'total_amount' => $this->total_amount,
+            'total_user_count' => $this->total_user_count,
+            'title' => $this->title,
+            'start_date' => $this->start_date,
+            'end_date' => $this->end_date,
+        ];
+
+        $pdf = Pdf::loadView('exports.report.level-wise-business-pdf', $data);
+        
+        return response()->streamDownload(
+            fn () => print($pdf->output()),
+            'level-wise-business-report-'.now()->format('Y-m-d').'.pdf'
+        );
     }
 
     public function exportExcel()
     {
-        // Implement Excel export logic similar to your original controller method
-        // You can reuse most of the code from level_wise_business_exportExcel
+        $exportData = [];
+        
+        foreach ($this->groupedBusiness as $level => $users) {
+            foreach ($users as $user) {
+                $exportData[] = [
+                    'Level' => $level,
+                    'User ID' => $user['user_id'] ?? '',
+                    'Name' => $user['name'] ?? '',
+                    'Phone' => $user['phone'] ?? '',
+                    'Registration Date' => $user['reg_date'] ? $user['reg_date']->format('Y-m-d') : '',
+                    'Position' => $user['position'] ?? '',
+                    'Sponsor ID' => $user['sponsor_id'] ?? '',
+                    'Status' => $user['status'] ?? '',
+                    'Amount' => $user['total_business']->total_amount ?? 0,
+                ];
+            }
+        }
+
+        // Add summary row
+        $exportData[] = [
+            'Level' => 'Total',
+            'User ID' => '',
+            'Name' => '',
+            'Phone' => '',
+            'Registration Date' => '',
+            'Position' => '',
+            'Sponsor ID' => '',
+            'Status' => '',
+            'Amount' => $this->total_amount,
+        ];
+
+        return Excel::download(new LevelWiseBusinessExport($exportData, $this->title), 'level-wise-business-report-'.now()->format('Y-m-d').'.xlsx');
     }
 }
