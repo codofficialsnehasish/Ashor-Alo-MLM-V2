@@ -14,18 +14,23 @@ class TransferSubtree extends Component
     public $position = 'left';
     public $availablePositions = [];
     public $confirmationModal = false;
+    public $forcePosition = false;
+    public $showForceOption = false;
 
     public function render()
     {
         $nodes = BinaryTree::with('user')
-            ->when($this->search, function ($query) {
-                $query->whereHas('user', function($q) {
-                    $q->where('name', 'like', '%'.$this->search.'%')
-                      ->orWhere('email', 'like', '%'.$this->search.'%')
-                      ->orWhere('phone', 'like', '%'.$this->search.'%');
-                });
-            })
-            ->paginate(10);
+                ->when($this->search, function ($query) {
+                    $query->whereHas('user', function($q) {
+                        $q->where('name', 'like', '%' . $this->search . '%')
+                        ->orWhere('email', 'like', '%' . $this->search . '%')
+                        ->orWhere('phone', 'like', '%' . $this->search . '%');
+                    })->orWhereHas('user.binaryNode', function ($q3) {
+                        $q3->where('member_number', 'like', '%' . $this->search . '%');
+                    });
+                })
+                ->paginate(10);
+
 
         return view('livewire.leaders.transfer-subtree', [
             'nodes' => $nodes
@@ -40,24 +45,39 @@ class TransferSubtree extends Component
 
     public function checkPositions($sponsorId)
     {
-        $sponsor = BinaryTree::find($sponsorId);
+        $sponsor = BinaryTree::where('member_number',$sponsorId)->first();
         $this->availablePositions = [];
+        $this->showForceOption = false;
         
         if (!$sponsor) return;
         
-        if (!$sponsor->left_user_id) {
-            $this->availablePositions[] = 'left';
-        }
-        if (!$sponsor->right_user_id) {
-            $this->availablePositions[] = 'right';
-        }
+        // if (!$sponsor->left_user_id) {
+        //     $this->availablePositions[] = 'left';
+        // }
+        // if (!$sponsor->right_user_id) {
+        //     $this->availablePositions[] = 'right';
+        // }
+
+        // Show force option if both positions are occupied
+        // if (count($this->availablePositions) === 0) {
+            $this->showForceOption = true;
+            $this->availablePositions = ['left', 'right'];
+        // }
     }
 
     public function confirmTransfer(BinaryTreeService $binaryTreeService)
     {
         $this->validate([
             'selectedNode' => 'required',
-            'newSponsorId' => 'required|exists:binary_tree,user_id',
+            'newSponsorId' => [
+                'required', 
+                'exists:binary_trees,member_number',
+                function ($attribute, $value, $fail) {
+                    if ($this->selectedNode && $value == $this->selectedNode->member_number) {
+                        $fail('Cannot transfer to the same node');
+                    }
+                }
+            ],
             'position' => 'required|in:left,right'
         ]);
 
@@ -68,10 +88,16 @@ class TransferSubtree extends Component
                 $this->position
             );
             
-            session()->flash('message', 'Subtree transferred successfully');
+            $this->dispatch('toastMessage', json_encode([
+                'type'=>'success',
+                'message' => 'Subtree transferred successfully'
+            ]));
             $this->reset(['selectedNode', 'newSponsorId', 'position']);
         } catch (\Exception $e) {
-            session()->flash('error', $e->getMessage());
+            $this->dispatch('toastMessage', json_encode([
+                'type'=>'error',
+                'message' => $e->getMessage()
+            ]));
         }
     }
 }

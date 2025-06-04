@@ -137,33 +137,144 @@ class BinaryTreeService
         return $node;
     }
 
+    // public function transferSubtree($fromNodeId, $toSponsorId, $position)
+    // {
+    //     DB::transaction(function () use ($fromNodeId, $toSponsorId, $position) {
+    //         $node = BinaryTree::findOrFail($fromNodeId);
+    //         $newSponsor = BinaryTree::where('member_number', $toSponsorId)->firstOrFail();
+            
+    //         // Prevent circular references
+    //         if ($newSponsor->isDescendantOf($node)) {
+    //             throw new \Exception('Cannot move a node to its own descendant');
+    //         }
+
+    //         // Get all descendants to rebuild the tree
+    //         $descendants = $node->descendants()->with('user')->get();
+    //         $originalParent = $node->parent;
+
+    //         // Detach from old parent
+    //         if ($originalParent) {
+    //             $oldPositionField = $node->position . '_user_id';
+    //             $originalParent->update([$oldPositionField => null]);
+    //         }
+
+    //         // Attach to new sponsor
+    //         $positionField = $position . '_user_id';
+    //         if (!empty($newSponsor->$positionField)) {
+    //             throw new \Exception('Position already occupied');
+    //         }
+
+    //         // Update the main node
+    //         $node->update([
+    //             'parent_id' => $newSponsor->id,
+    //             'sponsor_id' => $newSponsor->id,
+    //             'position' => $position,
+    //             '_lft' => 0, // Will be recalculated
+    //             '_rgt' => 0  // Will be recalculated
+    //         ]);
+
+    //         $newSponsor->update([$positionField => $node->id]);
+
+    //         // Rebuild the entire tree to ensure consistency
+    //         BinaryTree::fixTree();
+    //     });
+    // }
+
     public function transferSubtree($fromNodeId, $toSponsorId, $position)
     {
-        DB::transaction(function () use ($fromNodeId, $toSponsorId, $position) {
+        return DB::transaction(function () use ($fromNodeId, $toSponsorId, $position) {
             $node = BinaryTree::findOrFail($fromNodeId);
-            $newSponsor = BinaryTree::where('user_id', $toSponsorId)->firstOrFail();
+            $newSponsor = BinaryTree::where('member_number', $toSponsorId)->firstOrFail();
 
-            // Validate position is available
+            // Prevent moving to its own descendant
+            if ($newSponsor->isDescendantOf($node)) {
+                throw new \Exception('Cannot move a node to its own descendant');
+            }
+
             $positionField = $position . '_user_id';
-            if (!empty($newSponsor->$positionField)) {
-                throw new \Exception('Position already occupied');
-            }
+            $originalParent = $node->parent;
 
-            // Detach from old parent
-            $oldParent = BinaryTree::find($node->parent_id);
-            if ($oldParent) {
+            // Step 1: Detach node from original parent
+            if ($originalParent) {
                 $oldPositionField = $node->position . '_user_id';
-                $oldParent->update([$oldPositionField => null]);
+                $originalParent->update([$oldPositionField => null]);
             }
 
-            // Attach to new sponsor
+            // Step 2: If sponsor already has a child at the target position,
+            // we'll push it down into the subtree (after attaching)
+            $existingChildId = $newSponsor->$positionField;
+
+            // Step 3: Attach node to new sponsor
             $node->update([
                 'parent_id' => $newSponsor->id,
-                'sponsor_id' => $toSponsorId,
-                'position' => $position
+                'sponsor_id' => $newSponsor->id,
+                'position' => $position,
+                '_lft' => 0,
+                '_rgt' => 0
             ]);
-
             $newSponsor->update([$positionField => $node->id]);
+
+            // Step 4: If there was an existing child, push it into the subtree
+            if (!empty($existingChildId)) {
+                $existingChild = BinaryTree::findOrFail($existingChildId);
+
+                // Find the deepest available node in the new subtree (node)
+                $target = $this->findDeepestNodeWithEmptyPosition($node);
+                if (!$target) {
+                    throw new \Exception('No space found in subtree to push down the existing child');
+                }
+
+                // Decide which side is empty (prefer left)
+                $targetPosition = empty($target->left_user_id) ? 'left' : 'right';
+
+                // Move the existing child under the subtree
+                $target->update([
+                    $targetPosition . '_user_id' => $existingChild->id
+                ]);
+                $existingChild->update([
+                    'parent_id' => $target->id,
+                    'position' => $targetPosition,
+                    'sponsor_id' => $target->id,
+                    '_lft' => 0,
+                    '_rgt' => 0
+                ]);
+            }
+
+            // Step 5: Rebuild the tree
+            BinaryTree::fixTree();
+
+            return [
+                'success' => true,
+                'message' => 'Subtree transferred and existing node pushed into subtree.',
+                'new_position' => $position
+            ];
         });
     }
+
+
+    protected function findDeepestNodeWithEmptyPosition($node, $preferredSide = 'left')
+    {
+        $queue = [$node];
+        while (!empty($queue)) {
+            $current = array_shift($queue);
+
+            if ($preferredSide === 'left' && empty($current->left_user_id)) {
+                return $current;
+            }
+            if ($preferredSide === 'right' && empty($current->right_user_id)) {
+                return $current;
+            }
+
+            if ($current->left_user_id) {
+                $queue[] = BinaryTree::find($current->left_user_id);
+            }
+            if ($current->right_user_id) {
+                $queue[] = BinaryTree::find($current->right_user_id);
+            }
+        }
+
+        return null;
+    }
+
+
 }

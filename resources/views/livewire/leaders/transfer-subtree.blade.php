@@ -5,7 +5,7 @@
                 <div class="col-lg-8 p-r-0 title-margin-right">
                     <div class="page-header">
                         <div class="page-title">
-                            <h1>System Users</h1>
+                            <h1>Transfer Subtree</h1>
                         </div>
                     </div>
                 </div><!-- /# column -->
@@ -14,7 +14,8 @@
                         <div class="page-title">
                             <ol class="breadcrumb text-right">
                                 <li><a wire:navigate href="{{ route('dashboard') }}">Dashboard</a></li>
-                                <li class="active">System Users</li>
+                                <li><a wire:navigate href="{{ route('leaders.all') }}">Leaders</a></li>
+                                <li class="active">Transfer Subtree</li>
                             </ol>
                         </div>
                     </div>
@@ -24,11 +25,6 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card">
-                            <div class="card-header">
-                                <h4>Transfer Subtree</h4>
-                                <p>Select a node to transfer and new sponsor</p>
-                            </div>
-                    
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-6">
@@ -108,15 +104,17 @@
                                                 <h5>Selected Node</h5>
                                                 <p><strong>Member:</strong> {{ $selectedNode->user->name }}</p>
                                                 <p><strong>Member Number:</strong> {{ $selectedNode->member_number }}</p>
+                                                <p><strong>Total in Subtree:</strong> {{ $selectedNode->descendants()->count() + 1 }} members</p>
                                             </div>
-                    
+
                                             <div class="border p-3">
                                                 <h5>Transfer To</h5>
                                                 <div class="mb-3">
                                                     <label>New Sponsor ID</label>
-                                                    <input type="text" wire:model.live="newSponsorId" wire:change="checkPositions($event.target.value)" class="form-control">
+                                                    <input type="text" wire:model.live="newSponsorId" wire:keyup="checkPositions($event.target.value)" class="form-control">
+                                                    @error('newSponsorId') <span class="text-danger">{{ $message }}</span> @enderror
                                                 </div>
-                    
+
                                                 @if(count($availablePositions) > 0)
                                                     <div class="mb-3">
                                                         <label>Available Positions</label>
@@ -126,8 +124,14 @@
                                                             @endforeach
                                                         </select>
                                                     </div>
-                    
-                                                    <button wire:click="confirmTransfer" class="btn btn-primary">
+
+
+                                                    <!-- Button to trigger modal (replace your existing button) -->
+                                                    <button type="button" 
+                                                            class="btn btn-primary" 
+                                                            data-bs-toggle="modal" 
+                                                            data-bs-target="#confirmTransferModal"
+                                                            @if(!$selectedNode || !$newSponsorId) disabled @endif>
                                                         Confirm Transfer
                                                     </button>
                                                 @else
@@ -135,6 +139,26 @@
                                                         No available positions under this sponsor
                                                     </div>
                                                 @endif
+                                            </div>
+
+                                            <!-- Bootstrap Modal for Confirmation -->
+                                            <div class="modal fade" id="confirmTransferModal" tabindex="-1" aria-labelledby="confirmTransferModalLabel" aria-hidden="true" wire:ignore.self>
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="confirmTransferModalLabel">Confirm Subtree Transfer</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p>Are you sure you want to move {{ $selectedNode->user->name ?? '' }} and all {{ $selectedNode->descendants()->count() ?? 0 }} members under {{ $newSponsorId }}?</p>
+                                                            <p class="text-danger"><strong>Warning:</strong> This action cannot be undone!</p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                            <button type="button" class="btn btn-primary" wire:click="confirmTransfer" data-bs-dismiss="modal">Confirm Transfer</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         @endif
                                     </div>
