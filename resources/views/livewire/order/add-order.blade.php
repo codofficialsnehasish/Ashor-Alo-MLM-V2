@@ -86,6 +86,9 @@
                                             <td>{{ $product->total_price }}</td>
                                             <td>
                                                 <input type="number" wire:model.live="quantities.simple_{{ $product->id }}" min="0" value="0" class="form-control">
+                                                @if(isset($stockErrors['simple_'.$product->id]))
+                                                    <small class="text-danger">{{ $stockErrors['simple_'.$product->id] }}</small>
+                                                @endif
                                             </td>
                                             <td>
                                                 ₹{{ number_format((float) ($quantities['simple_'.$product->id] ?? 0) * (float) ($product->total_price ?? 0), 2) }}
@@ -101,6 +104,9 @@
                                                 <td>{{ $variation->price_override }}</td>
                                                 <td>
                                                     <input type="number" wire:model.live="quantities.variation_{{ $variation->id }}" min="0" value="0" class="form-control">
+                                                    @if(isset($stockErrors['variation_'.$variation->id]))
+                                                        <small class="text-danger">{{ $stockErrors['variation_'.$variation->id] }}</small>
+                                                    @endif
                                                 </td>
                                                 <td>
                                                     ₹{{ number_format((float)($quantities['variation_'.$variation->id] ?? 0) * (float) ($variation->price_override ?? 0), 2) }}
@@ -114,6 +120,9 @@
                                             <td><strong>₹{{ number_format($product->combo_price, 2) }}</strong></td>
                                             <td>
                                                 <input type="number" wire:model.live="quantities.combo_{{ $product->id }}" min="0" value="0" class="form-control">
+                                                @if(isset($stockErrors['combo_'.$product->id]))
+                                                    <small class="text-danger">{{ $stockErrors['combo_'.$product->id] }}</small>
+                                                @endif
                                             </td>
                                             <td>
                                                 ₹{{ number_format((float)($quantities['combo_'.$product->id] ?? 0) * (float)($product->combo_price ?? 0), 2) }}

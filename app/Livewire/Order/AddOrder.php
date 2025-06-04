@@ -42,6 +42,9 @@ class AddOrder extends Component
     public $selectedAddonOrder = null;
     public $selectedAddonOrder_id = null;
 
+    public $stockErrors = [];
+    public $hasStockErrors = false;
+
     public function mount()
     {
         // $this->customers = User::all();
@@ -145,6 +148,8 @@ class AddOrder extends Component
     public function calculateTotals()
     {
         $this->subtotal = 0;
+        $this->stockErrors = [];
+        $this->hasStockErrors = false;
         foreach ($this->quantities as $key => $qty) {
             $parts = explode('_', $key);
             $type = $parts[0];
@@ -153,22 +158,53 @@ class AddOrder extends Component
                 case 'simple':
                     $product = Product::find($id);
                     $price = $product->total_price ?? 0;
+                    $stock = $product->stock ?? 0;
                     break;
                 case 'variation':
                     $variation = ProductVariation::find($id);
                     $price = $variation->price_override ?? 0;
+                    $stock = $variation->stock ?? 0;
                     break;
                 case 'combo':
                     $product = Product::find($id);
                     $price = $product->combo_price ?? 0;
+                    // For combo products, we need to check stock for each component
+                    $stock = $this->checkComboStock($product, $qty);
                     break;
+            }
+            // Check stock only if quantity is greater than 0
+            if ($qty > 0) {
+                if ($stock < $qty) {
+                    $this->stockErrors[$key] = "Insufficient stock (Available: $stock)";
+                    $this->hasStockErrors = true;
+                }
             }
 
             $this->subtotal += ((float) $qty) * ((float) $price);
         }
 
-
         $this->total = $this->subtotal;
+    }
+
+    protected function checkComboStock(Product $comboProduct, $comboQty)
+    {
+        $minStock = PHP_INT_MAX;
+        
+        foreach ($comboProduct->comboItems as $comboItem) {
+            if ($comboItem->variation_id) {
+                // Variation item
+                $variation = ProductVariation::find($comboItem->variation_id);
+                $available = floor($variation->stock / $comboItem->quantity);
+            } else {
+                // Simple product item
+                $product = Product::find($comboItem->product_id);
+                $available = floor($product->stock / $comboItem->quantity);
+            }
+            
+            $minStock = min($minStock, $available);
+        }
+        
+        return $minStock;
     }
 
     protected function findItemById($id)
@@ -212,6 +248,18 @@ class AddOrder extends Component
 
     public function placeOrder()
     {
+        // First validate stock
+        $this->calculateTotals();
+        
+        if ($this->hasStockErrors) {
+            // session()->flash('error', 'Cannot place order due to insufficient stock for some items.');
+            $this->dispatch('toastMessage', json_encode([
+                'type'=>'error',
+                'message' => 'Cannot place order due to insufficient stock for some items.'
+            ]));
+            return;
+        }
+
         $this->validate([
             'selectedCustomer' => 'required|exists:users,id',
             'paymentMethod' => 'required|string',
@@ -323,7 +371,11 @@ class AddOrder extends Component
 
         $this->make_id_green($this->category, $order->id, $this->selectedCustomer, $this->total, now());
 
-        session()->flash('message', 'Order placed successfully!');
+        // session()->flash('message', 'Order placed successfully!');
+        $this->dispatch('toastMessage', json_encode([
+            'type'=>'success',
+            'message' => 'Order placed successfully!'
+        ]));
         // return redirect()->route('orders.index');
         return redirect()->route('orders.print', $order->id, $order->id);
 
