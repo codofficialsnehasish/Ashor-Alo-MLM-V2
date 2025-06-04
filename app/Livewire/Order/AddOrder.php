@@ -266,6 +266,10 @@ class AddOrder extends Component
                     $orderItemData['product_title'] = $product->title;
                     $orderItemData['product_unit_price'] = $product->total_price ?? 0;
                     $orderItemData['product_gst_rate'] = $product->gst_rate ?? 0;
+
+                    // Decrease stock for simple product
+                    $product->decrement('stock', $qty);
+
                     break;
                     
                 case 'variation':
@@ -275,14 +279,38 @@ class AddOrder extends Component
                     $orderItemData['product_title'] = $variation->product->title . ' - ' . $variation->value;
                     $orderItemData['product_unit_price'] = $variation->price_override ?? 0;
                     $orderItemData['product_gst_rate'] = $variation->product->gst_rate ?? 0;
+
+                    // Decrease stock for variation
+                    $variation->decrement('stock', $qty);
                     break;
                     
                 case 'combo':
-                    $product = Product::find($id);
+                    $product = Product::with(['comboItems.product', 'comboItems.variation'])->find($id);
                     $orderItemData['product_id'] = $product->id;
                     $orderItemData['product_title'] = $product->title . ' (Combo)';
                     $orderItemData['product_unit_price'] = $product->combo_price ?? 0;
                     $orderItemData['product_gst_rate'] = $product->gst_rate ?? 0;
+
+                    // Decrease stock for each component in the combo
+                    foreach ($product->comboItems as $component) {
+                        $componentQty = $component->quantity * $qty; // Multiply by ordered quantity
+                        
+                        if ($component->variation_id) {
+                            // If it's a variation component
+                            $variation = $component->variation;
+                            if ($variation->stock < $componentQty) {
+                                throw new \Exception("Not enough stock for variation {$variation->value} of product {$variation->product->title}");
+                            }
+                            $variation->decrement('stock', $componentQty);
+                        } else {
+                            // If it's a simple product component
+                            $simpleProduct = $component->product;
+                            if ($simpleProduct->stock < $componentQty) {
+                                throw new \Exception("Not enough stock for product {$simpleProduct->title}");
+                            }
+                            $simpleProduct->decrement('stock', $componentQty);
+                        }
+                    }
                     break;
             }
 
@@ -400,7 +428,7 @@ class AddOrder extends Component
                 $binaryNode->status = 1;
                 $binaryNode->joining_amount = $total_amount;
                 $binaryNode->activated_at = $date;
-                $binaryNode->join_by = Auth::user()->name . ' (' . get_role(Auth::id()) . ')';
+                $binaryNode->join_by = Auth::user()->id;
                 $binaryNode->joining_order_id = $order_id;
 
                 $binaryNode->update(); // returns true or false
