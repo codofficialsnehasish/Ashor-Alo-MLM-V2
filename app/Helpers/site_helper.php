@@ -23,7 +23,7 @@
 
     if(!function_exists('general_settings')){
         function general_settings(){
-            $setting = WebsiteSetting::find(1);
+            $setting = WebsiteSetting::first();
             return $setting ?: null;
         }
     }
