@@ -4,12 +4,20 @@ namespace App\Livewire\KYC;
 
 use Livewire\Component;
 use App\Models\Kyc;
+use Illuminate\Support\Facades\Gate;
 
 class KycActivityLog extends Component
 {
     public $kycId;
     public $kyc;
     public $userName;
+
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     public function mount($kycId)
     {
@@ -29,6 +37,7 @@ class KycActivityLog extends Component
 
     public function render()
     {
+        $this->checkPermission('KYC Activity');
         return view('livewire.k-y-c.kyc-activity-log', [
             'activities' => $this->kyc ? $this->kyc->activities()->latest()->get() : collect(),
         ]);

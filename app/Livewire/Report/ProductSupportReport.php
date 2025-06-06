@@ -11,6 +11,7 @@ use Excel;
 use PDF;
 use App\Exports\TDSReportExport;
 use App\Exports\TDSReportFullExport;
+use Illuminate\Support\Facades\Gate;
 
 class ProductSupportReport extends Component
 {
@@ -25,6 +26,13 @@ class ProductSupportReport extends Component
     public $selectedUserId;
     public $selectedUId;
     public $selectedUserName;
+
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     protected $queryString = [
         'startDate' => ['except' => ''],
@@ -146,6 +154,7 @@ class ProductSupportReport extends Component
 
     public function render()
     {
+        $this->checkPermission('Product Support Report');
         if ($this->showFullReport) {
             return view('livewire.report.product-support-full-report', [
                 'title' => 'Product Support Full Report - ' . $this->selectedUserName,

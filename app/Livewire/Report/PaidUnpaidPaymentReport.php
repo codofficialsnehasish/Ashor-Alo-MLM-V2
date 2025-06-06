@@ -8,6 +8,7 @@ use App\Models\Payout;
 use Excel;
 use PDF;
 use App\Exports\PaidUnpaidPaymentReportExport;
+use Illuminate\Support\Facades\Gate;
 
 class PaidUnpaidPaymentReport extends Component
 {
@@ -21,6 +22,13 @@ class PaidUnpaidPaymentReport extends Component
     public $perPage = 10;
     public $sortField = 'created_at';
     public $sortDirection = 'desc';
+
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     protected $queryString = [
         'startDate' => ['except' => ''],
@@ -110,6 +118,7 @@ class PaidUnpaidPaymentReport extends Component
 
     public function render()
     {
+        $this->checkPermission('Paid/Unpaid Payments Report');
         return view('livewire.report.paid-unpaid-payment-report', [
             'title' => $this->title,
             'items' => $this->getQuery()->paginate($this->perPage),

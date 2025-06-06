@@ -8,6 +8,7 @@ use App\Models\TopUp;
 use Excel;
 use PDF;
 use App\Exports\DilsePlanReportExport;
+use Illuminate\Support\Facades\Gate;
 
 class DilsePlanReport extends Component
 {
@@ -29,6 +30,13 @@ class DilsePlanReport extends Component
         'sortField' => ['except' => 'start_date'],
         'sortDirection' => ['except' => 'desc'],
     ];
+
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     public function mount()
     {
@@ -101,6 +109,7 @@ class DilsePlanReport extends Component
 
     public function render()
     {
+        $this->checkPermission('Dilse Plan Report');
         return view('livewire.report.dilse-plan-report',[
             'title' => $this->title,
             'items' => $this->getQuery()->paginate($this->perPage),

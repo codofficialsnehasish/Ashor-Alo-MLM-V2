@@ -6,6 +6,7 @@ use App\Models\Certificate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Illuminate\Support\Facades\Gate;
 
 class Form extends Component
 {
@@ -26,6 +27,13 @@ class Form extends Component
         'uploadedImage' => 'nullable|image|max:10240', // 10MB max
     ];
 
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
     public function mount($certificate = null)
     {
         $this->certificate = $certificate ? Certificate::findOrFail($certificate) : new Certificate();
@@ -42,6 +50,12 @@ class Form extends Component
 
     public function save()
     {
+        if ($this->certificate->exists) {
+            $this->checkPermission('Edit Certificates');
+        } else {
+            $this->checkPermission('Create Certificates');
+        }
+
         $this->validate();
 
         $this->certificate->fill([

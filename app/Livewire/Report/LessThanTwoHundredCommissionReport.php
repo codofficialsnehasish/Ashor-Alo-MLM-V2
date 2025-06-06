@@ -8,6 +8,7 @@ use App\Models\Payout;
 use Excel;
 use PDF;
 use App\Exports\LessThanTwoHundredCommissionReportExport;
+use Illuminate\Support\Facades\Gate;
 
 class LessThanTwoHundredCommissionReport extends Component
 {
@@ -21,6 +22,13 @@ class LessThanTwoHundredCommissionReport extends Component
     public $perPage = 10;
     public $sortField = 'created_at';
     public $sortDirection = 'desc';
+
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     protected $queryString = [
         'startDate' => ['except' => ''],
@@ -105,6 +113,7 @@ class LessThanTwoHundredCommissionReport extends Component
 
     public function render()
     {
+        $this->checkPermission('Commission < 200 Report');
         return view('livewire.report.less-than-two-hundred-commission-report', [
             'title' => $this->title,
             'items' => $this->getQuery()->paginate($this->perPage),

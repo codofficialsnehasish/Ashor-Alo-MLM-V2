@@ -10,6 +10,7 @@ use Excel;
 use App\Exports\MembersOfLeaderExport;
 use PDF;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Gate;
 
 class MembersOfLeader extends Component
 {
@@ -26,6 +27,13 @@ class MembersOfLeader extends Component
     public $selectedRows = [];
     public $selectAll = false;
     public $filtersApplied = false;
+
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     protected $queryString = [
         'startDate' => ['except' => ''],
@@ -177,6 +185,7 @@ class MembersOfLeader extends Component
 
     public function render()
     {
+        $this->checkPermission('View Members Of Leader');
         $members = $this->getMembersProperty();
 
         // print($members);die;

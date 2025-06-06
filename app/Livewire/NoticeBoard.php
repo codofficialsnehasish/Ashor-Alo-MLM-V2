@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Notice;
+use Illuminate\Support\Facades\Gate;
 
 class NoticeBoard extends Component
 {
@@ -11,8 +12,16 @@ class NoticeBoard extends Component
     public $notice_id;
     public $isOpen = false;
 
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
     public function render()
     {
+        $this->checkPermission('View Notice');
         $this->notices = Notice::orderBy('created_at', 'desc')->get();
         return view('livewire.notice-board');
     }
@@ -73,6 +82,7 @@ class NoticeBoard extends Component
 
     public function edit($id)
     {
+        $this->checkPermission('Edit Notice');
         $notice = Notice::findOrFail($id);
         $this->notice_id = $id;
         $this->title = $notice->title;
@@ -86,6 +96,7 @@ class NoticeBoard extends Component
 
     public function delete($id)
     {
+        $this->checkPermission('Delete Notice');
         Notice::find($id)->delete();
         $this->dispatch('toastMessage', json_encode([
             'type'=>'success',

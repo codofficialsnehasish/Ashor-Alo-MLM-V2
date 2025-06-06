@@ -11,6 +11,7 @@ use Excel;
 use PDF;
 use App\Exports\TDSReportExport;
 use App\Exports\TDSReportFullExport;
+use Illuminate\Support\Facades\Gate;
 
 class LevelBonusReport extends Component
 {
@@ -25,6 +26,13 @@ class LevelBonusReport extends Component
     public $selectedUserId;
     public $selectedUId;
     public $selectedUserName;
+
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     protected $queryString = [
         'startDate' => ['except' => ''],
@@ -146,6 +154,7 @@ class LevelBonusReport extends Component
 
     public function render()
     {
+        $this->checkPermission('Level Bonus Report');
         if ($this->showFullReport) {
             return view('livewire.report.level-bonus-full-report', [
                 'title' => 'Level Bonus Full Report - ' . $this->selectedUserName,

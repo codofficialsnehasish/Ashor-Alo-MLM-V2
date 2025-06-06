@@ -12,6 +12,7 @@ use Livewire\WithPagination;
 use App\Exports\CategoriesExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Gate;
 
 class CategoryManager extends Component
 {
@@ -23,8 +24,16 @@ class CategoryManager extends Component
     public $isEdit = false;
     public $search = '';
 
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
     public function render()
     {
+        $this->checkPermission('View Categories');
         $this->parentcategories = Category::with('parent')->latest()->get();
         $query = Category::query()->with('parent');
 
@@ -45,6 +54,7 @@ class CategoryManager extends Component
 
     public function store()
     {
+        $this->checkPermission('Edit Categories');
         $this->validate([
             'name' => 'required|unique:categories,name',
             'description' => 'nullable',
@@ -82,6 +92,7 @@ class CategoryManager extends Component
 
     public function update()
     {
+        $this->checkPermission('Edit Categories');
         $this->validate([
             'name' => ['required', Rule::unique('categories', 'name')->ignore($this->categoryId)],
             'description' => 'nullable',
@@ -98,6 +109,7 @@ class CategoryManager extends Component
 
     public function delete($id)
     {
+        $this->checkPermission('Delete Categories');
         Category::findOrFail($id)->delete();
         session()->flash('success', 'Category deleted successfully.');
     }

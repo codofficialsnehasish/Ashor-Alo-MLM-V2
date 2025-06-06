@@ -8,6 +8,7 @@ use App\Models\BinaryTree;
 use Excel;
 use PDF;
 use App\Exports\IdActivationExport;
+use Illuminate\Support\Facades\Gate;
 
 class IdActivationReport extends Component
 {
@@ -17,6 +18,13 @@ class IdActivationReport extends Component
     public $activatedBy = null;
     public $items = [];
     public $admins = [];
+
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     public function mount()
     {
@@ -91,6 +99,7 @@ class IdActivationReport extends Component
 
     public function render()
     {
+        $this->checkPermission('ID Activation Report');
         return view('livewire.report.id-activation-report', [
             'title' => $this->title,
             'items' => $this->items,

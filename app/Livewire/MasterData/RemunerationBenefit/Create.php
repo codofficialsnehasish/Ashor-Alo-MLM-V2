@@ -4,6 +4,7 @@ namespace App\Livewire\MasterData\RemunerationBenefit;
 
 use Livewire\Component;
 use App\Models\RemunerationBenefitMaster;
+use Illuminate\Support\Facades\Gate;
 
 class Create extends Component
 {
@@ -16,8 +17,17 @@ class Create extends Component
         'month_validity' => 'required|integer',
     ];
 
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
     public function save()
     {
+        $this->checkPermission('Create Remuneration Benefit');
+        
         $this->validate();
 
         RemunerationBenefitMaster::create([
@@ -34,6 +44,7 @@ class Create extends Component
 
     public function render()
     {
+        $this->checkPermission('Create Remuneration Benefit');
         return view('livewire.master-data.remuneration-benefit.create');
     }
 }

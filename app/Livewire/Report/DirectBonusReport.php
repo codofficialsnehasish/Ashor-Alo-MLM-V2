@@ -11,6 +11,7 @@ use Excel;
 use PDF;
 use App\Exports\TDSReportExport;
 use App\Exports\TDSReportFullExport;
+use Illuminate\Support\Facades\Gate;
 
 class DirectBonusReport extends Component
 {
@@ -33,6 +34,13 @@ class DirectBonusReport extends Component
         'perPage' => ['except' => 10],
         'showFullReport' => ['except' => false],
     ];
+
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     public function mount()
     {
@@ -146,6 +154,7 @@ class DirectBonusReport extends Component
 
     public function render()
     {
+        $this->checkPermission('Direct Bonus Report');
         if ($this->showFullReport) {
             return view('livewire.report.direct-bonus-full-report', [
                 'title' => 'Direct Bonus Full Report - ' . $this->selectedUserName,

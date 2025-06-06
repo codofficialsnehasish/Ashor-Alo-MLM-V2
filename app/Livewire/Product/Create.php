@@ -7,10 +7,18 @@ use Livewire\WithFileUploads;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\ProductVariation;
+use Illuminate\Support\Facades\Gate;
 
 class Create extends Component
 {
     use WithFileUploads;
+
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     // Existing properties
     public $title, $slug, $sku, $category_id, $price = 0, $discount_rate, $no_discount = false, $discounted_price;
@@ -173,6 +181,7 @@ class Create extends Component
 
     public function store()
     {
+        $this->checkPermission('Create Products');
         $rules = [
             'title' => 'required',
             'sku' => 'nullable|unique:products,sku',
@@ -264,6 +273,7 @@ class Create extends Component
 
     public function render()
     {
+        $this->checkPermission('Create Products');
         return view('livewire.product.create', [
             'categories' => Category::all()
         ]);

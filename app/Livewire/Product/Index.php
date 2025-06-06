@@ -9,6 +9,7 @@ use Livewire\WithPagination;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ProductsExport;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Gate;
 
 class Index extends Component
 {
@@ -16,8 +17,16 @@ class Index extends Component
     public $products;
     public $search = '';
 
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+    
     public function delete($id)
     {
+        $this->checkPermission('Delete Products');
         Product::findOrFail($id)->delete();
         $this->dispatch('toastMessage', json_encode([
             'type'=>'success',
@@ -27,6 +36,7 @@ class Index extends Component
 
     public function render()
     {
+        $this->checkPermission('View Products');
         $all_products = Product::with('category')
         ->where(function ($query) {
             // Apply search filters

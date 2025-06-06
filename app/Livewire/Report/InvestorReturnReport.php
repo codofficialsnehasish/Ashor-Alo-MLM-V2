@@ -8,6 +8,7 @@ use App\Models\TopUp;
 use Excel;
 use PDF;
 use App\Exports\InvestorReturnReportExport;
+use Illuminate\Support\Facades\Gate;
 
 class InvestorReturnReport extends Component
 {
@@ -20,6 +21,13 @@ class InvestorReturnReport extends Component
     public $perPage = 10;
     public $sortField = 'start_date';
     public $sortDirection = 'desc';
+
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     protected $queryString = [
         'startDate' => ['except' => ''],
@@ -97,6 +105,7 @@ class InvestorReturnReport extends Component
 
     public function render()
     {
+        $this->checkPermission('Investor Return Report');
         return view('livewire.report.investor-return-report',[
             'title' => $this->title,
             'items' => $this->getQuery()->paginate($this->perPage),

@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\MonthlyReturnMaster;
 use App\Models\Category;
 use App\Models\Product;
+use Illuminate\Support\Facades\Gate;
 
 class Create extends Component
 {
@@ -29,6 +30,13 @@ class Create extends Component
         'is_visible' => 'boolean'
     ];
 
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
     // public function updatedCategory($value)
     // {
     //     $this->products = Product::where('category_id', $value)->get();
@@ -44,6 +52,8 @@ class Create extends Component
 
     public function save()
     {
+        $this->checkPermission('Create Monthly Return');
+        
         $this->validate();
 
         MonthlyReturnMaster::create([
@@ -62,6 +72,7 @@ class Create extends Component
 
     public function render()
     {
+        $this->checkPermission('Create Monthly Return');
         $categories = Category::all();
         return view('livewire.master-data.monthly-return.create', [
             'categories' => $categories,

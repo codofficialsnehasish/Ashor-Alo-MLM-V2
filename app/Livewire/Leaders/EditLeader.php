@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\LocationCountrie;
 use App\Models\LocationState;
 use App\Models\LocationCitie;
+use Illuminate\Support\Facades\Gate;
 
 class EditLeader extends Component
 {
@@ -62,6 +63,13 @@ class EditLeader extends Component
         'email' => 'required|email|unique:users,email',
         'sponsorId' => 'required|exists:binary_trees,member_number',
     ];
+
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     public function mount($id)
     {
@@ -172,6 +180,7 @@ class EditLeader extends Component
 
     public function submitForm()
     {
+        $this->checkPermission('Edit Leaders');
         $this->validate();
 
         $user = $this->leader->user;
@@ -304,6 +313,7 @@ class EditLeader extends Component
 
     public function render()
     {
+        $this->checkPermission('Edit Leaders');
         return view('livewire.leaders.edit-leader');
     }
 }

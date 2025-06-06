@@ -5,6 +5,7 @@ namespace App\Livewire\KYC;
 use Livewire\Component;
 use App\Models\Kyc;
 use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 
 class KycList extends Component
 {
@@ -13,6 +14,13 @@ class KycList extends Component
     public $statusFilter;
     public $showActivityModal = false;
     public $activityKycId = null;
+
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     public function mount()
     {
@@ -78,6 +86,7 @@ class KycList extends Component
 
     public function render()
     {
+        $this->checkPermission('View KYC');
         $selectedKyc = $this->selectedKycId ? Kyc::find($this->selectedKycId) : null;
         return view('livewire.k-y-c.kyc-list', [
             'selectedKyc' => $selectedKyc,

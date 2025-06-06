@@ -6,6 +6,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class OrderList extends Component
 {
@@ -27,6 +28,13 @@ class OrderList extends Component
         'sortDirection'
     ];
 
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
     public function sortBy($field)
     {
         if ($this->sortField === $field) {
@@ -45,6 +53,7 @@ class OrderList extends Component
 
     public function render()
     {
+        $this->checkPermission('View Order');
         return view('livewire.order.order-list', [
             'orders' => Order::query()
                 ->when($this->search, function ($query) {
@@ -69,6 +78,7 @@ class OrderList extends Component
 
     public function updateOrderStatus($orderId, $newStatus)
     {
+        $this->checkPermission('Update Order Status');
         $order = Order::find($orderId);
         if ($order) {
             $order->order_status = $newStatus;
@@ -88,6 +98,7 @@ class OrderList extends Component
 
     public function delete($id)
     {
+        $this->checkPermission('Delete Order');
         Order::find($id)->delete();
         session()->flash('message', 'Record deleted successfully.');
     }

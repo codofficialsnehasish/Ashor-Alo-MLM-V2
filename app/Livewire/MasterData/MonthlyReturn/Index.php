@@ -11,6 +11,7 @@ use App\Models\Product;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\MonthlyReturnMastersExport;
 use PDF;
+use Illuminate\Support\Facades\Gate;
 
 class Index extends Component
 {
@@ -23,8 +24,16 @@ class Index extends Component
     public $selectedRows = [];
     public $selectAll = false;
 
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
     public function render()
     {
+        $this->checkPermission('View Monthly Return');
         $returns = MonthlyReturnMaster::with(['category']) //, 'product'
             ->when($this->search, function($query) {
                 return $query->where(function($q) {
@@ -88,6 +97,7 @@ class Index extends Component
 
     public function deleteSelected()
     {
+        $this->checkPermission('Delete Monthly Return');
         MonthlyReturnMaster::whereIn('id', $this->selectedRows)->delete();
         $this->selectedRows = [];
         $this->selectAll = false;
@@ -96,6 +106,7 @@ class Index extends Component
 
     public function delete($id)
     {
+        $this->checkPermission('Delete Monthly Return');
         MonthlyReturnMaster::find($id)->delete();
         session()->flash('message', 'Record deleted successfully.');
     }

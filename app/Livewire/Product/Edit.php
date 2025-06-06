@@ -8,10 +8,18 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\ProductVariation;
 use App\Models\ComboItem;
+use Illuminate\Support\Facades\Gate;
 
 class Edit extends Component
 {
     use WithFileUploads;
+
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     public $product;
     public $title, $slug, $sku, $category_id, $price = 0, $discount_rate, $no_discount = false, $discounted_price;
@@ -240,6 +248,7 @@ class Edit extends Component
 
     public function update()
     {
+        $this->checkPermission('Edit Products');
         $rules = [
             'title' => 'required',
             'slug' => 'required|unique:products,slug,' . $this->product->id,
@@ -373,6 +382,7 @@ class Edit extends Component
 
     public function render()
     {
+        $this->checkPermission('Edit Products');
         return view('livewire.product.edit', [
             'categories' => Category::all()
         ]);

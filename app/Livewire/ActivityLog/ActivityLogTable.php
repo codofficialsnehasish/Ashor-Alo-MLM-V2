@@ -7,6 +7,7 @@ use Livewire\WithPagination;
 use Spatie\Activitylog\Models\Activity;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class ActivityLogTable extends Component
 {
@@ -16,8 +17,16 @@ class ActivityLogTable extends Component
     public $to_date;
     public $user_id;
 
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
     public function render()
     {
+        $this->checkPermission('Activity Log');
         $logs = Activity::query()
             ->when($this->from_date, fn($q) => $q->whereDate('created_at', '>=', $this->from_date))
             ->when($this->to_date, fn($q) => $q->whereDate('created_at', '<=', $this->to_date))

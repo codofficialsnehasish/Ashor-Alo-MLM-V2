@@ -8,6 +8,7 @@ use App\Models\Order;
 use Excel;
 use PDF;
 use App\Exports\ProductDeliveryReportExport;
+use Illuminate\Support\Facades\Gate;
 
 class ProductDeliveryReport extends Component
 {
@@ -21,6 +22,13 @@ class ProductDeliveryReport extends Component
     public $perPage = 10;
     public $sortField = 'created_at';
     public $sortDirection = 'desc';
+
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     protected $queryString = [
         'startDate' => ['except' => ''],
@@ -111,6 +119,7 @@ class ProductDeliveryReport extends Component
 
     public function render()
     {
+        $this->checkPermission('Product Delivery Report');
         return view('livewire.report.product-delivery-report', [
             'title' => $this->title,
             'items' => $this->getQuery()->paginate($this->perPage),

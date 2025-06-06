@@ -11,6 +11,7 @@ use Livewire\WithPagination;
 use Excel;
 use PDF;
 use App\Exports\LevelWiseBusinessExport;
+use Illuminate\Support\Facades\Gate;
 
 class LevelWiseBusinessReport extends Component
 {
@@ -25,6 +26,13 @@ class LevelWiseBusinessReport extends Component
     public $total_amount = 0;
     public $total_user_count = 0;
     public $title = 'Level Wise Business Report';
+
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     protected $queryString = [
         'start_date' => ['except' => ''],
@@ -42,6 +50,7 @@ class LevelWiseBusinessReport extends Component
 
     public function render()
     {
+        $this->checkPermission('Level Wise Business Report');
         $this->generateReport();
         return view('livewire.report.level-wise-business-report');
     }

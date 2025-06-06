@@ -4,11 +4,19 @@ namespace App\Livewire\MasterData\RemunerationBenefit;
 
 use Livewire\Component;
 use App\Models\RemunerationBenefitMaster;
+use Illuminate\Support\Facades\Gate;
 
 class Edit extends Component
 {
     public $itemId;
     public $rank_name, $matching_target, $bonus, $month_validity, $is_visible = false;
+
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     public function mount($id)
     {
@@ -30,6 +38,8 @@ class Edit extends Component
 
     public function update()
     {
+        $this->checkPermission('Edit Remuneration Benefit');
+        
         $this->validate();
 
         RemunerationBenefitMaster::where('id', $this->itemId)->update([
@@ -46,6 +56,7 @@ class Edit extends Component
 
     public function render()
     {
+        $this->checkPermission('Edit Remuneration Benefit');
         return view('livewire.master-data.remuneration-benefit.edit');
     }
 }

@@ -6,7 +6,7 @@
     use App\Models\Orders;
     use App\Models\User;
     use App\Models\OrderProducts;
-    use App\Models\General_settings;
+    use App\Models\WebsiteSetting;
     use App\Models\Payout;
 
     if (!function_exists('get_logo')) {
@@ -23,7 +23,7 @@
 
     if(!function_exists('general_settings')){
         function general_settings(){
-            $setting = General_settings::find(1);
+            $setting = WebsiteSetting::find(1);
             return $setting ?: null;
         }
     }

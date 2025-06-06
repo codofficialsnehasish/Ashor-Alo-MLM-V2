@@ -18,6 +18,7 @@ use App\Models\MonthlyReturnMaster;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Gate;
 
 class AddOrder extends Component
 {
@@ -44,6 +45,13 @@ class AddOrder extends Component
 
     public $stockErrors = [];
     public $hasStockErrors = false;
+
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     public function mount()
     {
@@ -248,6 +256,7 @@ class AddOrder extends Component
 
     public function placeOrder()
     {
+        $this->checkPermission('Create Order');
         // First validate stock
         $this->calculateTotals();
         
@@ -520,6 +529,7 @@ class AddOrder extends Component
 
     public function render()
     {
+        $this->checkPermission('Create Order');
         return view('livewire.order.add-order');
     }
 }

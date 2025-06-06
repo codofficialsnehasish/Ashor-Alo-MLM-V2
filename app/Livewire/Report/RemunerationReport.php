@@ -8,6 +8,7 @@ use App\Models\SalaryBonus;
 use Excel;
 use PDF;
 use App\Exports\RemunerationReportExport;
+use Illuminate\Support\Facades\Gate;
 
 class RemunerationReport extends Component
 {
@@ -20,6 +21,13 @@ class RemunerationReport extends Component
     public $perPage = 10;
     public $sortField = 'start_date';
     public $sortDirection = 'desc';
+
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     protected $queryString = [
         'startDate' => ['except' => ''],
@@ -97,6 +105,7 @@ class RemunerationReport extends Component
 
     public function render()
     {
+        $this->checkPermission('Remuneration Report');
         return view('livewire.report.remuneration-report',[
             'title' => $this->title,
             'items' => $this->getQuery()->paginate($this->perPage),

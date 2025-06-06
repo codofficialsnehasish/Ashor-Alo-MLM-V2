@@ -9,6 +9,7 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Validation\Rules\Password;
 use Livewire\Attributes\Url;
 use Livewire\WithFileUploads;
+use Illuminate\Support\Facades\Gate;
 
 class CreateUser extends Component
 {
@@ -24,6 +25,12 @@ class CreateUser extends Component
     public $user;
     protected $listeners = ['selectedRoles' => 'HandleselectedRoles'];
 
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
  
     protected $rules = [
         'name' => 'required|string|min:3',
@@ -55,6 +62,7 @@ class CreateUser extends Component
 
     public function addUser()
     {
+        $this->checkPermission('Create User');
         // Validate form data
         $this->validate();
         //dd($this->selectedRoles);
@@ -93,6 +101,7 @@ class CreateUser extends Component
 
     public function render()
     { //dump($this->selectedRoles);
+        $this->checkPermission('Create User');
         return view('livewire.users.create-user');
     }
 }

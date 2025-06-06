@@ -4,11 +4,19 @@ namespace App\Livewire\MasterData\LevelBonus;
 
 use Livewire\Component;
 use App\Models\LevelBonusMaster;
+use Illuminate\Support\Facades\Gate;
 
 class Edit extends Component
 {
     public $levelBonus;
     public $level_name, $level_number, $level_percentage, $is_visible;
+
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     public function mount($id)
     {
@@ -21,6 +29,7 @@ class Edit extends Component
 
     public function update()
     {
+        $this->checkPermission('Edit Level Bonus');
         $this->validate([
             'level_name' => 'nullable|string',
             'level_number' => 'required|integer',
@@ -41,6 +50,7 @@ class Edit extends Component
 
     public function render()
     {
+        $this->checkPermission('Edit Level Bonus');
         return view('livewire.master-data.level-bonus.edit');
     }
 }

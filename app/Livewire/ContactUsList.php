@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\ContactUs;
+use Illuminate\Support\Facades\Gate;
 
 class ContactUsList extends Component
 {
@@ -12,10 +13,16 @@ class ContactUsList extends Component
 
     public $search = '';
 
-
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     public function render()
     {
+        $this->checkPermission('View Contact Requests');
         $contacts = ContactUs::when($this->search, function ($query) {
             return $query->where(function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%')
@@ -33,6 +40,7 @@ class ContactUsList extends Component
 
     public function delete($deleteId)
     {
+        $this->checkPermission('Delete Contact Requests');
         ContactUs::find($deleteId)->delete();
         $this->dispatch('toastMessage', json_encode([
             'type'=>'success',

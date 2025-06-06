@@ -4,6 +4,7 @@ namespace App\Livewire\RolesPermission;
 
 use Livewire\Component;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Gate;
 
 class Permissions extends Component
 {
@@ -15,6 +16,13 @@ class Permissions extends Component
     public $data = [];
    // public $selectedRole;
     public $permissionsForRole = [];
+
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     protected $listeners = ['deleteItem', 'refreshComponent' => 'loadPermissions'];
     protected $rules = [
@@ -42,6 +50,7 @@ class Permissions extends Component
 
     public function createPermission()
     {
+        $this->checkPermission('Create Permission');
         $this->validate();
         Permission::create(['name' => $this->permissionName, 'group_name'=>$this->groupName]);
         $this->permissions = Permission::all();
@@ -71,6 +80,7 @@ class Permissions extends Component
 
     public function update()
     {
+        $this->checkPermission('Edit Permission');
         $this->validate();
         $record = Permission::findOrFail($this->permissionId);
         $record->update($this->data);
@@ -85,6 +95,7 @@ class Permissions extends Component
 
     public function deleteItem($id)
     {
+        $this->checkPermission('Delete Permission');
         $item = Permission::find($id);
         if ($item) {
             $item->delete();
@@ -105,6 +116,7 @@ class Permissions extends Component
 
     public function render()
     {
+        $this->checkPermission('View Permission');
         return view('livewire.roles-permission.permission', [
             'permissions' => $this->permissions,
         ]);

@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\MonthlyReturnMaster;
 use App\Models\Category;
 use App\Models\Product;
+use Illuminate\Support\Facades\Gate;
 
 class Edit extends Component
 {
@@ -29,6 +30,13 @@ class Edit extends Component
         'return_persentage' => 'required|integer|min:0',
         'is_visible' => 'boolean'
     ];
+
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     public function mount($id)
     {
@@ -54,6 +62,8 @@ class Edit extends Component
 
     public function update()
     {
+        $this->checkPermission('Edit Monthly Return');
+        
         $this->validate();
 
         $this->monthlyReturnMaster->update([
@@ -72,6 +82,7 @@ class Edit extends Component
 
     public function render()
     {
+        $this->checkPermission('Edit Monthly Return');
         $categories = Category::all();
         return view('livewire.master-data.monthly-return.edit', [
             'categories' => $categories,

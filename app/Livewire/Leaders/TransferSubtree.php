@@ -5,6 +5,7 @@ namespace App\Livewire\Leaders;
 use Livewire\Component;
 use App\Services\BinaryTreeService;
 use App\Models\BinaryTree;
+use Illuminate\Support\Facades\Gate;
 
 class TransferSubtree extends Component
 {
@@ -17,8 +18,16 @@ class TransferSubtree extends Component
     public $forcePosition = false;
     public $showForceOption = false;
 
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
     public function render()
     {
+        $this->checkPermission('Transfer Tree');
         $nodes = BinaryTree::with('user')
                 ->when($this->search, function ($query) {
                     $query->whereHas('user', function($q) {
@@ -67,6 +76,7 @@ class TransferSubtree extends Component
 
     public function confirmTransfer(BinaryTreeService $binaryTreeService)
     {
+        $this->checkPermission('Transfer Tree');
         $this->validate([
             'selectedNode' => 'required',
             'newSponsorId' => [

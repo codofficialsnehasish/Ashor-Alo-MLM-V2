@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\BinaryTree;
 use App\Models\TopUp;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\Gate;
 
 class TreeWiseBusinessReport extends Component
 {
@@ -23,6 +24,13 @@ class TreeWiseBusinessReport extends Component
     public $title = 'Tree Wise Business Report';
     public $search = '';
     public $searchResults = [];
+
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     protected $queryString = [
         'start_date' => ['except' => ''],
@@ -75,6 +83,7 @@ class TreeWiseBusinessReport extends Component
 
     public function render()
     {
+        $this->checkPermission('Tree Wise Business Report');
         $this->generateReport();
         return view('livewire.report.tree-wise-business-report');
     }

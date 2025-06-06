@@ -11,6 +11,7 @@ use Excel;
 use PDF;
 use App\Exports\TDSReportExport;
 use App\Exports\TDSReportFullExport;
+use Illuminate\Support\Facades\Gate;
 
 
 class TDSReport extends Component
@@ -26,6 +27,13 @@ class TDSReport extends Component
     public $selectedUserId;
     public $selectedUId;
     public $selectedUserName;
+
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     protected $queryString = [
         'startDate' => ['except' => ''],
@@ -148,6 +156,7 @@ class TDSReport extends Component
 
     public function render()
     {
+        $this->checkPermission('TDS Report');
         if ($this->showFullReport) {
             return view('livewire.report.tds-full-report', [
                 'title' => 'TDS Full Report - ' . $this->selectedUserName,

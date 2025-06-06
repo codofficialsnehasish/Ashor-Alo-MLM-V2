@@ -6,6 +6,7 @@ use App\Models\PhotoGallary;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Illuminate\Support\Facades\Gate;
 
 class Form extends Component
 {
@@ -26,6 +27,13 @@ class Form extends Component
         'uploadedImage' => 'nullable|image|max:10240', // 10MB max
     ];
 
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
     public function mount($gallery = null)
     {
         $this->gallery = $gallery ? PhotoGallary::findOrFail($gallery) : new PhotoGallary();
@@ -42,6 +50,11 @@ class Form extends Component
 
     public function save()
     {
+        if ($this->gallery->exists) {
+            $this->checkPermission('Edit Photo Gallery');
+        } else {
+            $this->checkPermission('Create Photo Gallery');
+        }
         $this->validate();
 
         $this->gallery->fill([

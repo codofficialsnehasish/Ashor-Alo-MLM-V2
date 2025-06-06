@@ -5,6 +5,7 @@ use Livewire\Component;
 use Livewire\WithoutUrlPagination;
 use Livewire\WithPagination;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Gate;
 
 class Usermanagement extends Component
 {
@@ -26,10 +27,16 @@ class Usermanagement extends Component
         // $this->roles = Role::pluck('name','name')->all();
     }
 
-
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     public function render()
     {
+        $this->checkPermission('View User');
         // $users = User::paginate(10);
         $excludedRoles = ['Leader']; // array of role names
 
@@ -46,6 +53,7 @@ class Usermanagement extends Component
 
     public function deleteItem($id)
     {
+        $this->checkPermission('Delete User');
         $item = User::find($id);
         if ($item) {
             $item->delete();

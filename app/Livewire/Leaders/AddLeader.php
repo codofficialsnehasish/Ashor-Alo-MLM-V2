@@ -7,6 +7,7 @@ use App\Services\BinaryTreeService;
 use App\Models\User;
 use App\Models\BinaryTree;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Gate;
 
 class AddLeader extends Component
 {
@@ -26,6 +27,13 @@ class AddLeader extends Component
         'phone' => 'required|digits:10|regex:/^[6789]/|unique:users,phone',
         'preferredPosition' => 'required|in:left,right'
     ];
+
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     public function mount()
     {
@@ -58,6 +66,7 @@ class AddLeader extends Component
 
     public function confirmSubmission(BinaryTreeService $binaryTreeService)
     {
+        $this->checkPermission('Create Leaders');
         $result = $binaryTreeService->createNode(
             [
                 'name' => $this->name,
@@ -99,6 +108,7 @@ class AddLeader extends Component
 
     public function render()
     {
+        $this->checkPermission('Create Leaders');
         return view('livewire.leaders.add-leader');
     }
 }

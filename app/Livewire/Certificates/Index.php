@@ -5,6 +5,7 @@ namespace App\Livewire\Certificates;
 use App\Models\Certificate;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\Gate;
 
 class Index extends Component
 {
@@ -23,6 +24,13 @@ class Index extends Component
         'sortDirection' => ['except' => 'desc'],
     ];
 
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
     public function sortBy($field)
     {
         if ($this->sortField === $field) {
@@ -35,6 +43,7 @@ class Index extends Component
 
     public function delete($id)
     {
+        $this->checkPermission('Delete Certificates');
         Certificate::find($id)->delete();
         $this->dispatch('toastMessage', json_encode([
             'type'=>'success',
@@ -44,6 +53,7 @@ class Index extends Component
 
     public function render()
     {
+        $this->checkPermission('View Certificates');
         return view('livewire.certificates.index', [
             'certificates' => Certificate::with('media')
                 ->when($this->search, function ($query) {

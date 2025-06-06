@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Excel;
 use PDF;
 use App\Exports\HoldAmountReportExport;
+use Illuminate\Support\Facades\Gate;
 
 class HoldAmountReport extends Component
 {
@@ -30,6 +31,13 @@ class HoldAmountReport extends Component
         'sortField' => ['except' => 'start_date'],
         'sortDirection' => ['except' => 'desc'],
     ];
+
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     public function mount()
     {
@@ -88,6 +96,7 @@ class HoldAmountReport extends Component
 
     public function render()
     {
+        $this->checkPermission('Hold Amount Report');
         return view('livewire.report.hold-amount-report',[
             'title' => $this->title,
             'items' => $this->getQuery()->paginate($this->perPage),

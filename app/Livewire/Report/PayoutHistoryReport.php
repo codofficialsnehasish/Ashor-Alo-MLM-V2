@@ -12,6 +12,7 @@ use Excel;
 use PDF;
 use App\Exports\PayoutHistoryReportExport;
 use App\Exports\PayoutHistoryFullReportExport;
+use Illuminate\Support\Facades\Gate;
 
 class PayoutHistoryReport extends Component
 {
@@ -26,6 +27,13 @@ class PayoutHistoryReport extends Component
     public $selectedUserId;
     public $selectedUId;
     public $selectedUserName;
+
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     protected $queryString = [
         'startDate' => ['except' => ''],
@@ -128,6 +136,7 @@ class PayoutHistoryReport extends Component
 
     public function render()
     {
+        $this->checkPermission('Payout History Report');
         if ($this->showFullReport) {
             return view('livewire.report.payout-history-full-report', [
                 'title' => 'Direct Bonus Full Report - ' . $this->selectedUserName,

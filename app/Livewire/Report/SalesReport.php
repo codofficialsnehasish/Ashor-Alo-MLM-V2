@@ -8,6 +8,7 @@ use App\Models\TopUp;
 use Excel;
 use PDF;
 use App\Exports\SalesReportExport;
+use Illuminate\Support\Facades\Gate;
 
 class SalesReport extends Component
 {
@@ -20,6 +21,13 @@ class SalesReport extends Component
     public $perPage = 10;
     public $sortField = 'start_date';
     public $sortDirection = 'desc';
+
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     protected $queryString = [
         'startDate' => ['except' => ''],
@@ -106,6 +114,7 @@ class SalesReport extends Component
 
     public function render()
     {
+        $this->checkPermission('Sales Report');
         return view('livewire.report.sales-report', [
             'title' => $this->title,
             'items' => $this->getQuery()->paginate($this->perPage),

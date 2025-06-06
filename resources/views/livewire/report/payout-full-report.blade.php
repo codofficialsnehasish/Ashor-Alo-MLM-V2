@@ -67,8 +67,12 @@
                                         <tbody>
                                             @forelse($items as $item)
                                                 <tr>
-                                                    <td><input type="checkbox" class="status-toggle" data-bs-toggle="modal" data-bs-target="#statusModal" id="" data-item-id="{{ $item->id }}" {{ $item->paid_unpaid == 1 ? 'checked' : '' }}></td>
-                                                    <td class="text-wrap">{{ $item->user->name ?? '' }}</td>
+                                                    <td>
+                                                        <input type="checkbox" 
+                                                            wire:click="handleCheckboxClick({{ $item->id }}, {{ $item->paid_unpaid ? 'true' : 'false' }})"
+                                                            {{ $item->paid_unpaid ? 'checked' : '' }} wire:loading.attr="disabled">
+                                                    </td>
+                                                    <td class="text-wrap"><a href="javascript:void(0);" wire:click="payout_statement({{ $item->id}})">{{ $item->user->name ?? '' }}</a></td>
                                                     <td class="text-wrap">{{ $item->user->member_number ?? '' }}</td>
                                                     <td class="text-wrap">{{ $item->total_payout ?? '' }}</td>
                                                     <td class="text-wrap">{{ $item->user?->bankDetails?->account_name ?? '' }}</td>
@@ -94,8 +98,6 @@
                                 <div class="mt-3">
                                     {{ $items->links() }}
                                 </div>
-
-                                <div wire:ignore.self class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
      
                             </div>
                         </div>
@@ -104,4 +106,58 @@
             </div>
         </div>
     </div>
+    <!-- Payment Status Modal -->
+    @if($showStatusModal)
+    {{-- <div class="modal fade d-block" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel" aria-hidden="true"> --}}
+    <div class="modal show d-block" id="statusModal" data-bs-backdrop="static" role="dialog" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="background: rgba(0, 0, 0, .6);">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="statusModalForm" wire:submit.prevent="updatePaymentStatus">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="myModalLabel">Update Payment Status {{ $selectedItemId }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" wire:click="closeStatusModal()" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="modalItemId" name="item_id" wire:model="selectedItemId">
+                        <div class="form-group mb-3">
+                            <label for="paymentDate" class="form-label">Payment Date</label>
+                            <input type="date" class="form-control" id="paymentDate" name="payment_date" wire:model="paymentDate" value="{{ date('Y-m-d') }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="paymentMode" class="form-label">Payment Mode</label>
+                            <select class="form-control" id="paymentMode" name="payment_mode" wire:model="paymentMode" required>
+                                <option value="Cash" selected>Cash</option>
+                                <option value="NEFT">NEFT</option>
+                                <option value="UPI">UPI</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" wire:click="closeStatusModal()" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
+<script>
+    // document.addEventListener('livewire:init', () => {
+    //     Livewire.on('confirm-uncheck', (event) => {
+    //         if (confirm('Are you sure you want to mark this as unpaid?')) {
+    //             Livewire.dispatch('uncheckItem', { itemId: event.itemId });
+    //         }
+    //     });
+    // });
+</script>
+    <script>
+        function printDiv(divId) {
+            const printContents = document.getElementById(divId).innerHTML;
+            const originalContents = document.body.innerHTML;
+            
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+        }
+    </script>

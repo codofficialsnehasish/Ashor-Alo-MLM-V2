@@ -9,6 +9,7 @@ use Livewire\Component;
 use Spatie\Permission\Models\Role;
 use Livewire\Attributes\Url;
 use Livewire\WithFileUploads;
+use Illuminate\Support\Facades\Gate;
 
 class EditUser extends Component
 {
@@ -29,6 +30,14 @@ class EditUser extends Component
         'password' => '',
         'status' => false,
     ];
+
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
     public $userRoles;
     protected $listeners = ['selectedRoles' => 'HandleselectedRoles', 'refreshComponent' => 'loadUsers'];
     protected $rules = ['name' => 'required|string|min:3'];
@@ -67,6 +76,7 @@ class EditUser extends Component
 
     public function updateUser()
     { //dd($this->userId);
+        $this->checkPermission('Edit User');
         //$this->validate();
         $this->user = User::findOrFail($this->userId);
        // dd($this->selectedRoles);
@@ -101,6 +111,7 @@ class EditUser extends Component
 
     public function render()
     {
+        $this->checkPermission('Edit User');
         return view('livewire.users.edit-user');
     }
 }

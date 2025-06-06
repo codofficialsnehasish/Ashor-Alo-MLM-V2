@@ -9,6 +9,7 @@ use Livewire\WithPagination;
 use App\Exports\UsersExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Gate;
 
 class AllLeaders extends Component
 {
@@ -17,8 +18,16 @@ class AllLeaders extends Component
     public $query = ''; // For search functionality
     public $targetRole = ['Leader']; // The role you want to include
 
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
     public function render()
     {
+        $this->checkPermission('View Leaders');
         $users = $this->getUsers();
         return view('livewire.leaders.all-leaders', [
             'users' => $users

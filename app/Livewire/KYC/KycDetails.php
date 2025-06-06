@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\Kyc;
 use App\Models\User;
 use Livewire\Attributes\On; // Add this import
+use Illuminate\Support\Facades\Gate;
 
 class KycDetails extends Component
 {
@@ -24,6 +25,13 @@ class KycDetails extends Component
         'remarksFields.*' => 'nullable|string|max:255',
         'modalRemarks' => 'required_if:showModal,true|string|max:255'
     ];
+
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     public function mount(Kyc $kyc)
     {
@@ -126,6 +134,7 @@ class KycDetails extends Component
 
     public function render()
     {
+        $this->checkPermission('KYC Details');
         return view('livewire.k-y-c.kyc-details');
     }
 }

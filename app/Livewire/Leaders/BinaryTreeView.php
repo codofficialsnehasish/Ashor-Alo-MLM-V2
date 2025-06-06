@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\BinaryTree;
 use Illuminate\Support\Facades\Log;
 // use Livewire\Attributes\On;
+use Illuminate\Support\Facades\Gate;
 
 class BinaryTreeView extends Component
 {
@@ -14,6 +15,13 @@ class BinaryTreeView extends Component
     public $levelsToShow = 4;
     public $searchResults = [];
     public $search = '';
+
+    protected function checkPermission($permission)
+    {
+        if (!Gate::allows($permission)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 
     public function mount()
     {
@@ -96,6 +104,7 @@ class BinaryTreeView extends Component
 
     public function render()
     {
+        $this->checkPermission('Tree View');
         return view('livewire.leaders.binary-tree-view');
     }
 }
