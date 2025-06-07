@@ -34,6 +34,12 @@ use App\Livewire\Leaders\{
     MembersOfLeader,
 };
 
+use App\Livewire\Advance\{
+    AdvanceList,
+    CreateAdvance,
+    EditAdvance,
+};
+
 use App\Http\Controllers\Api\{
     Documents,
     PayoutApiController,
@@ -218,6 +224,11 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/notice-board', NoticeBoard::class)->name('notice-board');
 
+    Route::prefix('advances')->name('advance.')->group(function () {
+        Route::get('/create', CreateAdvance::class)->name('create');
+        Route::get('/list', AdvanceList::class)->name('list');
+        Route::get('/edit/{advanceId}', EditAdvance::class)->name('edit');
+    });
 });
 
 Route::get("/web/welcome-letter/{user_id}",[Documents::class,"welcome_letter_view"])->name('my-documents.welcome-letter.view');

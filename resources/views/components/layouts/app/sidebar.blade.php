@@ -117,6 +117,16 @@
                 </li>
                 @endcanany
 
+                @canany(['View Order','View Categories','View Products'])
+                <li><a class="sidebar-sub-toggle"><i class="ti-package"></i>Advance Management<span class="badge badge-primary">3</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
+                    <ul>
+                        @can('View Order')
+                        <li><a wire:navigate href="{{ route('advance.list') }}">Advance List</a></li>
+                        @endcan
+                    </ul>
+                </li>
+                @endcanany
+
                 @canany([
                     'ID Activation Report',
                     'Sales Report',

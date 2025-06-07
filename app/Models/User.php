@@ -190,4 +190,14 @@ class User extends Authenticatable implements HasMedia
         return $this->hasMany(SalaryBonus::class);
     }
 
+    public function advances()
+    {
+        return $this->hasMany(Advance::class, 'user_id');
+    }
+
+    public function adminAdvances()
+    {
+        return $this->hasMany(Advance::class, 'admin_id');
+    }
+
 }

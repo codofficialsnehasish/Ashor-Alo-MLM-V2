@@ -69,4 +69,9 @@ class Payout extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function AdvanceDeductions()
+    {
+        return $this->hasMany(AdvanceDeduction::class);
+    }
 }

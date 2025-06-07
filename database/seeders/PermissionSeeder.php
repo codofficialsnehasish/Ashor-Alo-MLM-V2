@@ -120,6 +120,11 @@ class PermissionSeeder extends Seeder
             array('name' => 'View Notice','group_name' => 'Notice Board'),
             array('name' => 'Edit Notice','group_name' => 'Notice Board'),
             array('name' => 'Delete Notice','group_name' => 'Notice Board'),
+
+            array('name' => 'Advance List','group_name' => 'Advance'),
+            array('name' => 'Advance Delete','group_name' => 'Advance'),
+            array('name' => 'Advance Create','group_name' => 'Advance'),
+            array('name' => 'Advance Edit','group_name' => 'Advance'),
             
         ];
 
