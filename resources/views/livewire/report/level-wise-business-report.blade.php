@@ -30,16 +30,15 @@
                                     <div class="card-body">
                                         <form wire:submit.prevent="generateReport">
                                             <div class="row">
-                                                <div class="mb-0 col-md-5">
-                                                    <label class="form-label">Search Using Date</label>
-                                                    <div class="input-daterange input-group" id="datepicker6" data-date-format="yyyy-mm-dd" data-date-autoclose="true" data-provide="datepicker" data-date-container='#datepicker6'>
-                                                        <input type="text" class="form-control" wire:model="start_date" placeholder="Start Date" autocomplete="off" />
-                                                        <input type="text" class="form-control" wire:model="end_date" placeholder="End Date" autocomplete="off" />
-                                                    </div>
-                                                    @error('start_date') <span class="text-danger">{{ $message }}</span> @enderror
-                                                    @error('end_date') <span class="text-danger">{{ $message }}</span> @enderror
+                                                <div class="col-md-2">
+                                                    <label for="startDate">Start Date</label>
+                                                    <input type="date" class="form-control" id="startDate" wire:model.live="start_date">
                                                 </div>
-                                                <div class="mb-0 col-md-3">
+                                                <div class="col-md-2">
+                                                    <label for="endDate">End Date</label>
+                                                    <input type="date" class="form-control" id="endDate" wire:model.live="end_date">
+                                                </div>
+                                                <div class="mb-0 col-md-4">
                                                     <label class="form-label">Choose Agents</label>
                                                     <select class="form-control select2" wire:model="user_id">
                                                         <option selected disabled value="">Select...</option>
