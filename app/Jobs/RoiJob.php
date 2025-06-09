@@ -77,7 +77,7 @@ class RoiJob implements ShouldQueue
                     'user_id' => $data->user_id,
                     'amount' => $amount_to_disburse,
                     'which_for' => $transactionType,
-                    'status' => 1,
+                    'status' => 0,
                     'topup_id' => $data->id,
                 ]);
 

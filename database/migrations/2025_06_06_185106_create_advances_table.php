@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('admin_id');
             $table->decimal('original_amount', 10, 2);
             $table->decimal('due_amount', 10, 2);
+            $table->decimal('balance', 10, 2)->default(0);
             $table->enum('status', ['active', 'paid'])->default('active');
             $table->text('notes')->nullable();
             $table->timestamps();

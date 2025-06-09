@@ -24,7 +24,7 @@ class Form extends Component
         'title' => 'required|string|max:255',
         'description' => 'nullable|string',
         // 'is_active' => 'boolean',
-        'uploadedImage' => 'nullable|image|max:10240', // 10MB max
+        'uploadedImage' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240', // 10MB max
     ];
 
     protected function checkPermission($permission)
@@ -78,6 +78,9 @@ class Form extends Component
             'type'=>'success',
             'message' => 'Gallery saved successfully.'
         ]));
+        
+        return redirect(route('photo-galleries.index'));
+
     }
 
     public function render()

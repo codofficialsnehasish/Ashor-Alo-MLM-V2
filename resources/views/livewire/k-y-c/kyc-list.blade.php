@@ -70,7 +70,7 @@
                                         <tr>
                                             <td>{{ $index + 1 }}</td>
                                             <td>{{ $kyc->user->name ?? 'N/A' }}</td>
-                                            <td>{{ $kyc->user->id }}</td>
+                                            <td>{{ $kyc->user->member_number }}</td>
                                             <td>
                                                 @if($kyc->status == 1)
                                                     <span class="badge bg-success">Verified</span>

@@ -378,6 +378,8 @@ class Edit extends Component
             'type' => 'success',
             'message' => 'Product updated successfully.'
         ]));
+
+        return redirect()->route('products.index');
     }
 
     public function render()

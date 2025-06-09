@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('advance_deductions', function (Blueprint $table) {
+        Schema::create('advance_transactions', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('advance_id');
-            $table->unsignedBigInteger('payout_id');
-            $table->decimal('deducted_amount', 10, 2);
+            $table->unsignedBigInteger('payout_id')->nullable();
+            $table->enum('type', ['credit', 'debit']);
+            $table->decimal('amount', 10, 2);
+            $table->text('description')->nullable();
             $table->timestamps();
 
             $table->foreign('advance_id')->references('id')->on('advances')->onDelete('cascade');

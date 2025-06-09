@@ -67,8 +67,7 @@ class CornJobs extends Controller
 
     public function level_bonus() {
         $last_payout_date = Payout::latest('end_date')->first()?->end_date;
-        $lastSaturday = Carbon::parse($last_payout_date ?? now());
-        // $lastSaturday = Carbon::parse(now());
+        $lastSaturday = Carbon::parse($last_payout_date ?? now())->addDay();
         $current_day = Carbon::now();
     
         // Process in chunks and dispatch each chunk to a queue job
@@ -92,9 +91,8 @@ class CornJobs extends Controller
     }  
     
     public function payout() {
-       $last_payout_date = Payout::latest('end_date')->first()?->end_date;
-        $lastSaturday = Carbon::parse($last_payout_date ?? now());
-        // $lastSaturday = Carbon::parse(now());
+        $last_payout_date = Payout::latest('end_date')->first()?->end_date;
+        $lastSaturday = Carbon::parse($last_payout_date ?? now())->addDay();
         $current_day = Carbon::now();
 
         $transactions = BinaryTree::where('status',1)->pluck('user_id');

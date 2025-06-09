@@ -102,6 +102,8 @@ class EditUser extends Component
             'message' => 'User Updated successfully'
         ]));
 
+        return redirect(route('users'));
+
     }
 
     public function HandleselectedRoles($Roles)

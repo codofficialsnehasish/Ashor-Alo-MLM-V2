@@ -79,6 +79,8 @@ class Form extends Component
             'type'=>'success',
             'message' => 'Certificate saved successfully.'
         ]));
+        
+        return redirect(route('certificates.index'));
     }
 
     public function render()

@@ -3,20 +3,23 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
-class AdvanceDeduction extends Model
+class AdvanceTransaction extends Model
 {
+    use LogsActivity;
+
     protected $fillable = [
-        'loan_id',
+        'advance_id',
         'payout_id',
-        'deducted_amount'
+        'type',
+        'amount',
+        'description'
     ];
 
     protected $casts = [
-        'deducted_amount' => 'decimal:2',
+        'amount' => 'decimal:2',
     ];
 
     public function getActivitylogOptions(): LogOptions
@@ -25,7 +28,7 @@ class AdvanceDeduction extends Model
             ->logAll()
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs()
-            ->useLogName('advance-deduction');
+            ->useLogName('advance-transaction');
     }
 
     public function advance()
@@ -38,4 +41,13 @@ class AdvanceDeduction extends Model
         return $this->belongsTo(Payout::class);
     }
 
+    public function scopeCredits($query)
+    {
+        return $query->where('type', 'credit');
+    }
+
+    public function scopeDebits($query)
+    {
+        return $query->where('type', 'debit');
+    }
 }

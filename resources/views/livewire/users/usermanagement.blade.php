@@ -80,7 +80,7 @@
                                                     </td>
                                                     <td class="text-end">
                                                         <a href="{{ route('user.edit', ['id' => Crypt::encryptString($user->id)]) }}" wire:navigate class="bg-info p-1 rounded"><i class="ti-pencil-alt text-secondary font-16 text-white"></i></a>
-                                                        <a href="javascript:;" onclick="confirmDeletion({{ $user->id }})" class="bg-danger p-1 rounded"><i class="ti-trash text-secondary font-16 text-white"></i></a>
+                                                        <a href="javascript:;" wire:click="deleteItem({{ $user->id }})" class="bg-danger p-1 rounded"><i class="ti-trash text-secondary font-16 text-white"></i></a>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -96,21 +96,4 @@
         </div>
     </div>
 </div>
-<script>
-    function confirmDeletion(itemId) {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Livewire.dispatch('deleteItem', { id: itemId}); // Dispatch Livewire event
-            }
-        });
-    }
-</script>
  

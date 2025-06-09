@@ -95,6 +95,8 @@ class CreateUser extends Component
             'type'=>'success',
             'message' => 'User Created successfully'
         ]));
+
+        return redirect(route('users'));
         
     }
     

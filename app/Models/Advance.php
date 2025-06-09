@@ -16,6 +16,7 @@ class Advance extends Model
         'admin_id',
         'original_amount',
         'due_amount',
+        'balance',
         'status',
         'notes'
     ];
@@ -23,6 +24,7 @@ class Advance extends Model
     protected $casts = [
         'original_amount' => 'decimal:2',
         'due_amount' => 'decimal:2',
+        'balance' => 'decimal:2',
     ];
 
     public function getActivitylogOptions(): LogOptions
@@ -44,8 +46,30 @@ class Advance extends Model
         return $this->belongsTo(User::class, 'admin_id');
     }
 
-    public function deductions()
+    public function transactions()
     {
-        return $this->hasMany(AdvanceDeduction::class);
+        return $this->hasMany(AdvanceTransaction::class);
+    }
+
+    // Helper method to add credit transaction
+    public function credit($amount, $description = null, $payoutId = null)
+    {
+        return $this->transactions()->create([
+            'type' => 'credit',
+            'amount' => $amount,
+            'description' => $description,
+            'payout_id' => $payoutId
+        ]);
+    }
+
+    // Helper method to add debit transaction
+    public function debit($amount, $description = null, $payoutId = null)
+    {
+        return $this->transactions()->create([
+            'type' => 'debit',
+            'amount' => $amount,
+            'description' => $description,
+            'payout_id' => $payoutId
+        ]);
     }
 }

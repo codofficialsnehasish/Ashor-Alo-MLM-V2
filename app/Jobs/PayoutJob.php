@@ -23,6 +23,7 @@ use App\Models\MlmSetting;
 use App\Models\Payout;
 use App\Models\RemunerationBenefit;
 use App\Models\SalaryBonus;
+use App\Models\Advance;
 
 use Carbon\Carbon;
 
@@ -137,21 +138,63 @@ class PayoutJob implements ShouldQueue
 
                     $total_payout = $total_paid_payout + $previous_unpaid_amount;
                     $total_payout -= ($total_payout_roi - $total_payout_roi_tds);
+
+                    // for roi in every 1 month 
+                    // $last_roi_paid_date = Payout::where('roi', '!=', 0)->latest('id')->first()?->end_date;
+                    // if($last_roi_paid_date){
+                    //     $roi_start_date = Carbon::parse($last_roi_paid_date)->addDay();
+                    // }   
         
                     $product_return = AccountTransaction::where(function ($query) {
-                                                                $query->where('which_for', 'ROI Daily')
-                                                                    ->orWhere('which_for', 'ROI Dailys');
+                                                                $query->where('which_for', 'ROI Daily');
+                                                                    // ->orWhere('which_for', 'ROI Dailys');
                                                             })
-                                                            ->whereBetween(DB::raw('DATE(created_at)'), [format_date_for_db($this->lastSaturday), format_date_for_db($this->current_day)])
+                                                            // ->whereBetween(DB::raw('DATE(created_at)'), [format_date_for_db($this->lastSaturday), format_date_for_db($this->current_day)])
                                                             ->where('user_id',$user_id)
-                                                            ->sum('amount');
+                                                            ->where('status',0)
+                                                            // ->sum('amount');
+                                                            ->selectRaw('IF(COUNT(*) >= 30, SUM(amount), 0) as conditional_sum')
+                                                            ->value('conditional_sum') ?? 0;
+                    if ($product_return > 0) {
+                        AccountTransaction::where('which_for', 'ROI Daily')
+                                        ->where('user_id', $user_id)
+                                        ->where('status', 0)
+                                        ->update(['status' => 1]);
+                    }
+
+                    $addon_return = AccountTransaction::where(function ($query) {
+                                                                $query->Where('which_for', 'ROI Dailys');
+                                                            })
+                                                            // ->whereBetween(DB::raw('DATE(created_at)'), [format_date_for_db($this->lastSaturday), format_date_for_db($this->current_day)])
+                                                            ->where('user_id',$user_id)
+                                                            ->where('status',0)
+                                                            // ->sum('amount');
+                                                            ->selectRaw('IF(COUNT(*) >= 30, SUM(amount), 0) as conditional_sum')
+                                                            ->value('conditional_sum') ?? 0;
+                    if ($addon_return > 0) {
+                        AccountTransaction::where('which_for', 'ROI Dailys')
+                                        ->where('user_id', $user_id)
+                                        ->where('status', 0)
+                                        ->update(['status' => 1]);
+                    }
+
+                    $product_return += $addon_return;
 
                     $dilse_return = AccountTransaction::where(function ($query) {
                                                                 $query->where('which_for', 'DILSE Daily');
                                                             })
-                                                            ->whereBetween(DB::raw('DATE(created_at)'), [format_date_for_db($this->lastSaturday), format_date_for_db($this->current_day)])
+                                                            // ->whereBetween(DB::raw('DATE(created_at)'), [format_date_for_db($this->lastSaturday), format_date_for_db($this->current_day)])
                                                             ->where('user_id',$user_id)
-                                                            ->sum('amount');
+                                                            ->where('status',0)
+                                                            // ->sum('amount');
+                                                            ->selectRaw('IF(COUNT(*) >= 30, SUM(amount), 0) as conditional_sum')
+                                                            ->value('conditional_sum') ?? 0;
+                    if ($dilse_return > 0) {
+                        AccountTransaction::where('which_for', 'DILSE Daily')
+                                        ->where('user_id', $user_id)
+                                        ->where('status', 0)
+                                        ->update(['status' => 1]);
+                    }
 
                     $product_return_deduction = ($product_return * $mlm_settings->tds) / 100;
                     $total_product_return = $product_return - $product_return_deduction;
@@ -225,6 +268,52 @@ class PayoutJob implements ShouldQueue
                     $payout->total_payout = (($total_product_return + $previous_unpaid_amount + $payout->hold_wallet_added) + (max(0, ( (($payout->hold_amount_added + $final_commission) - $payout->hold_amount))))) ?? 0; //+ $previous_unpaid_amount
                     
                     $payout->total_payout += $total_dilse_return;
+
+                    // Get active advances ordered by oldest first
+                    $advance = Advance::where('user_id', $payout->user_id)
+                                        ->where('status', 'active')
+                                        ->first();
+
+
+                    // If there's an active advance, deduct from payout
+                    if ($advance && $advance->due_amount > 0) {
+                        if ($payout->total_payout >= $advance->due_amount) {
+                            // Payout can cover the full advance
+                            $payout->total_payout -= $advance->due_amount;
+                            
+                            // Mark advance as paid
+                            $advance->update([
+                                'due_amount' => 0,
+                                'status' => 'paid',
+                                'paid_at' => now()
+                            ]);
+                            
+                            // Optional: Record a transaction
+                            $advance->transactions()->create([
+                                'amount' => $advance->due_amount,
+                                'type' => 'debit',
+                                'payout_id' => $payout->id,
+                                'note' => 'Full repayment from payout',
+                                'admin_id' => auth()->id() ?? null
+                            ]);
+                        } else {
+                            // Payout can only cover part of the advance
+                            $advance->update([
+                                'due_amount' => $advance->due_amount - $payout->total_payout
+                            ]);
+                            
+                            // Record partial payment
+                            $advance->transactions()->create([
+                                'amount' => $payout->total_payout,
+                                'type' => 'debit',
+                                'payout_id' => $payout->id,
+                                'note' => 'Partial repayment from payout',
+                                'admin_id' => auth()->id() ?? null
+                            ]);
+                            
+                            $payout->total_payout = 0;
+                        }
+                    }
 
                     if($payout->total_payout < 200){
                         $payout->hold_wallet = $payout->total_payout;

@@ -58,10 +58,10 @@ class Usermanagement extends Component
         if ($item) {
             $item->delete();
             $this->dispatch('refreshComponent');
-            $this->dispatch('swal:success', json_encode([
-                'title' => 'Item Deleted',
-                'text' => 'The item has been successfully deleted.',
-                'icon' => 'success',
+
+            $this->dispatch('toastMessage', json_encode([
+                'type'=>'success',
+                'message' => 'The user has been successfully deleted.'
             ]));
         }
     }

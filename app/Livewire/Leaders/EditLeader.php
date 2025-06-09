@@ -59,8 +59,8 @@ class EditLeader extends Component
 
     protected $rules = [
         'name' => 'required|string|max:255',
-        'phone' => 'required|digits:10|regex:/^[6789]/|unique:users,phone',
-        'email' => 'required|email|unique:users,email',
+        'phone' => 'required|digits:10|regex:/^[6789]/',
+        'email' => 'required|email',
         'sponsorId' => 'required|exists:binary_trees,member_number',
     ];
 
@@ -203,6 +203,7 @@ class EditLeader extends Component
             'marital_status' => $this->marital_status,
             'qualification' => $this->qualification,
             'occupation' => $this->occupation,
+            'pan_number' => $this->pan_number,
         ]);
 
         // Update address
@@ -222,7 +223,6 @@ class EditLeader extends Component
             'account_number' => $this->account_number,
             'account_type' => $this->account_type,
             'ifsc_code' => $this->ifsc_code,
-            'pan_number' => $this->pan_number,
             'upi_name' => $this->upi_name,
             'upi_type' => $this->upi_type,
             'upi_number' => $this->upi_number,
@@ -246,7 +246,10 @@ class EditLeader extends Component
             }
         }
 
-        session()->flash('message', 'Leader updated successfully!');
+        $this->dispatch('toastMessage', json_encode([
+            'type'=>'success',
+            'message' => 'Leader updated successfully!'
+        ]));
     }
 
     public function resetProfile()
@@ -261,6 +264,7 @@ class EditLeader extends Component
                 'marital_status' => null,
                 'qualification' => null,
                 'occupation' => null,
+                'pan_number' => null,
             ]);
         }
         
@@ -284,7 +288,6 @@ class EditLeader extends Component
                 'account_number' => null,
                 'account_type' => null,
                 'ifsc_code' => null,
-                'pan_number' => null,
                 'upi_name' => null,
                 'upi_type' => null,
                 'upi_number' => null,
@@ -306,8 +309,10 @@ class EditLeader extends Component
         // Refresh component data
         $this->loadLeaderData();
         
-        // Show success message with new password
-        session()->flash('message', 'Profile has been reset successfully. New password: ' . $newPassword);
+        $this->dispatch('toastMessage', json_encode([
+            'type'=>'success',
+            'message' => 'Profile has been reset successfully'
+        ]));
     }
 
 

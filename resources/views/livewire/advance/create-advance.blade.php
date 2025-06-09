@@ -38,6 +38,11 @@
                                         </select>
                                         @error('user_id') <div class="text-danger small mt-1"><i class="ti-alert me-1"></i>{{ $message }}</div> @enderror
                                     </div>
+                                    @if(!$is_new_advance)
+                                        <div class="bg-blue-100 text-blue-800 p-2 mb-4">
+                                            User already has an advance account. This will add to their existing balance.
+                                        </div>
+                                    @endif
 
                                     <div class="mb-4">
                                         <label for="original_amount" class="form-label fw-bold">Loan Amount</label>

@@ -53,7 +53,7 @@
 
                                     <div class="mb-3">
                                         <label class="form-label">Images</label>
-                                        
+                                        {{ $uploadedImage }}
                                         <!-- Existing Images -->
                                         @if($uploadedImage)
                                             <div class="mb-3 position-relative" style="max-width: 200px;">

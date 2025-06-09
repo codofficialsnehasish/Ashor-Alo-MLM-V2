@@ -25,7 +25,7 @@ class RoleSeeder extends Seeder
             $role = Role::firstOrCreate(['name' => $roleName]);
             // Assign permissions based on role
             switch ($roleName) {
-                case 'admin':
+                case 'Super Admin':
                     $role->givePermissionTo(Permission::all());
                 break;
             }
