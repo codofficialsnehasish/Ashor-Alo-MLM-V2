@@ -3296,6 +3296,9 @@ class MigrateUsersFromArraySeeder extends Seeder
                 $newUser->phone = $oldUser['phone'] ?? null;
                 $newUser->password = Hash::make($oldUser['decoded_password']);
                 $newUser->decoded_password = $oldUser['decoded_password'];
+                $newUser->is_block = $oldUser['block'];
+                $newUser->status = $oldUser['status'];
+                $newUser->is_hide = $oldUser['is_hide'];
                 $newUser->created_at = $oldUser['created_at'] ?? now();
                 $newUser->updated_at = $oldUser['updated_at'] ?? now();
                 $newUser->save();
