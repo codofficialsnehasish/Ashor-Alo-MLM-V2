@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\TopUp;
+use DateTime;
 
 class TopUpSeeder extends Seeder
 {
@@ -1314,6 +1315,7 @@ class TopUpSeeder extends Seeder
     /**
      * Run the database seeds.
      */
+
     public function run(): void
     {
         if (empty($this->top_ups)) {
@@ -1327,41 +1329,120 @@ class TopUpSeeder extends Seeder
         $this->command->getOutput()->progressStart(count($this->top_ups));
 
         foreach ($this->top_ups as $top_upp) {
+
+            // Calculate daily installment if needed
+            $installment_amount_per_day = 0;
+            $total_installment_days = 0;
+            
+            // If you want to calculate daily installments based on monthly:
+            if (isset($top_upp['installment_amount_per_month']) && $top_upp['installment_amount_per_month'] > 0) {
+                $installment_amount_per_day = round($top_upp['installment_amount_per_month'] / 30, 2);
+                $total_installment_days = $top_upp['total_installment_month'] * 30;
+            }
+
             try {
                 \DB::beginTransaction();
 
-                $this->command->info('Processing Top Up number : '.$top_upp['id'].', Placed By '. $top_upp['entry_by']);
+                $this->command->info('Processing Top Up number: '.$top_upp['id'].', Placed By '. $top_upp['entry_by']);
 
-                // Create new User
                 $top_up = new TopUp();
                 $top_up->id = $top_upp['id'];
                 $top_up->entry_by = $top_upp['entry_by'];
                 $top_up->user_id = $top_upp['user_id'];
                 $top_up->order_id = $top_upp['order_id'];
+                $top_up->add_on_against_order_id = null;
+
+                // Assign the direct value first
                 $top_up->is_provide_direct = $top_upp['is_provide_direct'];
-                $top_up->price_subtotal = $top_upp['price_subtotal'];
-                $top_up->price_gst = $top_upp['price_gst'];
-                $top_up->price_shipping = $top_upp['price_shipping'];
-                $top_up->discounted_price = $top_upp['discounted_price'];
-                $top_up->price_total = $top_upp['price_total'];
-                $top_up->payment_method = $top_upp['payment_method'];
-                $top_up->payment_status = $top_upp['payment_status'];
-                $top_up->status = $top_upp['status'];
-                $top_up->order_status = $top_upp['order_status'];
-                $top_up->delivered_date = $top_upp['delivered_date'];
-                $top_up->placed_by = $top_upp['placed_by'];
+
+                // Apply business logic based on conditions
+                if ($top_upp['is_provide_direct'] == '1' && $top_upp['is_personal_business'] == '0' && $top_upp['is_special_business'] == '0') {
+                    // Case 1: Direct business
+                    $top_up->is_provide_roi = 1;
+                    $top_up->is_provide_level = 1;
+                    $top_up->is_show_on_business = 1;
+                } 
+                elseif ($top_upp['is_provide_direct'] == '0' && $top_upp['is_personal_business'] == '0' && $top_upp['is_special_business'] == '0') {
+                    // Case 2: Default non-direct business
+                    $top_up->is_provide_roi = 1;
+                    $top_up->is_provide_level = 0;
+                    $top_up->is_show_on_business = 0;
+                } 
+                elseif ($top_upp['is_provide_direct'] == '0' && $top_upp['is_personal_business'] == '1' && $top_upp['is_special_business'] == '0') {
+                    // Case 3: Personal business
+                    $top_up->is_provide_roi = 1;
+                    $top_up->is_provide_level = 0;
+                    $top_up->is_show_on_business = 0;
+                } 
+                elseif ($top_upp['is_provide_direct'] == '0' && $top_upp['is_personal_business'] == '0' && $top_upp['is_special_business'] == '1') {
+                    // Case 4: Special business
+                    $top_up->is_provide_roi = 0;
+                    $top_up->is_provide_level = 0;
+                    $top_up->is_show_on_business = 1;
+                } 
+                else {
+                    // Default fallback (if none of the conditions match)
+                    $top_up->is_provide_roi = 0;
+                    $top_up->is_provide_level = 0;
+                    $top_up->is_show_on_business = 0;
+                }
+
+
+                $top_up->start_date = $top_upp['start_date'];
+
+                // Calculate end_date based on start_date and total_installment_days
+                if (!empty($top_upp['start_date']) && !empty($total_installment_days)) {
+                    $startDate = new DateTime($top_upp['start_date']);
+                    $startDate->add(new \DateInterval('P' . $total_installment_days . 'D'));
+                    $top_up->end_date = $startDate->format('Y-m-d');
+                } else {
+                    $top_up->end_date = null; // or set a default value if needed
+                }
+
+
+
+                $top_up->total_amount = $top_upp['total_amount'];
+                $top_up->total_paying_amount = $top_upp['total_paying_amount'];
+                $top_up->installment_amount_per_month = $top_upp['installment_amount_per_month'];
+                $top_up->installment_amount_per_day = $installment_amount_per_day;
+                $top_up->total_disbursed_amount = $top_upp['total_disbursed_amount'];
+                $top_up->percentage = $top_upp['percentage'];
+                $top_up->return_percentage = $top_upp['return_percentage'];
+                $top_up->total_installment_month = $top_upp['total_installment_month'];
+                $top_up->total_installment_days = $total_installment_days;
+                $top_up->month_count = $top_upp['month_count'];
+
+                // Calculate days_count based on month_count and start_date to today
+                if (!empty($top_upp['start_date']) && !empty($top_upp['month_count'])) {
+                    $startDate = new DateTime($top_upp['start_date']);
+                    $currentDate = new DateTime(); // Today's date
+                    $interval = $startDate->diff($currentDate);
+                    
+                    // Get total days passed since start_date
+                    $totalDaysPassed = $interval->days;
+                    
+                    // Calculate expected days based on month_count (assuming 30 days per month)
+                    $expectedDays = $top_upp['month_count'] * 30;
+                    
+                    // Set days_count to the minimum of (totalDaysPassed, expectedDays)
+                    $top_up->days_count = min($totalDaysPassed, $expectedDays);
+                } else {
+                    $top_up->days_count = 0;
+                }
+
+                $top_up->is_completed = $top_upp['is_completed'];
                 $top_up->created_at = $top_upp['created_at'];
                 $top_up->updated_at = $top_upp['updated_at'];
+
                 $top_up->save();
 
                 \DB::commit();
-                $this->command->getOutput()->progressAdvance();
+                $this->command->info('Top Up migrated successfully.');
             } catch (\Exception $e) {
                 \DB::rollBack();
-                $this->command->error("Failed to migrate order" . $e->getMessage());  
+                $this->command->error("Failed to migrate top up: " . $e->getMessage());  
             }
         }
-
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $this->command->getOutput()->progressFinish();

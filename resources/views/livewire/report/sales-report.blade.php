@@ -82,13 +82,13 @@
                                         <tbody>
                                             @forelse($items as $item)
                                                 <tr>
-                                                    <td>{{ $item->binaryNode->member_number }}</td>
+                                                    <td>{{ $item->user?->member_number ?? 'N/A' }}</td>
                                                     <td>{{ $item->user->name ?? 'N/A' }}</td>
                                                     <td>{{ $item->total_amount }}</td>
                                                     <td>{{ $item->order?->category?->name ?? 'N/A' }}</td>
                                                     <td>{{ $item->order?->payment_method }}</td>
                                                     <td>{{ $item->start_date }}</td>
-                                                    <td>{{ $item->order->placed_by }}</td>
+                                                    <td>{{ $item->order->placed_by ?? 'N/A' }}</td>
                                                 </tr>
                                             @empty
                                                 <tr>
