@@ -69,17 +69,19 @@
                                                                 <label for="gender">Gender</label>
                                                                 <select class="form-control" wire:model="gender">
                                                                     <option value selected disabled>Choose...</option>
-                                                                    <option value="Male">Male</option>
-                                                                    <option value="Female">Female</option>
-                                                                    <option value="Others">Others</option>
+                                                                    <option value="male">Male</option>
+                                                                    <option value="female">Female</option>
+                                                                    <option value="other">Others</option>
                                                                 </select>
                                                             </div>
                                                             <div class="mb-3 col-md-6">
                                                                 <label for="marital_status">Marital Status</label>
                                                                 <select class="form-control" wire:model="marital_status">
                                                                     <option value selected disabled>Choose...</option>
-                                                                    <option value="Married">Married</option>
-                                                                    <option value="Unmarried">Unmarried</option>
+                                                                    <option value="single">Single</option>
+                                                                    <option value="married">Married</option>
+                                                                    <option value="divorced">Divorced</option>
+                                                                    <option value="widowed">Widowed</option>
                                                                 </select>
                                                             </div>
                                                             <div class="mb-3 col-md-6">
@@ -112,26 +114,28 @@
                                                             </div>
                                                             <div class="mb-3 col-md-6">
                                                                 <label for="country">Country</label>
-                                                                <select class="form-control" wire:model="country" wire:change="updatedCountry">
-                                                                    <option value selected disabled>Choose...</option>
+                                                                <select class="form-control" wire:model.live="country">
+                                                                    <option value="" selected disabled>Choose...</option>
                                                                     @foreach($countries as $country)
                                                                     <option value="{{ $country->id }}">{{ $country->name }}</option>
                                                                     @endforeach
                                                                 </select>
                                                             </div>
+
                                                             <div class="mb-3 col-md-6">
                                                                 <label for="state">State</label>
-                                                                <select class="form-control" wire:model="state" wire:change="updatedState">
-                                                                    <option value selected disabled>Choose...</option>
+                                                                <select class="form-control" wire:model.live="state" @disabled(!count($states))>
+                                                                    <option value="" selected disabled>Choose...</option>
                                                                     @foreach($states as $state)
                                                                     <option value="{{ $state->id }}">{{ $state->name }}</option>
                                                                     @endforeach
                                                                 </select>
                                                             </div>
+
                                                             <div class="mb-3 col-md-6">
                                                                 <label for="city">City</label>
-                                                                <select class="form-control" wire:model="city">
-                                                                    <option value selected disabled>Choose...</option>
+                                                                <select class="form-control" wire:model="city" @disabled(!count($cities))>
+                                                                    <option value="" selected disabled>Choose...</option>
                                                                     @foreach($cities as $city)
                                                                     <option value="{{ $city->id }}">{{ $city->name }}</option>
                                                                     @endforeach
@@ -183,7 +187,7 @@
                                                             </div>
                                                             <div class="mb-3 col-md-6">
                                                                 <label for="nominee_state_id">State</label>
-                                                                <select class="form-control" wire:model="nominee_state_id" wire:change="updatedNomineeStateId">
+                                                                <select class="form-control" wire:model.live="nominee_state_id">
                                                                     <option value selected disabled>Choose...</option>
                                                                     @foreach($nominee_states as $state)
                                                                     <option value="{{ $state->id }}">{{ $state->name }}</option>

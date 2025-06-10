@@ -65,29 +65,35 @@
 
                         <div class="card mt-4">
                             <div class="card-body">
-                                @if(count($items) > 0)
-                                    <table class="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>Name</th>
-                                                <th>ID</th>
-                                                <th>Amount</th>
-                                                <th>Activation Date</th>
-                                                <th>Activated By</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($items as $item)
+                                @if($items->count() > 0)
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered">
+                                            <thead>
                                                 <tr>
-                                                    <td>{{ $item->user?->name }}</td>
-                                                    <td>{{ $item->member_number }}</td>
-                                                    <td>{{ $item->joining_amount }}</td>
-                                                    <td>{{ format_datetime($item->activated_at) }}</td>
-                                                    <td>{{ $item->joinedBy->name ?? 'N/A' }}</td>
+                                                    <th>Name</th>
+                                                    <th>ID</th>
+                                                    <th>Amount</th>
+                                                    <th>Activation Date</th>
+                                                    <th>Activated By</th>
                                                 </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($items as $item)
+                                                    <tr>
+                                                        <td>{{ $item->user?->name }}</td>
+                                                        <td>{{ $item->member_number }}</td>
+                                                        <td>{{ $item->joining_amount }}</td>
+                                                        <td>{{ format_datetime($item->activated_at) }}</td>
+                                                        <td>{{ $item->joinedBy->name ?? 'N/A' }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    
+                                    <div class="mt-3">
+                                        {{ $items->links() }}
+                                    </div>
                                 @else
                                     <div class="alert alert-info">No records found for the selected criteria.</div>
                                 @endif

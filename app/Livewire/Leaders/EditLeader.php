@@ -40,6 +40,8 @@ class EditLeader extends Component
     public $nominee_address;
     public $nominee_state_id;
     public $nominee_city_id;
+    public $nominee_states = []; // Make sure this is populated initially
+    public $nominee_cities = [];
     public $account_name;
     public $bank_name;
     public $account_number;
@@ -54,14 +56,12 @@ class EditLeader extends Component
     public $countries;
     public $states;
     public $cities;
-    public $nominee_states;
-    public $nominee_cities;
 
     protected $rules = [
         'name' => 'required|string|max:255',
         'phone' => 'required|digits:10|regex:/^[6789]/',
-        'email' => 'required|email',
-        'sponsorId' => 'required|exists:binary_trees,member_number',
+        'email' => 'nullable|email',
+        'sponsorId' => 'nullable|exists:binary_trees,member_number',
     ];
 
     protected function checkPermission($permission)
@@ -88,6 +88,7 @@ class EditLeader extends Component
             $this->loadLeaderData();
             $this->loadSponsorInfo();
             $this->loadDropdownData();
+            $this->nominee_states = LocationState::where('country_id',99)->get();
             
         } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
             abort(404, 'Invalid leader ID');
@@ -107,12 +108,12 @@ class EditLeader extends Component
         $this->email = $user->email;
         $this->qualification = $user->profile?->qualification;
         $this->occupation = $user->profile?->occupation;
-        $this->pin_code = $user->pin_code;
-        $this->shipping_address = $user->shipping_address;
+        $this->pin_code = $user->address?->pin_code;
+        $this->shipping_address = $user->address?->shipping_address;
         $this->address = $user->address?->address;
-        $this->country = $user->address?->country;
-        $this->state = $user->address?->state;
-        $this->city = $user->address?->city;
+        $this->country = $user->address?->country_id;
+        $this->state = $user->address?->state_id;
+        $this->city = $user->address?->city_id;
         $this->nominee_name = $user->nominee?->nominee_name;
         $this->nominee_relation = $user->nominee?->nominee_relation;
         $this->nominee_dob = $user->nominee?->nominee_dob;
@@ -154,19 +155,23 @@ class EditLeader extends Component
     public function updatedCountry($value)
     {
         $this->states = LocationState::where('country_id', $value)->get();
-        $this->state = null;
-        $this->city = null;
+        $this->reset(['state', 'city']); // Reset both state and city
     }
 
+    // This will automatically trigger when state changes
     public function updatedState($value)
     {
         $this->cities = LocationCitie::where('state_id', $value)->get();
-        $this->city = null;
+        $this->reset('city'); // Reset city
     }
 
     public function updatedNomineeStateId($value)
     {
-        $this->nominee_cities = LocationCitie::where('state_id', $value)->get();
+        if ($value) {
+            $this->nominee_cities = LocationCitie::where('state_id', $value)->get();
+        } else {
+            $this->nominee_cities = [];
+        }
         $this->nominee_city_id = null;
     }
 
@@ -196,7 +201,7 @@ class EditLeader extends Component
         ]);
 
         // Update profile
-        $user->profile()->updateOrCreate([], [
+        $user->profile()->updateOrCreate(   [], [
             'father_or_husband_name' => $this->father_or_husband_name,
             'date_of_birth' => $this->date_of_birth,
             'gender' => $this->gender,
@@ -211,9 +216,9 @@ class EditLeader extends Component
             'pin_code' => $this->pin_code,
             'shipping_address' => $this->shipping_address,
             'address' => $this->address,
-            'country' => $this->country,
-            'state' => $this->state,
-            'city' => $this->city,
+            'country_id' => $this->country,
+            'state_id' => $this->state,
+            'city_id' => $this->city,
         ]);
 
         // Update bank details

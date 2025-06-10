@@ -38,19 +38,36 @@ class AccountTransactionsSeeder extends Seeder
 
             $AccountTransaction = require $path;
             
-            // Process in chunks
+            $counter = 1;
+            $total = count($AccountTransaction);
+            
             foreach ($AccountTransaction as $t) {
-                $transaction = new AccountTransaction();
-                $transaction->id = $t['id'];
-                $transaction->user_id = $t['user_id'];
-                $transaction->amount = $t['amount'];
-                $transaction->which_for = $t['which_for'];
-                $transaction->status = $t['status'];
-                $transaction->generated_against_user_id = $t['generated_against_id'];
-                $transaction->topup_id = null;
-                $transaction->created_at = $t['created_at'] ?? now();
-                $transaction->updated_at = $t['updated_at'] ?? now();
-                $transaction->save();
+                $this->command->info("Processing transaction {$counter} of {$total} (ID: {$t['id']})");
+                $counter++;
+                
+                // Skip if transaction already exists
+                if (AccountTransaction::where('id', $t['id'])->exists()) {
+                    $this->command->warn("Transaction ID {$t['id']} already exists, skipping...");
+                    continue;
+                }
+                
+                try {
+                    $transaction = new AccountTransaction();
+                    $transaction->id = $t['id'];
+                    $transaction->user_id = $t['user_id'];
+                    $transaction->amount = $t['amount'];
+                    $transaction->which_for = $t['which_for'];
+                    $transaction->status = $t['status'];
+                    $transaction->generated_against_user_id = $t['generated_against_id'];
+                    $transaction->topup_id = null;
+                    $transaction->created_at = $t['created_at'] ?? now();
+                    $transaction->updated_at = $t['updated_at'] ?? now();
+                    $transaction->save();
+                    
+                    $this->command->info("Successfully added transaction ID: {$t['id']}");
+                } catch (\Exception $e) {
+                    $this->command->error("Error processing transaction ID {$t['id']}: " . $e->getMessage());
+                }
                 
                 // Free memory
                 unset($chunk);

@@ -9,15 +9,18 @@ use Excel;
 use PDF;
 use App\Exports\IdActivationExport;
 use Illuminate\Support\Facades\Gate;
+use Livewire\WithPagination;
 
 class IdActivationReport extends Component
 {
+    use WithPagination;
+    
     public $title = 'ID Activation Report';
     public $startDate;
     public $endDate;
     public $activatedBy = null;
-    public $items = [];
     public $admins = [];
+    public $perPage = 10; // Items per page
 
     protected function checkPermission($permission)
     {
@@ -39,18 +42,8 @@ class IdActivationReport extends Component
 
     public function loadData()
     {
-        $query = BinaryTree::where('status', 1);
-
-        if ($this->startDate && $this->endDate) {
-            $query->whereDate('activated_at', '>=', $this->startDate)
-                  ->whereDate('activated_at', '<=', $this->endDate);
-        }
-
-        if (!empty($this->activatedBy)) {
-            $query->where('join_by', $this->activatedBy);
-        }
-
-        $this->items = $query->get();
+        // Reset pagination when filters change
+        $this->resetPage();
     }
 
     public function generateReport()
@@ -63,16 +56,44 @@ class IdActivationReport extends Component
         $this->loadData();
     }
 
-     public function exportExcel()
+    public function getItemsProperty()
+    {
+        $query = BinaryTree::where('status', 1);
+
+        if ($this->startDate && $this->endDate) {
+            $query->whereDate('activated_at', '>=', $this->startDate)
+                  ->whereDate('activated_at', '<=', $this->endDate);
+        }
+
+        if (!empty($this->activatedBy)) {
+            $query->where('join_by', $this->activatedBy);
+        }
+
+        return $query->paginate($this->perPage);
+    }
+
+    public function exportExcel()
     {
         $this->validate([
             'startDate' => 'required|date',
             'endDate' => 'required|date|after_or_equal:startDate',
         ]);
 
-        $this->loadData();
+        // For export, we want all records, not just paginated ones
+        $query = BinaryTree::where('status', 1);
 
-        return Excel::download(new IdActivationExport($this->items), 'id-activation-report.xlsx');
+        if ($this->startDate && $this->endDate) {
+            $query->whereDate('activated_at', '>=', $this->startDate)
+                  ->whereDate('activated_at', '<=', $this->endDate);
+        }
+
+        if (!empty($this->activatedBy)) {
+            $query->where('join_by', $this->activatedBy);
+        }
+
+        $items = $query->get();
+
+        return Excel::download(new IdActivationExport($items), 'id-activation-report.xlsx');
     }
 
     public function exportPDF()
@@ -82,11 +103,23 @@ class IdActivationReport extends Component
             'endDate' => 'required|date|after_or_equal:startDate',
         ]);
 
-        $this->loadData();
+        // For export, we want all records, not just paginated ones
+        $query = BinaryTree::where('status', 1);
+
+        if ($this->startDate && $this->endDate) {
+            $query->whereDate('activated_at', '>=', $this->startDate)
+                  ->whereDate('activated_at', '<=', $this->endDate);
+        }
+
+        if (!empty($this->activatedBy)) {
+            $query->where('join_by', $this->activatedBy);
+        }
+
+        $items = $query->get();
 
         $pdf = PDF::loadView('exports.report.id-activation-pdf', [
             'title' => $this->title,
-            'items' => $this->items,
+            'items' => $items,
             'startDate' => $this->startDate,
             'endDate' => $this->endDate,
         ]);
