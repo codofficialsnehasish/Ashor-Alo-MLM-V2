@@ -2,7 +2,7 @@
     <div class="nano">
         <div class="nano-content">
             <ul>
-                <li class="active">
+                <li class="{{ isActive('dashboard') }}">
                     <a wire:navigate href="{{ route('dashboard') }}"> 
                         <i class="ti-dashboard"></i> Dashboard
                     </a>
@@ -11,13 +11,13 @@
                 <li class="label">Admin & Syatem Users</li>
 
                 @canany(['View Role','View Permission'])
-                <li><a class="sidebar-sub-toggle"><i class="ti-lock"></i> Roles & Permissions<span class="badge badge-primary">2</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
+                <li class="{{ isActive(['role', 'permissions']) }}"><a class="sidebar-sub-toggle"><i class="ti-lock"></i> Roles & Permissions<span class="badge badge-primary">2</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
                     <ul>
                         @can('View Role')
-                        <li><a wire:navigate href="{{ route('role') }}">Roles</a></li>
+                        <li class="{{ isActive('role') }}"><a wire:navigate href="{{ route('role') }}">Roles</a></li>
                         @endcan
                         @can('View Permission')
-                        <li><a wire:navigate href="{{ route('permissions') }}">Permissions</a></li>
+                        <li class="{{ isActive('permissions') }}"><a wire:navigate href="{{ route('permissions') }}">Permissions</a></li>
                         @endcan
                     </ul>
                 </li>

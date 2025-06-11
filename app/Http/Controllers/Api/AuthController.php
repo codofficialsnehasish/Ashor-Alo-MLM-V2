@@ -35,6 +35,14 @@ class AuthController extends Controller
             return apiResponse(false, 'Unauthorized. Only Leaders can login.', null, 403);
         }
 
+        if ($sponsor->user->status == 0) {
+            return apiResponse(false, 'Your account is inactive', null, 403);
+        }
+
+        if ($sponsor->user->is_block == 1) {
+            return apiResponse(false, 'Your ID is Blocked', null, 403);
+        }
+
         $token = $sponsor->user->createToken('leader_token')->plainTextToken;
 
         return apiResponse(true, 'Login successful', ['token' => $token, 'user' => $sponsor->user], 200);

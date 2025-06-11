@@ -117,4 +117,23 @@ class AllLeaders extends Component
             ->with(['binaryNode', 'roles'])
             ->get();
     }
+
+    public function make_block($id)
+    {
+        $this->checkPermission('Block Leaders');
+
+        $user = User::find($id);
+        if($user->is_block){
+            $user->is_block = 0;
+            $status = 'Unblocked';
+        }else{
+            $user->is_block = 1;
+            $status = 'Blocked';
+        }
+        $user->update();
+        $this->dispatch('toastMessage', json_encode([
+            'type'=>'success',
+            'message' => 'User '.$status.' successfully.'
+        ]));
+    }
 }

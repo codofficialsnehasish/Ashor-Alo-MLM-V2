@@ -138,6 +138,23 @@
         }
     }
 
+    if (!function_exists('isActive')) {
+        function isActive($routeNames, $output = 'active')
+        {
+            if (!is_array($routeNames)) {
+                $routeNames = [$routeNames];
+            }
+            
+            foreach ($routeNames as $route) {
+                if (request()->routeIs($route)) {
+                    return $output;
+                }
+            }
+            
+            return '';
+        }
+    }
+
     if (!function_exists('get_days_in_this_month')){
         function get_days_in_this_month(){
             $now = Carbon::now();

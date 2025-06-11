@@ -86,7 +86,12 @@
                                                 <td>{{ $user->binaryNode?->sponsor?->user?->name ?? '' }} @if($user->binaryNode?->sponsor)({{$user->binaryNode?->sponsor?->member_number}})@endif</td>
                                                 <td class="text-end d-flex">
                                                     <a href="{{ route('leaders.edit', ['id' => Crypt::encryptString($user->id)]) }}" wire:navigate class="bg-info p-1 rounded me-1"><i class="ti-pencil-alt text-secondary font-16 text-white"></i></a>
-                                                    <a href="javascript:;" onclick="confirmDeletion({{ $user->id }})" class="bg-danger p-1 rounded"><i class="ti-trash text-secondary font-16 text-white"></i></a>
+                                                    <a href="javascript:;" wire:click="confirmDeletion({{ $user->id }})" class="bg-danger p-1 rounded"><i class="ti-trash text-secondary font-16 text-white"></i></a>
+                                                    @if($user->is_block == 0)
+                                                    <a wire:click="make_block({{ $user->id }})"><img src="{{ asset('assets/images/block.png') }}" height="40px" alt=""></a>
+                                                    @else
+                                                    <a wire:click="make_block({{ $user->id }})"><img src="{{ asset('assets/images/unblock.png') }}" height="40px" alt=""></a>
+                                                    @endif
                                                 </td>
                                             </tr>
                                             @endforeach
