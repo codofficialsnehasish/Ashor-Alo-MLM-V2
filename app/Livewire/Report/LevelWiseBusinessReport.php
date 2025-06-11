@@ -85,9 +85,10 @@ class LevelWiseBusinessReport extends Component
             ->defaultOrder()
             ->get()
             ->map(function ($node) use ($rootNode) {
+                $level = $node->ancestors()->whereDescendantOf($rootNode)->count();
                 return [
                     'id' => $node->user_id,
-                    'level' => $node->depth - $rootNode->depth, // Calculate level based on depth
+                    'level' => $level, // Calculate level based on depth
                     'user_id' => optional($node->user)->member_number,
                     'name' => optional($node->user)->name,
                     'phone' => optional($node->user)->phone,

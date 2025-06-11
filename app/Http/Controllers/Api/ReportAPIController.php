@@ -145,7 +145,8 @@ class ReportAPIController extends Controller
             ->defaultOrder()
             ->get()
             ->map(function ($node) use ($rootNode) {
-                $level = $node->depth - $rootNode->depth;
+                // $level = $node->depth - $rootNode->depth;
+                $level = $node->ancestors()->whereDescendantOf($rootNode)->count();
                 return [
                     'id' => $node->user_id,
                     'level' => $level,
