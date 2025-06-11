@@ -15,6 +15,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
+use App\Models\Advance;
+use App\Models\AdvanceTransaction;
+
 class ReportAPIController extends Controller
 {
     public function topup_report(Request $request){
@@ -67,21 +70,25 @@ class ReportAPIController extends Controller
         //                             ->get()
         // ], 200);
 
-        $data['remuneration_report'] = [
-            "id"=> 5,
-            "user_id"=> 21,
-            "remuneration_benefit_id"=> 5,
-            "start_date"=> "2025-05-15",
-            "amount"=> "30000.00",
-            "month_count"=> 1,
-            "created_at"=> "2024-07-05T13:25:59.000000Z",
-            "updated_at"=> "2024-10-03T12:18:41.000000Z",
-            "rank"=> "Star 4",
-            "target"=> "7500000.00",
-            "bonus"=> 30000,
-            "month_validity"=> 12,
-            "visiblity"=> 1,
-            "is_deleted"=> 0];
+        $data = SalaryBonus::leftJoin('remuneration_benefits','remuneration_benefits.id','salary_bonus.remuneration_benefit_id')
+                                        ->where('user_id',$request->user()->id)
+                                        ->get();
+
+        // $data['remuneration_report'] = [
+        //     "id"=> 5,
+        //     "user_id"=> 21,
+        //     "remuneration_benefit_id"=> 5,
+        //     "start_date"=> "2025-05-15",
+        //     "amount"=> "30000.00",
+        //     "month_count"=> 1,
+        //     "created_at"=> "2024-07-05T13:25:59.000000Z",
+        //     "updated_at"=> "2024-10-03T12:18:41.000000Z",
+        //     "rank"=> "Star 4",
+        //     "target"=> "7500000.00",
+        //     "bonus"=> 30000,
+        //     "month_validity"=> 12,
+        //     "visiblity"=> 1,
+        //     "is_deleted"=> 0];
         return apiResponse(true, 'Remuneration Report', $data, 200);
     }
     
@@ -297,5 +304,37 @@ class ReportAPIController extends Controller
                 ];
 
         return apiResponse(true, 'Tree Wise Business Report', $data, 200);
+    }
+
+    public function daily_dilse_report(Request $request){
+        $startDate = $request->start_date;
+        $endDate = $request->end_date;
+        if(!empty($startDate) && !empty($endDate)){
+            $data['dilse'] = AccountTransaction::whereIn('which_for',['DILSE Daily'])->whereDate('created_at', '>=', $startDate)->whereDate('created_at', '<=', $endDate)->where('user_id',$request->user()->id)->get();
+        }else{
+            $data['dilse'] = AccountTransaction::whereIn('which_for',['DILSE Daily'])->where('user_id',$request->user()->id)->get();
+        }
+
+        return apiResponse(true, 'DILSE Daily Report', $data, 200);
+    }
+
+    public function advance_report(Request $request){
+        $data = Advance::where('user_id',$request->user()->id)->get();
+
+        return apiResponse(true, 'Advance Report', $data, 200);
+    }
+
+    public function advance_transaction_report(Request $request){
+        $validator = Validator::make($request->all(), [
+            'advance_id' => 'required|numeric|exists:advances,id',
+        ]);
+
+        // Return validation errors if any
+        if ($validator->fails()) {
+            return apiResponse(false, 'Validation Errors', ['error' => $validator->errors()], 422);
+        }
+        $data = AdvanceTransaction::where('user_id',$request->user()->id)->where('advance_id',$request->advance_id)->get();
+
+        return apiResponse(true, 'Advance Transaction Report', $data, 200);
     }
 }

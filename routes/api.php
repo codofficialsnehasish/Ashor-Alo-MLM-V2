@@ -66,6 +66,9 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::post('/daily-roi-report', [ReportAPIController::class, 'daily_roi_report']);
     Route::post('/level-wise-business-report', [ReportAPIController::class, 'level_wise_business_report']);
     Route::post('/tree-wise-business-report', [ReportAPIController::class, 'tree_wise_business_report']);
+    Route::post('/daily-dilse-report', [ReportAPIController::class, 'daily_dilse_report']);
+    Route::get('/advance-report', [ReportAPIController::class, 'advance_report']);
+    Route::post('/advance-transaction-report', [ReportAPIController::class, 'advance_transaction_report']);
 
     Route::get('/payouts', [PayoutApiController::class, 'all_payouts']);
     Route::get('/payout-details/{id}', [PayoutApiController::class, 'payout_details']);

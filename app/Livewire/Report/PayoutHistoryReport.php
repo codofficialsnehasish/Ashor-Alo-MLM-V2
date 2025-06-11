@@ -121,11 +121,23 @@ class PayoutHistoryReport extends Component
     protected function getQuery()
     {
         return Payout::select(
-                            'user_id',
-                            DB::raw('SUM(total_payout) as total_payout'),
-                            // DB::raw('(SELECT id FROM payouts AS p WHERE p.user_id = payouts.user_id ORDER BY p.created_at DESC LIMIT 1) as last_payout_id')
-                        )
-                        ->groupBy('user_id');
+                    'user_id',
+                    DB::raw('SUM(total_payout) as total_payout'),
+                    // DB::raw('(SELECT id FROM payouts AS p WHERE p.user_id = payouts.user_id ORDER BY p.created_at DESC LIMIT 1) as last_payout_id')
+                )
+                ->when($this->search, function($query) {
+                    $query->where(function($q) {
+                        $q->whereHas('user', function($userQuery) {
+                            $userQuery->where('name', 'like', '%'.$this->search.'%')
+                            ->orWhere('email', 'like', '%'.$this->search.'%')
+                            ->orWhere('phone', 'like', '%'.$this->search.'%');
+                        })
+                        ->orWhereHas('user.binaryNode', function ($q3) {
+                            $q3->where('member_number', 'like', '%' . $this->search . '%');
+                        });
+                    });
+                })
+                ->groupBy('user_id');
 
     }
 
