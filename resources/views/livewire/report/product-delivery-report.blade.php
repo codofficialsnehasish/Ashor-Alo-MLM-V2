@@ -91,13 +91,13 @@
                                             @forelse($items as $item)
                                                 <tr>
                                                     <td>{{ format_datetime($item->created_at) }}</td>
-                                                    <td>{{ $item->order_number }}</td>
+                                                    <td>{{ $item->order_number ?? '' }}</td>
                                                     <td>{{ $item->user->name ?? 'N/A' }}</td>
-                                                    <td>{{ $item->user->member_number }}</td>
-                                                    <td>{{ $item->price_total }}</td>
+                                                    <td>{{ $item->user->member_number ?? '' }}</td>
+                                                    <td>{{ $item->price_total ?? '' }}</td>
                                                     <td>{{ $item->category?->name ?? 'N/A' }}</td>
-                                                    <td>{{ $item->payment_method }}</td>
-                                                    <td>{{ $item->payment_status }}</td>
+                                                    <td>{{ $item->payment_method ?? '' }}</td>
+                                                    <td>{{ $item->payment_status ?? '' }}</td>
                                                     <td>{{ $item->order_status }}</td>
                                                     <td>{{ $item->placed_by }}</td>
                                                     <td>@if($item->status) {{ !empty($item->delivered_date) ? format_datetime($item->delivered_date) : format_datetime($item->updated_at) }} @endif</td>

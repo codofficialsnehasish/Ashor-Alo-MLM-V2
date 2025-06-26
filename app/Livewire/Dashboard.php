@@ -39,18 +39,18 @@ class Dashboard extends Component
         $data['last_week_payment'] = Payout::select(DB::raw('SUM(total_payout) as total_payout'))
                        ->groupBy('start_date', 'end_date')
                        ->orderBy('start_date', 'desc')
-                       ->first()->total_payout;
+                       ->first()->total_payout ?? 0;
         $data['hold_amount'] = Payout::select(DB::raw('SUM(hold_amount) as hold_amount'))
                        ->groupBy('start_date', 'end_date')
                        ->orderBy('start_date', 'desc')
-                       ->first()->hold_amount;
+                       ->first()->hold_amount ?? 0;
         $data['tds'] = TDSAccount::sum('amount');
         $data['repurchase_wallet'] = RepurchaseAccount::sum('amount');
         $data['service_charge'] = ServiceChargeAccount::sum('amount');
         $data['pending_kyc'] = Kyc::where('status',0)->count();
         $data['contac_us'] = ContactUs::all()->count();
         $rootNode = BinaryTree::whereNull('parent_id')->first();
-        $data['current_week_business'] = $rootNode->calculateLeftBusiness() + $rootNode->calculateRightBusiness();
+        $data['current_week_business'] = ($rootNode ? ($rootNode->calculateLeftBusiness() ?? 0) + ($rootNode->calculateRightBusiness() ?? 0) : 0);
         return view('livewire.dashboard')->with($data);
     }
 }

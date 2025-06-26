@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Certificate;
 use App\Models\PhotoGallary;
 use App\Models\WebsiteSetting;
+use App\Models\BannerSlider;
+use App\Models\OfferSlider;
 use Illuminate\Support\Facades\Storage;
 
 class WebsiteApiController extends Controller
@@ -27,6 +29,34 @@ class WebsiteApiController extends Controller
                                             ];
                                         });
         return apiResponse(true, 'All Active Photos', ['photo_gallary'=>$photo_gallary], 200);
+    }
+
+    public function banner_slider(){
+        $banner_slider = BannerSlider::where('is_active', 1)
+                                        ->orderBy('id', 'desc')
+                                        ->get()
+                                        ->map(function ($item) {
+                                            return [
+                                                'title' => $item->title,
+                                                'description' => $item->description,
+                                                'image_link' => $item->getFirstMediaUrl('gallery_images')
+                                            ];
+                                        });
+        return apiResponse(true, 'All Active Banner', ['banner_slider'=>$banner_slider], 200);
+    }
+
+    public function offer_slider(){
+        $offer_slider = OfferSlider::where('is_active', 1)
+                                        ->orderBy('id', 'desc')
+                                        ->get()
+                                        ->map(function ($item) {
+                                            return [
+                                                'title' => $item->title,
+                                                'description' => $item->description,
+                                                'image_link' => $item->getFirstMediaUrl('gallery_images')
+                                            ];
+                                        });
+        return apiResponse(true, 'All Active Offer Sliders', ['offer_slider'=>$offer_slider], 200);
     }
 
     public function certificates(){
@@ -99,11 +129,10 @@ class WebsiteApiController extends Controller
     }
 
     public function about_us(){
-        return apiResponse(
-            true,
-            'About Us',
-            ['text' => asset($filePath)],
-            200
-        );
+        $setting = WebsiteSetting::select([
+                                    'about_us'
+                                ])->first();
+
+        return apiResponse(true, 'About Us', ['about_us'=>$setting->about_us], 200);
     }
 }

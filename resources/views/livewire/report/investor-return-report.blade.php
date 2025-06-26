@@ -85,11 +85,11 @@
                                             @forelse($items as $item)
                                                 <tr>
                                                     <td>{{ $item->user->name ?? 'N/A' }}</td>
-                                                    <td>{{ $item->binaryNode->member_number }}</td>
-                                                    <td>{{ $item->total_amount }}</td>
-                                                    <td>{{ $item->total_installment_month }}</td>
-                                                    <td>{{ $item->installment_amount_per_month }}</td>
-                                                    <td>{{ $item->month_count }}</td>
+                                                    <td>{{ $item->binaryNode->member_number ?? '' }}</td>
+                                                    <td>{{ $item->total_amount ?? '' }}</td>
+                                                    <td>{{ $item->total_installment_month ?? '' }}</td>
+                                                    <td>{{ $item->installment_amount_per_month ?? '' }}</td>
+                                                    <td>{{ $item->month_count ?? '' }}</td>
                                                     <td>{{ $item->total_disbursed_amount }}</td>
                                                     <td>{{ abs($item->total_paying_amount - $item->total_disbursed_amount) }}</td>
                                                     <td>{{ $item->start_date }}</td>

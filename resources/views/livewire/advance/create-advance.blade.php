@@ -30,10 +30,10 @@
                                 <form wire:submit.prevent="save">
                                     <div class="mb-4">
                                         <label for="user_id" class="form-label fw-bold">Select User</label>
-                                        <select wire:model="user_id" id="user_id" class="form-select form-select-lg">
+                                        <select wire:model="user_id" id="user_id" class="form-select form-select-lg js-example-basic-single">
                                             <option value="">Choose a user...</option>
                                             @foreach($users as $user)
-                                                <option value="{{ $user->id }}">{{ $user->name }} ({{ $user->email }})</option>
+                                                <option value="{{ $user->id }}">{{ $user->name }} ({{ $user->member_number }})</option>
                                             @endforeach
                                         </select>
                                         @error('user_id') <div class="text-danger small mt-1"><i class="ti-alert me-1"></i>{{ $message }}</div> @enderror
@@ -83,3 +83,18 @@
         </div>
     </div>
 </div>
+
+@script()
+<script>
+    $(document).ready(function() {
+        $('.js-example-basic-single').select2();
+
+        $('.js-example-basic-single').on('change', function(e) {
+            let data = $(this).val();
+            // console.log(data)
+            $wire.set('user_id', data)
+            $wire.user_id = data;
+        });
+    });
+</script>
+@endscript

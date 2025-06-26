@@ -1,0 +1,186 @@
+/* For mobile devices only (from 320px to 767px) */
+@media only screen and (min-width: 320px) and (max-width: 768px) {
+.slider-area.mt-84{
+margin-top: 0px;
+}
+    .product-tab-list a h3{
+    font-size: 24px;
+}
+.your-order-area .Place-order a{
+    background-color: #084205;
+    display: block;
+    cursor: pointer;
+    padding: 20px 28px 21px;
+ }
+    /* Your CSS rules here */
+    header.header-area {
+        background: #ffffff;
+    }
+.your-order-area {
+    padding: 40px 15px 50px;
+}
+    .slider-content-8.slider-animated-1 {
+        text-align: center;
+    }
+
+    .slider-content-8 h1 {
+        font-size: 30px;
+        line-height: 31px;
+        margin: 5px 0 30px;
+    }
+
+    .header-area {
+        padding: 20px 0;
+    }
+
+    .header-small-mobile .mobile-logo.logo-width a img {
+        width: 75px;
+    }
+
+    .slider-btn-1 {
+        margin-bottom: 20px;
+    }
+
+    .product-area .product-content h3 a {
+        font-size: 11px;
+    }
+
+    .product-area .product-content p {
+        font-size: 11px;
+        line-height: 18px;
+        margin-bottom: 8px;
+    }
+
+    .product-wrap .product-content .product-price span {
+        font-size: 11px;
+    }
+
+    .banner-content-4.banner-negative-mrg {
+        margin-left: 0px;
+    }
+
+    .banner-content-4.banner-negative-mrg .container {
+        padding-top: 0px;
+    }
+
+    .jarallax p {
+        color: #fff;
+        font-size: 18px;
+        font-weight: 500;
+        line-height: 25px;
+        margin: 20px 0 20px;
+    }
+
+    .footer-logo-2 img {
+        width: 75px;
+    }
+
+    .product-area .product-slider-active.owl-carousel .owl-stage-outer {
+        height: auto;
+    }
+
+    .owl-stage-outer .product-wrap {
+        border-radius: 0px;
+    }
+
+    .section-title h2 {
+        font-size: 24px;
+    }
+
+    .banner-area.pt-70 {
+        padding-top: 50px;
+    }
+
+    .product-area.pt-70 {
+        padding: 50px 0px;
+    }
+
+    .mobile-off-canvas-active .header-mobile-aside-wrap .mobile-menu-wrap .mobile-navigation nav .mobile-menu li a {
+        color: #000;
+    }
+
+    .mobile-off-canvas-active .header-mobile-aside-wrap .mobile-curr-lang-wrap .single-mobile-curr-lang a {
+        color: #000;
+    }
+
+    .product-details-area.mt-84 {
+        margin-top: 0px;
+    }
+
+    .product-details-content .product-dec-peragraph p {
+        text-align: justify;
+    }
+
+    .description-review-wrapper .pro-dec-accordion .product-description-wrapper .panel-body p {
+        text-align: justify;
+    }
+
+    .breadcrumb-bg-4.mt-84 {
+        margin-top: 0px;
+    }
+
+    .about-us-content {
+        padding-top: 20px;
+    }
+
+    .skill-content p {
+        margin-bottom: 10px;
+        text-align: justify;
+    }
+
+    .about-us-content h2 {
+        text-align: center;
+    }
+
+    .about-us-content .about-us-list ul li {
+        text-align: justify;
+    }
+
+    .skill-content h2 {
+        text-align: center;
+    }
+
+    .section-title-7 h2 {
+        font-size: 19px;
+    }
+
+    .single-testimonial p {
+        text-align: justify;
+    }
+
+    .checkout-login-info p {
+        text-align: justify;
+    }
+
+    .checkout-login-info-2 p {
+        text-align: justify;
+    }
+
+    .myaccount-content p {
+        text-align: justify;
+    }
+
+    .privacy .about-us-content {
+        padding-top: 0px;
+    }
+
+    .privacy .about-us-content h2 {
+        margin-top: 0px;
+    }
+
+    .shop-wrapper .product-content a {
+        font-size: 11px;
+    }
+
+    .shop-wrapper p {
+        font-size: 11px;
+        line-height: 18px;
+        margin-bottom: 8px;
+    }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+.header-info.header-info-inc a {
+    font-size: 11px;
+}
+}

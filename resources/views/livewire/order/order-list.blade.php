@@ -83,12 +83,12 @@
                                         @forelse($orders as $order)
                                         <tr>
                                             <td>{{ format_datetime($order->created_at) }}</td>
-                                            <td>{{ $order->order_number }}</td>
-                                            <td>{{ $order->user->name }}</td>
-                                            <td>{{ $order->user->getMemberNumberAttribute() }}</td>
-                                            <td>{{ $order->category?->name }}</td>
+                                            <td>{{ $order->order_number ?? '' }}</td>
+                                            <td>{{ $order->user?->name ?? '' }}</td>
+                                            <td>{{ $order->user?->getMemberNumberAttribute() ?? '' }}</td>
+                                            <td>{{ $order->category?->name ?? '' }}</td>
                                             <td>{{ number_format($order->price_total, 2) }}</td>
-                                            <td>{{ $order->payment_method }}</td>
+                                            <td>{{ $order->payment_method ?? '' }}</td>
                                             <td>
                                                 <span class="badge 
                                                     @if($order->payment_status === 'Paid') badge-success

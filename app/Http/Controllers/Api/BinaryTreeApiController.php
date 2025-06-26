@@ -151,6 +151,7 @@ class BinaryTreeApiController extends Controller
         }
 
         $user = User::find($request->user_id);
+        $leader = $user->binaryTreeNode;
         $data = [
             'name' => $user->name,
             'left' => [
@@ -160,13 +161,15 @@ class BinaryTreeApiController extends Controller
                 'activated_left' => $user->binaryNode?->leftUsers->where('status', 1)->count() ?? 0,
                 'total_left' => count($user->binaryNode?->leftUsers) ?? 0,
                 'total_user' => (count($user->binaryNode?->leftUsers) + count($user->binaryNode?->rightUsers)) ?? 0,
+                'left_business' => $leader->calculateLeftBusiness()
             ],
             'right' => [
                 'rank' => $user->rank ?? 'N/A',
                 'confirm_date' => $user->binaryNode?->activated_at ? formated_date($user->binaryNode?->activated_at) : 'N/A',
                 'register_right' => $user->binaryNode?->rightUsers->where('status', 0)->count() ?? 0,
                 'activated_right' => $user->binaryNode?->rightUsers->where('status', 1)->count() ?? 0,
-                'total_right' => count($user->binaryNode?->rightUsers) ?? 0
+                'total_right' => count($user->binaryNode?->rightUsers) ?? 0,
+                'right_business' => $leader->calculateRightBusiness()
 
             ]
         ];

@@ -80,11 +80,16 @@ Route::middleware('auth:sanctum')->group( function () {
 
 Route::post('/contact-us', [ContactUsApiController::class, 'store']);
 Route::get('/photo-gallary', [WebsiteApiController::class, 'photo_gallary']);
+Route::get('/banner-slider', [WebsiteApiController::class, 'banner_slider']);
+Route::get('/offer-slider', [WebsiteApiController::class, 'offer_slider']);
+
+
 Route::get('/certificates', [WebsiteApiController::class, 'certificates']);
 Route::get('/website-settings', [WebsiteApiController::class, 'website_settings']);
 Route::get('/privacy-policy', [WebsiteApiController::class, 'privacy_policy']);
 Route::get('/terms-and-conditions', [WebsiteApiController::class, 'terms_and_conditions']);
 Route::get('/business-plan', [WebsiteApiController::class, 'business_plan']);
+Route::get('/about-us', [WebsiteApiController::class, 'about_us']);
 
 Route::get('products', [ProductsApiController::class, 'index']);
 Route::get('products/{id}', [ProductsApiController::class, 'show']);

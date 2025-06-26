@@ -8,6 +8,7 @@ use App\Livewire\Settings\{
     WebsiteSettings,
     TermsAndConditions,
     PrivacyPolicy,
+    AboutUs,
 };
 
 use App\Livewire\Dashboard;
@@ -97,6 +98,12 @@ use App\Livewire\Report\{
 use App\Livewire\PhotoGallery\Index as GalleryIndex;
 use App\Livewire\PhotoGallery\Form as GalleryForm;
 
+use App\Livewire\BannerSlider\Index as BannerSliderIndex;
+use App\Livewire\BannerSlider\Form as BannerSliderForm;
+
+use App\Livewire\OfferSlider\Index as OfferSliderIndex;
+use App\Livewire\OfferSlider\Form as OfferSliderForm;
+
 use App\Livewire\Certificates\Index as CertificatesIndex;
 use App\Livewire\Certificates\Form as CertificatesForm;
 
@@ -104,17 +111,10 @@ use App\Livewire\ContactUsList;
 
 use Illuminate\Support\Facades\Route;
 
+
 // Route::get('/', function () {
-//     return view('welcome');
+//     return redirect(route('login'));
 // })->name('home');
-
-Route::get('/', function () {
-    return redirect(route('login'));
-})->name('home');
-
-// Route::view('dashboard', 'dashboard')
-//     ->middleware(['auth', 'verified'])
-//     ->name('dashboard');
 
 
 Route::middleware(['auth'])->group(function () {
@@ -129,6 +129,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/site-settings', WebsiteSettings::class)->name('settings.site-settings');
     Route::get('settings/terms', TermsAndConditions::class)->name('settings.terms');
     Route::get('settings/privacy', PrivacyPolicy::class)->name('settings.privacy');
+    Route::get('settings/about-us', AboutUs::class)->name('settings.about-us');
 
     Route::get('/roles', RoleManagement::class)->name('role');
     Route::get('/permissions', Permissions::class)->name('permissions');
@@ -216,6 +217,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/photo-galleries/create', GalleryForm::class)->name('photo-galleries.create');
     Route::get('/photo-galleries/{gallery}/edit', GalleryForm::class)->name('photo-galleries.edit');
 
+    Route::get('/banner-slider', BannerSliderIndex::class)->name('banner-slider.index');
+    Route::get('/banner-slider/create', BannerSliderForm::class)->name('banner-slider.create');
+    Route::get('/banner-slider/{gallery}/edit', BannerSliderForm::class)->name('banner-slider.edit');
+
+    Route::get('/offer-slider', OfferSliderIndex::class)->name('offer-slider.index');
+    Route::get('/offer-slider/create', OfferSliderForm::class)->name('offer-slider.create');
+    Route::get('/offer-slider/{gallery}/edit', OfferSliderForm::class)->name('offer-slider.edit');
+
     Route::get('/certificates', CertificatesIndex::class)->name('certificates.index');
     Route::get('/certificates/create', CertificatesForm::class)->name('certificates.create');
     Route::get('/certificates/{certificate}/edit', CertificatesForm::class)->name('certificates.edit');
@@ -236,3 +245,4 @@ Route::get("/web/id-card/{user_id}",[Documents::class,"id_card_view"])->name('my
 Route::get('payout/payout-statement/{id}',[PayoutApiController::class,'payout_statement_app'])->name('payout.payout-statement.app');
 require __DIR__.'/auth.php';
 require __DIR__.'/mlm_daily.php';
+require __DIR__.'/web_app.php';

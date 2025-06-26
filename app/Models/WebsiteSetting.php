@@ -26,7 +26,9 @@ class WebsiteSetting extends Model implements HasMedia
         'seo_meta_description',
         'seo_meta_keywords',
         'terms_and_conditions',
-        'privacy_policy'
+        'privacy_policy',
+        'about_us_title',
+        'about_us'
     ];
 
     protected $casts = [

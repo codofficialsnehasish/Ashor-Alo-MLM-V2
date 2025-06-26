@@ -15,50 +15,11 @@ class PayoutSeeder extends Seeder
         'p2.php',
         'p3.php',
         'p4.php',
+        'p5.php',
     ];
     /**
      * Run the database seeds.
      */
-
-    // public function run(): void
-    // {
-
-
-    //     \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-  
-    //     $this->command->info('Starting Payout migration from array...');
-    //     $this->command->getOutput()->progressStart(count($this->service_charge_account));
-
-    //     foreach ($this->service_charge_account as $acc) {
-    //         try {
-    //             \DB::beginTransaction();
-
-    //             $this->command->info('Processing Payout id : '.$acc['id']);
-
-    //             // Create new User
-    //             $tdsscc = new Payout();
-    //             $tdsscc->id = $acc['id'];
-    //             $tdsscc->user_id = $acc['user_id'];
-    //             $tdsscc->amount = $acc['amount'];
-    //             $tdsscc->which_for = $acc['which_for'];
-    //             $tdsscc->status = $acc['status'];
-    //             $tdsscc->created_at = $acc['created_at'];
-    //             $tdsscc->updated_at = $acc['updated_at'];
-    //             $tdsscc->save();
-
-    //             \DB::commit();
-    //             $this->command->getOutput()->progressAdvance();
-    //         } catch (\Exception $e) {
-    //             \DB::rollBack();
-    //             $this->command->error("Failed to migrate Payout" . $e->getMessage());  
-    //         }
-    //     }
-
-    //     \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-
-    //     $this->command->getOutput()->progressFinish();
-    //     $this->command->info('Payout migration from array completed.');
-    // }
 
     public function run(): void
     {

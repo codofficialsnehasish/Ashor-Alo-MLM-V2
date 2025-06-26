@@ -37,7 +37,7 @@
                 @endcanany
 
                 @canany(['View Monthly Return','View Level Bonus','View Remuneration Benefit'])
-                <li><a class="sidebar-sub-toggle"><i class="ti-harddrives"></i> Master Data<span class="badge badge-primary">5</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
+                <li><a class="sidebar-sub-toggle"><i class="ti-harddrives"></i> Master Data<span class="badge badge-primary">3</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
                     <ul>
                         @can('View Monthly Return')
                         <li><a wire:navigate href="{{ route('monthly-return.index') }}">Monthly Return</a></li>
@@ -65,7 +65,7 @@
                 </li>
                 @endcan
                 @canany(['View Leaders','Tree View','Transfer Tree','View Members Of Leader'])
-                <li><a class="sidebar-sub-toggle"><i class="ti-crown"></i>  Leaders  <span class="badge badge-primary">3</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
+                <li><a class="sidebar-sub-toggle"><i class="ti-crown"></i>  Leaders  <span class="badge badge-primary">4</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
                     <ul>
                         @can('View Leaders')
                         <li><a wire:navigate href="{{ route('leaders.all')}}">All Leaders</a></li>
@@ -118,7 +118,7 @@
                 @endcanany
 
                 @canany(['View Order','View Categories','View Products'])
-                <li><a class="sidebar-sub-toggle"><i class="ti-package"></i>Advance Management<span class="badge badge-primary">3</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
+                <li><a class="sidebar-sub-toggle"><i class="ti-package"></i>Advance Management<span class="badge badge-primary">1</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
                     <ul>
                         @can('View Order')
                         <li><a wire:navigate href="{{ route('advance.list') }}">Advance List</a></li>
@@ -137,7 +137,7 @@
                     'Investor Return Report',
                     'Product Support Report'
                     ])
-                <li><a class="sidebar-sub-toggle"><i class="ti-stats-up"></i>  Reports  <span class="badge badge-primary">18</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
+                <li><a class="sidebar-sub-toggle"><i class="ti-stats-up"></i>  Reports  <span class="badge badge-primary">20</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
                     <ul>
                         @can('ID Activation Report')
                         <li><a wire:navigate href="{{ route('report.id-activation-report') }}">ID Activation</a></li>
@@ -164,7 +164,7 @@
                         <li><a wire:navigate href="{{ route('report.product-support-report') }}">Product Support</a></li>
                         @endcan
                         @canany(['Payout Report','Payout History Report','Hold Amount Report','Paid/Unpaid Payments Report','Commission < 200 Report'])
-                        <li><a class="sidebar-sub-toggle"><i class="ti-bar-chart-alt"></i> All Payout <span class="badge badge-primary">2</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
+                        <li><a class="sidebar-sub-toggle"><i class="ti-bar-chart-alt"></i> All Payout <span class="badge badge-primary">5</span> <span class="sidebar-collapse-icon ti-angle-down"></span></a>
                             <ul>
                                 @can('Payout Report')
                                 <li><a wire:navigate href="{{ route('report.payout-report') }}">Payout</a></li>
@@ -251,6 +251,15 @@
                     </a>
                 </li>
                 @endcan
+
+                @can('View About Us')
+                <li class="">
+                    <a wire:navigate href="{{ route('settings.about-us') }}"> 
+                        <i class="ti-email"></i> About Us
+                    </a>
+                </li>
+                @endcan
+
                 @can('Show Photo Gallery')
                 <li class="">
                     <a wire:navigate href="{{ route('photo-galleries.index') }}"> 
@@ -258,6 +267,23 @@
                     </a>
                 </li>
                 @endcan
+
+                @can('Show Banner Slider')
+                <li class="">
+                    <a wire:navigate href="{{ route('banner-slider.index') }}"> 
+                        <i class="ti-gallery"></i> Banner Slider
+                    </a>
+                </li>
+                @endcan
+
+                @can('Show Offer Slider')
+                <li class="">
+                    <a wire:navigate href="{{ route('offer-slider.index') }}"> 
+                        <i class="ti-gallery"></i> Offer Slider
+                    </a>
+                </li>
+                @endcan
+
                 @can('View Notice')
                 <li class="">
                     <a wire:navigate href="{{ route('notice-board') }}"> 

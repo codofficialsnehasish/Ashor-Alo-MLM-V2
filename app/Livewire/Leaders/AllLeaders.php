@@ -82,6 +82,8 @@ class AllLeaders extends Component
 
     public function exportPDF()
     {
+        ini_set('memory_limit', '512M');
+        
         $users = $this->getFilteredUsersForExport();
         
         $pdf = Pdf::loadView('exports.users-pdf', [
@@ -111,7 +113,37 @@ class AllLeaders extends Component
             ->when($this->query, function($query) {
                 $query->where(function($q) {
                     $q->where('name', 'like', '%'.$this->query.'%')
-                      ->orWhere('email', 'like', '%'.$this->query.'%');
+                      ->orWhere('email', 'like', '%'.$this->query.'%')
+                      ->orWhere('phone', 'like', '%'.$this->query.'%')
+                      ->orWhere('created_at', 'like', '%'.$this->query.'%')
+                      
+                      // Search in binaryNode relationship fields
+                      ->orWhereHas('binaryNode', function($nodeQuery) {
+                            $nodeQuery->where('member_number', 'like', '%'.$this->query.'%')
+                            ->orWhere('position', 'like', '%'.$this->query.'%')
+                            ->orWhere(function($statusQuery) {
+                                // Convert search term to lowercase for case-insensitive matching
+                                $searchTerm = strtolower($this->query);
+                                if ($searchTerm === 'active' || $searchTerm === 'act') {
+                                    $statusQuery->where('status', 1);
+                                } elseif ($searchTerm === 'inactive' || $searchTerm === 'inact') {
+                                    $statusQuery->where('status', 0);
+                                } else {
+                                    // Fallback to numeric search if they enter 0 or 1 directly
+                                    $statusQuery->where('status', 'like', '%'.$this->query.'%');
+                                }
+                            })
+                            ->orWhere('activated_at', 'like', '%'.$this->query.'%');
+                      })
+                      
+                      // Search in sponsor's name
+                      ->orWhereHas('binaryNode.sponsor.user', function($sponsorQuery) {
+                          $sponsorQuery->where('name', 'like', '%'.$this->query.'%');
+                      })
+                      // Search in sponsor's id
+                      ->orWhereHas('binaryNode.sponsor', function($sponsorQuery) {
+                        $sponsorQuery->where('member_number', 'like', '%'.$this->query.'%');
+                    });
                 });
             })
             ->with(['binaryNode', 'roles'])

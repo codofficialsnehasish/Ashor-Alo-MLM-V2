@@ -26,7 +26,7 @@
                     <div class="col-md-12">
                         <div class="card">
                             @if (session()->has('message'))
-                                <div class="alert alert-success">
+                                <div class="alert alert-success text-dark">
                                     {{ session('message') }}
                                 </div>
                             @endif

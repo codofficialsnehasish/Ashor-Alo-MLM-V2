@@ -77,7 +77,15 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ format_datetime($user->created_at) }}</td>
                                                 <td>{{ !empty($user->binaryNode->activated_at) ? format_datetime($user->binaryNode->activated_at) : '' }}</td>
-                                                <td>{{ $user->name }} ({{$user->binaryNode->member_number}})</td>
+                                                <td>
+                                                    @if ($user->hasMedia('profile-image'))
+                                                        <img src="{{ $user->getFirstMediaUrl('profile-image') }}" 
+                                                            alt="{{ $user->name }}" 
+                                                            style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; vertical-align: middle; margin-right: 8px;">
+                                                    @endif
+                                                    {{ $user->name }} ({{ $user->binaryNode->member_number }})
+                                                </td>
+
                                                 <td>{{ ucFirst($user->binaryNode->position) }}</td>
                                                 <td>{{ $user->phone }}</td>
                                                 <td>{{ $user->decoded_password }}</td>
