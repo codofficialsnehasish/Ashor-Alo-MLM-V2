@@ -65,7 +65,9 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            @php $total_payout_amount = 0; @endphp
                                             @forelse($items as $item)
+                                                @php $total_payout_amount += $item->total_payout; @endphp
                                                 <tr>
                                                     <td>
                                                         <input type="checkbox" 
@@ -92,6 +94,20 @@
                                                 </tr>
                                             @endforelse
                                         </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td>Total</td>
+                                                <td>{{ $total_payout_amount }}</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        </tfoot>
                                     </table>
                                 </div>
 

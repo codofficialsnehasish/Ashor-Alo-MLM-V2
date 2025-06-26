@@ -85,10 +85,10 @@
                                                 <tr>
                                                     <td>{{ $item->user->name ?? 'N/A' }}</td>
                                                     <td>{{ $item->user->member_number }}</td>
-                                                    <td>{{ $item->rank }}</td>
-                                                    <td>{{ $item->target }}</td>
+                                                    <td>{{ $item->remunerationBenefit?->rank_name ?? '' }}</td>
+                                                    <td>{{ $item->remunerationBenefit?->matching_target ?? '' }}</td>
                                                     <td>{{ $item->amount }}</td>
-                                                    <td>{{ $item->month_validity }}</td>
+                                                    <td>{{ $item->remunerationBenefit?->month_validity ?? '' }}</td>
                                                     <td>{{ $item->month_count }}</td>
                                                     <td>{{ formated_date($item->start_date) }}</td>
                                                 </tr>

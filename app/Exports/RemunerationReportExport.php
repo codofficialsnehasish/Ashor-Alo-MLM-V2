@@ -37,15 +37,15 @@ class RemunerationReportExport implements FromCollection, WithHeadings, WithMapp
         ];
     }
 
-    public function map($sale): array
+    public function map($item): array
     {
         return [
             $item->user->name ?? 'N/A',
             $item->user->member_number,
-            $item->rank,
-            $item->target,
+            $item->remunerationBenefit?->rank_name,
+            $item->remunerationBenefit?->matching_target,
             $item->amount,
-            $item->month_validity,
+            $item->remunerationBenefit?->month_validity,
             $item->month_count,
             formated_date($item->start_date),
         ];

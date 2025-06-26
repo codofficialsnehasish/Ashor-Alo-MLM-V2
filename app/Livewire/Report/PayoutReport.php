@@ -162,6 +162,22 @@ class PayoutReport extends Component
                 )
                 ->groupBy('start_date', 'end_date')
                 ->orderBy('start_date', 'desc');
+
+        // return Payout::select(
+        //                 'start_date',
+        //                 'end_date',
+        //                 DB::raw('SUM(total_payout) as total_payout'),
+        //                 DB::raw('COUNT(DISTINCT user_id) as total_user_count')
+        //             )
+        //             ->whereHas('user', function ($query) {
+        //                 $query->where('is_block', 0)
+        //                     ->whereHas('kyc', function ($kycQuery) {
+        //                         $kycQuery->where('status', 1);
+        //                     });
+        //             })
+        //             ->groupBy('start_date', 'end_date')
+        //             ->havingRaw('SUM(total_payout) > 0') // use having for aggregate condition
+        //             ->orderBy('start_date', 'desc');
     }
 
     protected function getFullDetailsQuery()
