@@ -19,9 +19,9 @@ class LevelBonusService
 
         $highest_level = LevelBonusMaster::orderBy('id', 'desc')->first();
 
-        \Log::info("Highest Level".$highest_level->level_number." current level ".$user_level);
-
         if($user_level > $highest_level->level_number){ return; }
+        
+        \Log::info("Highest Level".$highest_level->level_number." current level ".$user_level);
 
         if($user->binaryTreeNode->status == 1){
 

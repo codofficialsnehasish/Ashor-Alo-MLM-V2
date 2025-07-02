@@ -16,6 +16,7 @@ use App\Models\Payout;
 use App\Jobs\RoiJob;
 use App\Jobs\LevelBonusJob;
 use App\Jobs\PayoutJob;
+use App\Jobs\GeneratePayoutJob;
 
 class CornJobsTest extends Controller
 {
@@ -80,8 +81,12 @@ class CornJobsTest extends Controller
     public function level_bonus_data_set(){
 
         $dateRanges = [
+            // ['start_date' => '2025-05-16', 'end_date' => '2025-05-31'],
+            ['start_date' => '2025-06-01', 'end_date' => '2025-06-15'],
+
+
             // ['start_date' => '2025-06-23', 'end_date' => '2025-06-30'],
-            ['start_date' => '2025-07-01', 'end_date' => '2025-07-15'],
+            // ['start_date' => '2025-07-01', 'end_date' => '2025-07-15'],
             // ['start_date' => '2025-07-16', 'end_date' => '2025-07-31'],
             // ['start_date' => '2025-08-01', 'end_date' => '2025-08-15'],
             // ['start_date' => '2025-08-16', 'end_date' => '2025-08-31'],
@@ -383,7 +388,8 @@ class CornJobsTest extends Controller
 
         $chunks = $transactions->chunk(5);
         foreach ($chunks as $chunk) {
-            PayoutJob::dispatch($chunk, $lastSaturday, $current_day);
+            // PayoutJob::dispatch($chunk, $lastSaturday, $current_day);
+            GeneratePayoutJob::dispatch($chunk, $lastSaturday, $current_day);
         }
     }
 }

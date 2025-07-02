@@ -20,6 +20,18 @@ class AccountTransactionsSeeder extends Seeder
         't7.php',
         't8.php',
         't9.php',
+        't10.php',
+        't11.php',
+        't12.php',
+        't13.php',
+        't14.php',
+        't15.php',
+        't16.php',
+        't17.php',
+        't18.php',
+        't19.php',
+        't20.php',
+        't21.php',
     ];
     /**
      * Run the database seeds.
@@ -35,6 +47,8 @@ class AccountTransactionsSeeder extends Seeder
                 $this->command->error("File not found: {$path}");
                 continue;
             }
+
+            \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
             $AccountTransaction = require $path;
             
@@ -73,6 +87,8 @@ class AccountTransactionsSeeder extends Seeder
                 unset($chunk);
                 gc_collect_cycles();
             }
+
+            \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
             
             unset($AccountTransaction);
         }
