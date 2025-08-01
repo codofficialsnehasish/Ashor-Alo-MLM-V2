@@ -18,7 +18,6 @@ class AccountTransaction extends Model
         'status',
         'generated_against_user_id',
         'topup_id',
-        'created_at'
     ];
 
     protected $casts = [

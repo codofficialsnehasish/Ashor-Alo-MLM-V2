@@ -58,12 +58,25 @@
                                                             autocomplete="off">
                                                         
                                                         @if(count($searchResults) > 0)
-                                                            <div class="search-results dropdown-menu show" style="display: block; width: 100%;">
+                                                          
+                                                            
+                                                            <div class="search-results dropdown-menu show" style="display: block; width: 35%;">
                                                                 @foreach($searchResults as $result)
                                                                     <a href="javascript:void(0)" 
-                                                                    class="dropdown-item" 
-                                                                    wire:click="setAsRoot({{ $result['id'] }})">
-                                                                        {{ $result['name'] }} ({{ $result['member_number'] }})
+                                                                       class="dropdown-item" 
+                                                                       style="white-space: normal; 
+                                                                              word-wrap: break-word;
+                                                                              padding: 8px 12px;
+                                                                              display: block;"
+                                                                       wire:click="setAsRoot({{ $result['id'] }})">
+                                                                        <div style="display: flex; justify-content: space-between;">
+                                                                            <span style="flex: 1; min-width: 0; margin-right: 8px;">
+                                                                                {{ $result['name'] }}
+                                                                            </span>
+                                                                            <span style="color: #6c757d;">
+                                                                                ({{ $result['member_number'] }})
+                                                                            </span>
+                                                                        </div>
                                                                     </a>
                                                                 @endforeach
                                                             </div>

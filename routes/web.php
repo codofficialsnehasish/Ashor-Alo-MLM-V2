@@ -111,10 +111,20 @@ use App\Livewire\ContactUsList;
 
 use Illuminate\Support\Facades\Route;
 
-
 // Route::get('/', function () {
-//     return redirect(route('login'));
+//     return view('welcome');
 // })->name('home');
+Route::get('/login', function () {
+    return redirect()->away('https://agents.ashoralo.in');
+});
+
+Route::get('/', function () {
+    return redirect(route('login'));
+})->name('home');
+
+// Route::view('dashboard', 'dashboard')
+//     ->middleware(['auth', 'verified'])
+//     ->name('dashboard');
 
 
 Route::middleware(['auth'])->group(function () {
@@ -224,7 +234,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/offer-slider', OfferSliderIndex::class)->name('offer-slider.index');
     Route::get('/offer-slider/create', OfferSliderForm::class)->name('offer-slider.create');
     Route::get('/offer-slider/{gallery}/edit', OfferSliderForm::class)->name('offer-slider.edit');
-
+    
     Route::get('/certificates', CertificatesIndex::class)->name('certificates.index');
     Route::get('/certificates/create', CertificatesForm::class)->name('certificates.create');
     Route::get('/certificates/{certificate}/edit', CertificatesForm::class)->name('certificates.edit');
@@ -240,9 +250,17 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
+
+
+
+
+
 Route::get("/web/welcome-letter/{user_id}",[Documents::class,"welcome_letter_view"])->name('my-documents.welcome-letter.view');
 Route::get("/web/id-card/{user_id}",[Documents::class,"id_card_view"])->name('my-documents.id-card.view');
 Route::get('payout/payout-statement/{id}',[PayoutApiController::class,'payout_statement_app'])->name('payout.payout-statement.app');
 require __DIR__.'/auth.php';
 require __DIR__.'/mlm_daily.php';
 require __DIR__.'/web_app.php';
+
+
+

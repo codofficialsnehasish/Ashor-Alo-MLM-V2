@@ -74,38 +74,51 @@
                                         <tbody>
                                             @foreach ($users as $user)
                                             <tr>
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td>{{ format_datetime($user->created_at) }}</td>
-                                                <td>{{ !empty($user->binaryNode->activated_at) ? format_datetime($user->binaryNode->activated_at) : '' }}</td>
-                                                <td>
-                                                    @if ($user->hasMedia('profile-image'))
-                                                        <img src="{{ $user->getFirstMediaUrl('profile-image') }}" 
-                                                            alt="{{ $user->name }}" 
-                                                            style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; vertical-align: middle; margin-right: 8px;">
-                                                    @endif
+                                                <td style="text-align: center; font-weight: 500; vertical-align: middle; padding: 8px;">{{ $loop->iteration }}</td>
+                                                <td style="vertical-align: middle;">{{ format_datetime($user->created_at) }}</td>
+                                                <td style="vertical-align: middle;">{{ !empty($user->binaryNode->activated_at) ? format_datetime($user->binaryNode->activated_at) : '' }}</td>
+                                                
+                                                
+                                                <td style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                                                @if ($user->hasMedia('profile-image'))
+                                                    <img src="{{ $user->getFirstMediaUrl('profile-image') }}" 
+                                                         alt="{{ $user->name }}" 
+                                                         style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                                                @else
+                                                    <img src="{{ asset('assets/images/treeUser/user.png') }}" 
+                                                         alt="{{ $user->name }}" 
+                                                         style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                                                @endif
+                                                <div style="text-align: center;">
                                                     {{ $user->name }} ({{ $user->binaryNode->member_number }})
-                                                </td>
-
-                                                <td>{{ ucFirst($user->binaryNode->position) }}</td>
-                                                <td>{{ $user->phone }}</td>
-                                                <td>{{ $user->decoded_password }}</td>
-                                                <td>{{ $user->email }}</td>
-                                                <td>{!! check_status($user->binaryNode->status) !!}</td>
-                                                <td>{{ $user->binaryNode?->sponsor?->user?->name ?? '' }} @if($user->binaryNode?->sponsor)({{$user->binaryNode?->sponsor?->member_number}})@endif</td>
-                                                <td class="text-end d-flex">
-                                                    <a href="{{ route('leaders.edit', ['id' => Crypt::encryptString($user->id)]) }}" wire:navigate class="bg-info p-1 rounded me-1"><i class="ti-pencil-alt text-secondary font-16 text-white"></i></a>
-                                                    <a href="javascript:;" wire:click="confirmDeletion({{ $user->id }})" class="bg-danger p-1 rounded"><i class="ti-trash text-secondary font-16 text-white"></i></a>
+                                                </div>
+                                            </td>
+                                                <td style="vertical-align: middle;">{{ ucFirst($user->binaryNode->position) }}</td>
+                                                <td style="vertical-align: middle;">{{ $user->phone }}</td>
+                                                <td style="vertical-align: middle;">{{ $user->decoded_password }}</td>
+                                                <td style="vertical-align: middle;">{{ $user->email }}</td>
+                                                <td style="vertical-align: middle;">{!! check_status($user->binaryNode->status) !!}</td>
+                                                <td style="vertical-align: middle;">{{ $user->binaryNode?->sponsor?->user?->name ?? '' }} @if($user->binaryNode?->sponsor)({{$user->binaryNode?->sponsor?->member_number}})@endif</td>
+                                                <td class="text-end d-flex" style="vertical-align: middle; padding-bottom: 20px; gap:4px;">
+                                                    <a href="{{ route('leaders.edit', ['id' => Crypt::encryptString($user->id)]) }}" wire:navigate class="bg-info p-2 rounded me-1"><i class="ti-pencil-alt text-secondary font-16 text-white"></i></a>
+                                                    <a href="javascript:;" wire:click="confirmDeletion({{ $user->id }})" class="bg-danger p-2 rounded"><i class="ti-trash text-secondary font-16 text-white"></i></a>
                                                     @if($user->is_block == 0)
-                                                    <a wire:click="make_block({{ $user->id }})"><img src="{{ asset('assets/images/block.png') }}" height="40px" alt=""></a>
+                                                    <div style="margin:auto 0">
+                                                    <a wire:click="make_block({{ $user->id }})"><img src="{{ asset('assets/images/block.png') }}" height="30px" alt="" style="margin-left:1px"></a>
+                                                    </div>
                                                     @else
-                                                    <a wire:click="make_block({{ $user->id }})"><img src="{{ asset('assets/images/unblock.png') }}" height="40px" alt=""></a>
+                                                    <div style="margin:auto 0">
+                                                    <a wire:click="make_block({{ $user->id }})"><img src="{{ asset('assets/images/unblock.png') }}" height="30px" style="margin-left:1px" alt=""></a>
+                                                    </div>
                                                     @endif
                                                 </td>
                                             </tr>
                                             @endforeach
                                         </tbody>
-                                    </table>           
+                                    </table>
+                                    <div class="mt-3">
                                     {{ $users->links(data: ['scrollTo' => false]) }}         
+                                    </div>
                                 </div>                                         
                             </div><!--end card-body--> 
                         </div><!--end card--> 

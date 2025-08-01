@@ -28,21 +28,22 @@ class UserDashboardAPI extends Controller
             $leader = $user->binaryTreeNode;
             $data = [];
             $total = Payout::where('user_id', $user->id)
-                        ->selectRaw('SUM(direct_bonus) as direct_bonus, SUM(lavel_bonus) as lavel_bonus, SUM(remuneration_bonus) as remuneration_bonus, SUM(roi) as roi')
+                        ->selectRaw('SUM(direct_bonus) as direct_bonus, SUM(lavel_bonus) as lavel_bonus, SUM(remuneration_bonus) as remuneration_bonus, SUM(roi) as roi, SUM(dilse_payout_amount) as dilse_bonus')
                         ->first();
             // return $total->direct_bonus;
 
-            $data['total_income'] = $total->direct_bonus + $total->lavel_bonus + $total->remuneration_bonus + $total->roi;
-            Payout::where('user_id', $user->id)
+            $data['total_income'] = number_format($total->direct_bonus + $total->lavel_bonus + $total->remuneration_bonus + $total->roi + $total->dilse_bonus,2);
+            $comision_total = Payout::where('user_id', $user->id)
                         ->selectRaw('
                             SUM(direct_bonus - direct_bonus_tds_deduction - direct_bonus_repurchase_deduction) as direct_bonus, 
                             SUM(lavel_bonus - lavel_bonus_tds_deduction - lavel_bonus_repurchase_deduction) as lavel_bonus, 
                             SUM(remuneration_bonus - remuneration_bonus_tds_deduction - remuneration_bonus_repurchase_deduction) as remuneration_bonus, 
-                            SUM(roi - roi_tds_deduction) as roi
+                            SUM(roi - roi_tds_deduction) as roi,
+                            SUM(dilse_payout_amount - dilse_service_charge_deduction) as dilse_bonus
                         ')
                         ->first();
 
-            $data['total_commission'] = $total->direct_bonus + $total->lavel_bonus + $total->remuneration_bonus + $total->roi;
+            $data['total_commission'] = number_format($comision_total->direct_bonus + $comision_total->lavel_bonus + $comision_total->remuneration_bonus + $comision_total->roi + $comision_total->dilse_bonus,2);
             $data['hold_amount'] = Payout::where('user_id', $user->id)->latest()->value('hold_amount');
             $data['direct_bonus'] = AccountTransaction::whereIn('which_for', ['Direct Bonus', 'Direct Bonus on Hold'])
                                                     ->where('user_id', $user->id)
@@ -50,6 +51,7 @@ class UserDashboardAPI extends Controller
             $data['level_bonus'] = AccountTransaction::whereIn('which_for', ['Level Bonus','Level Bonus on Hold'])->where('user_id',$user->id)->sum('amount');
             $data['product_support'] = AccountTransaction::where('which_for','ROI Daily')->where('user_id',$user->id)->sum('amount');
             $data['remuneration_benefits'] = AccountTransaction::where('which_for','Salary Bonus')->where('user_id',$user->id)->sum('amount');
+            $data['dilse_bonus'] = AccountTransaction::where('which_for','DILSE Daily')->where('user_id',$user->id)->sum('amount');
             $data['repurchase_wallet'] = RepurchaseAccount::where('user_id',$user->id)->sum('amount');
             $data['direct_team_member'] = BinaryTree::where('sponsor_id', $leader->id)->with('user')->count();
             $data['left_team_member'] = $leader->leftUsers->count();
@@ -75,6 +77,16 @@ class UserDashboardAPI extends Controller
 
             $data['left_business'] = $leader->calculateLeftBusiness();
             $data['right_business'] = $leader->calculateRightBusiness();
+            
+            $data['todays_business'] = [
+                'amount' => $leader->calculateLeftBusiness(date('Y-m-d'),date('Y-m-d')) + $leader->calculateRightBusiness(date('Y-m-d'),date('Y-m-d')),
+                'today_left_business' => $leader->calculateLeftBusiness(date('Y-m-d'),date('Y-m-d')),
+                'today_right_business' => $leader->calculateRightBusiness(date('Y-m-d'),date('Y-m-d')),
+            ];
+            
+            
+            // $data['today_left_business'] = $leader->calculateLeftBusiness(date('Y-m-d'),date('Y-m-d'));
+            // $data['today_right_business'] = $leader->calculateRightBusiness(date('Y-m-d'),date('Y-m-d'));
 
             // Get current date
             $currentDate = date('Y-m-d');

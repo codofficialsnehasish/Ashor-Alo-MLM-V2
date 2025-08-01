@@ -31,7 +31,7 @@
                                         <label for="searchs">Search User</label>
                                         <input type="text" class="form-control" id="searchs" placeholder="Search" wire:model.live="search">
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 d-flex align-items-end">
                                         <button wire:click="backToSummary" class="btn btn-secondary me-2">
                                             Back to Summary
                                         </button>
@@ -65,9 +65,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @php $total_payout_amount = 0; @endphp
                                             @forelse($items as $item)
-                                                @php $total_payout_amount += $item->total_payout; @endphp
                                                 <tr>
                                                     <td>
                                                         <input type="checkbox" 
@@ -94,20 +92,6 @@
                                                 </tr>
                                             @endforelse
                                         </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <td></td>
-                                                <td></td>
-                                                <td>Total</td>
-                                                <td>{{ $total_payout_amount }}</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                            </tr>
-                                        </tfoot>
                                     </table>
                                 </div>
 

@@ -11,22 +11,22 @@
                 @foreach ($products as $product)
                 <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
                     <div class="product-wrap mb-40">
-                        <div class="product-img mb-25">
-                            <a href="javascript:void(0);">
-                            @if ($product->getFirstMediaUrl('products'))
-                            <img class="default-img" src="{{ $product->getFirstMediaUrl('products') }}" alt="">
-                            @else
-                            <img class="default-img" src="{{ asset('no-image.jpg') }}" alt="">
-                            @endif
-                            </a>
+                    <div class="product-img mb-25">
+                        <a href="javascript:void(0);">
+                        @if ($product->getFirstMediaUrl('products'))
+                        <img class="default-img" src="{{ $product->getFirstMediaUrl('products') }}" alt="">
+                        @else
+                        <img class="default-img" src="{{ asset('no-image.jpg') }}" alt="">
+                        @endif
+                        </a>
+                    </div>
+                    <div class="product-content text-center">
+                        <h3><a href="javascript:void(0);">{{ $product->title }}</a></h3>
+                        {{-- <p>3W Bajaj RE-175 & 205</p> --}}
+                        <div class="product-price price-color-2">
+                            <span>Rs.{{ $product->total_price }}</span>
                         </div>
-                        <div class="product-content text-center">
-                            <h3><a href="javascript:void(0);">{{ $product->title }}</a></h3>
-                            {{-- <p>3W Bajaj RE-175 & 205</p> --}}
-                            <div class="product-price price-color-2">
-                                <span>Rs.{{ $product->total_price }}</span>
-                            </div>
-                        </div>
+                    </div>
                     </div>
                 </div>
                 @endforeach

@@ -57,6 +57,8 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::get('/left-members', [BinaryTreeApiController::class, 'left_side_members']);
     Route::get('/right-members', [BinaryTreeApiController::class, 'right_side_members']);
     Route::get('/all-members', [BinaryTreeApiController::class, 'all_members']);
+    Route::post('/search-members', [BinaryTreeApiController::class, 'member_search']);
+    
     Route::get('/tree-view/{rootId?}', [BinaryTreeApiController::class, 'getTree']);
     Route::post('/get-user-details-on-tree', [BinaryTreeApiController::class, 'get_user_details_on_tree']);
     Route::get('/level-view', [BinaryTreeApiController::class, 'getTreeLevels']);

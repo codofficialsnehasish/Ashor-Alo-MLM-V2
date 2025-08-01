@@ -3,7 +3,6 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Models\LevelBonusMaster;
-use App\Models\BinaryTree;
 use App\Models\AccountTransaction;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
@@ -17,11 +16,9 @@ class LevelBonusService
 
         if (empty($user)) { return; }
 
-        $highest_level = LevelBonusMaster::orderBy('id', 'desc')->first();
+        $highest_level = LevelBonusMaster::latest()->first();
 
         if($user_level > $highest_level->level_number){ return; }
-        
-        \Log::info("Highest Level".$highest_level->level_number." current level ".$user_level);
 
         if($user->binaryTreeNode->status == 1){
 

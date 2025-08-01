@@ -145,8 +145,8 @@ class CornJobsTest extends Controller
             $endDate = $dateRange['end_date'];
             
             // Call your function with these dates
-            $this->level_bonus($startDate, $endDate);
-            // $this->payout($startDate, $endDate);
+            // $this->level_bonus($startDate, $endDate);
+            $this->payout($startDate, $endDate);
         }
 
 

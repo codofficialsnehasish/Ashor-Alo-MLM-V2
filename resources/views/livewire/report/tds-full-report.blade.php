@@ -35,18 +35,18 @@
                                         <label for="endDate">End Date</label>
                                         <input type="date" class="form-control" id="endDate" wire:model="endDate">
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 d-flex align-items-end">
                                         <button wire:click="backToSummary" class="btn btn-secondary me-2">
-                                            Back to Summary
+                                             Back to Summary
                                         </button>
                                         <button wire:click="exportFullExcel" class="btn btn-success me-2">
-                                            Export Excel
+                                             Export Excel
                                         </button>
                                         <button wire:click="exportFullPDF" class="btn btn-danger">
-                                            Export PDF
+                                             Export PDF
                                         </button>
                                     </div>
-                                    <div class="col-md-6 d-flex align-items-end">
+                                    <div class="col-md-12 d-flex align-items-end justify-content-center mt-4">
                                         <h5>Showing transactions for: {{ $userName }} (ID: {{ $userId }})</h5>
                                     </div>
                                 </div>

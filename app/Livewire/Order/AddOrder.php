@@ -19,7 +19,6 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\DB;
 
 class AddOrder extends Component
 {
@@ -89,18 +88,16 @@ class AddOrder extends Component
             if($category){
                 if($category->is_provide_roi ==1 && ($category->is_provide_direct == 0 && $category->is_provide_level == 0 && $category->is_show_on_business == 0)){
                     $this->addon_orders = TopUp::where('user_id', $this->selectedCustomer)
-                                                ->whereNull('add_on_against_order_id')
+                                                ->whereNull('add_on_against_order_id') // Not an addon
                                                 ->whereHas('order', function ($query) {
-                                                    $query->where('status', '!=', 1); // Use whereHas instead of whereExists
+                                                    $query->where('status', '!=', 1);
                                                 })
                                                 ->whereNotIn('order_id', function($query) {
                                                     $query->select('add_on_against_order_id')
                                                         ->from('top_ups')
                                                         ->whereNotNull('add_on_against_order_id');
                                                 })
-                                                ->with(['order' => function($query) {
-                                                    $query->where('status', '!=', 1); // Add filter to eager loading
-                                                }])
+                                                ->with('order')
                                                 ->get();
                 }else{
                     $this->addon_orders = null;
@@ -261,11 +258,8 @@ class AddOrder extends Component
     {
         $this->checkPermission('Create Order');
         // First validate stock
-
-        if($this->selectedAddonOrder_id == null){
-            $this->calculateTotals();
-        }
-
+        $this->calculateTotals();
+        
         if ($this->hasStockErrors) {
             // session()->flash('error', 'Cannot place order due to insufficient stock for some items.');
             $this->dispatch('toastMessage', json_encode([
@@ -405,7 +399,6 @@ class AddOrder extends Component
                         ->where('to_amount', '>=', $main_amount)
                         ->where('category_id',$category)
                         ->first();
-        \Log::info(json_encode($percentage));
 
         $data_array = [];
         if (!empty($percentage->percentage)) {
@@ -422,19 +415,16 @@ class AddOrder extends Component
             $data_array['percentage'] = $percentage->percentage;
 
             // Start date = current date + 1 day
-            // $start_date = Carbon::now()->addDay();
-            $start_date = Carbon::now();
+            $start_date = Carbon::now()->addDay();
 
             // End date by adding months (rounded up for safety)
-            // $end_date = $start_date->copy()->addMonths(ceil($total_month)); 
-            $end_date = $start_date->copy()->addMonths(ceil($total_month))->addDay();
+            $end_date = $start_date->copy()->addMonths(ceil($total_month));
 
             // Total days between start and end
             $total_days = $start_date->diffInDays($end_date);
 
             // Daily installment amount
-            // $installment_amount_per_day = $total_paying_amount / $total_days;
-            $installment_amount_per_day = $per_month_installment_amount / 30;
+            $installment_amount_per_day = $total_paying_amount / $total_days;
 
             // Add to data array
             $data_array['installment_amount_per_day'] = round($installment_amount_per_day, 2);

@@ -116,8 +116,7 @@
         </div>
     </div>
     </div>
-
-    @if($notices->count() > 0)
+    
     <div class="position-fixed end-0 top-50 translate-middle-y mt-5 me-3" style="z-index: 1030;">
         <!-- Collapsed State (Initial) -->
         <div id="expandableContainer" class="border p-3 d-flex flex-row-reverse align-items-center overflow-hidden" 
@@ -148,8 +147,6 @@
             </div>
         </div>
     </div>
-    @endif
-
 
     @if($products->isNotEmpty())
     <div class="product-area wow fadeIn" data-wow-delay="0.2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeIn;">
@@ -165,22 +162,22 @@
                 @foreach ($products as $product)
                 <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
                     <div class="product-wrap mb-40">
-                        <div class="product-img mb-25">
-                            <a href="javascript:void(0);">
-                            @if ($product->getFirstMediaUrl('products'))
-                            <img class="default-img" src="{{ $product->getFirstMediaUrl('products') }}" alt="">
-                            @else
-                            <img class="default-img" src="{{ asset('no-image.jpg') }}" alt="">
-                            @endif
-                            </a>
-                        </div>  
-                        <div class="product-content text-center">
-                            <h3><a href="javascript:void(0);">{{ $product->title }}</a></h3>
-                            {{-- <p>3W Bajaj RE-175 & 205</p> --}}
-                            <div class="product-price price-color-2">
-                                <span>Rs.{{ $product->total_price }}</span>
-                            </div>
+                    <div class="product-img mb-25">
+                        <a href="javascript:void(0);">
+                        @if ($product->getFirstMediaUrl('products'))
+                        <img class="default-img" src="{{ $product->getFirstMediaUrl('products') }}" alt="">
+                        @else
+                        <img class="default-img" src="{{ asset('no-image.jpg') }}" alt="">
+                        @endif
+                        </a>
+                    </div>
+                    <div class="product-content text-center">
+                        <h3><a href="javascript:void(0);">{{ $product->title }}</a></h3>
+                        {{-- <p>3W Bajaj RE-175 & 205</p> --}}
+                        <div class="product-price price-color-2">
+                            <span>Rs.{{ $product->total_price }}</span>
                         </div>
+                    </div>
                     </div>
                 </div>
                 @endforeach

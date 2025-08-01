@@ -25,21 +25,21 @@
                 <div class="row">
                     <div class="card">
                         <div class="card-header">
-                            <div class="row">
-                                {{-- <div class="col-md-4 d-flex align-items-end">
-                                    <button wire:click="exportPdf" class="btn btn-danger me-2">
-                                        <i class="fas fa-file-pdf me-1"></i> PDF Export
-                                    </button>
-                                    <button wire:click="exportExcel" class="btn btn-success">
-                                        <i class="fas fa-file-excel me-1"></i> Excel Export
-                                    </button>
-                                </div> --}}
-                                <div class="col-md-6">
+                            <div class="row" style="display: flex;flex-direction: row;justify-content: space-between;">
+                                <!--<div class="col-md-4 d-flex align-items-end">-->
+                                <!--    <button wire:click="exportPdf" class="btn btn-danger me-2">-->
+                                <!--        <i class="fas fa-file-pdf me-1"></i> PDF Export-->
+                                <!--    </button>-->
+                                <!--    <button wire:click="exportExcel" class="btn btn-success">-->
+                                <!--        <i class="fas fa-file-excel me-1"></i> Excel Export-->
+                                <!--    </button>-->
+                                <!--</div>-->
+                                <div class="col-md-4">
                                     <div class="input-group">
                                         <input wire:model.live="search" type="text" class="form-control" placeholder="Search...">
                                     </div>
                                 </div>
-                                <div class="col-md-2 text-right">
+                                <div class="col-md-2 text-right" style="margin: auto 0; display: flex; justify-content: end;">
                                     <a href="{{ route('monthly-return.create') }}" class="btn btn-primary">
                                         <i class="ti-plus"></i> Add New
                                     </a>
@@ -105,15 +105,8 @@
                                 </table>
                             </div>
 
-                            <div class="row mt-3">
-                                <div class="col-md-6">
-                                    Showing {{ $returns->firstItem() }} to {{ $returns->lastItem() }} of {{ $returns->total() }} entries
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="float-right">
-                                        {{ $returns->links() }}
-                                    </div>
-                                </div>
+                            <div class="mt-3" style="margin: auto;">
+                                {{ $returns->links() }}
                             </div>
                         </div>
                     </div>

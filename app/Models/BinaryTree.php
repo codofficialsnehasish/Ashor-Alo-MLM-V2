@@ -81,6 +81,7 @@ class BinaryTree extends Model
     {
         return $this->descendants()->where('position', 'left')->with('user');
     }
+    
 
     public function rightUsers()
     {
@@ -91,7 +92,8 @@ class BinaryTree extends Model
     {
         return $this->belongsTo(User::class, 'join_by');
     }
-
+    
+    
     /**
      * Calculate left side business volume
      */

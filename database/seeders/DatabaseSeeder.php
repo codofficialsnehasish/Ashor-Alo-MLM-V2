@@ -24,8 +24,12 @@ class DatabaseSeeder extends Seeder
             LocationCitieSeeder::class,
             RemunerationBenefitMasterSeeder::class,
             LevelBonusMasterSeeder::class,
+            CategorySeeder::class,
+            ProductSeeder::class,
+            MonthlyReturnMasterSeeder::class,
             MigrateUsersFromArraySeeder::class,
             MigrateKycDataSeeder::class,
+            AccountTransactionsSeeder::class
         ]);
 
         // Create a default Super Admin user

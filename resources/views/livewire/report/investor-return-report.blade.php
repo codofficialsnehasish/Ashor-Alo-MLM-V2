@@ -41,12 +41,14 @@
                                             <input type="text" class="form-control" id="search-report" placeholder="Search..." wire:model.live="search">
                                         </div>
                                         <div class="col-md-4 mt-4">
+                                            <div style="margin-top:10px;">
                                             <button wire:click="exportExcel" class="btn btn-success me-2">
                                                 Export Excel
                                             </button>
                                             <button wire:click="exportPDF" class="btn btn-danger">
                                                 Export PDF
                                             </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </form>

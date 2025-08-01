@@ -251,7 +251,7 @@
                     </a>
                 </li>
                 @endcan
-
+                
                 @can('View About Us')
                 <li class="">
                     <a wire:navigate href="{{ route('settings.about-us') }}"> 
@@ -259,7 +259,7 @@
                     </a>
                 </li>
                 @endcan
-
+                
                 @can('Show Photo Gallery')
                 <li class="">
                     <a wire:navigate href="{{ route('photo-galleries.index') }}"> 
@@ -267,7 +267,8 @@
                     </a>
                 </li>
                 @endcan
-
+                
+                
                 @can('Show Banner Slider')
                 <li class="">
                     <a wire:navigate href="{{ route('banner-slider.index') }}"> 

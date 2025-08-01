@@ -13,7 +13,8 @@ class BinaryTreeService
     public function createNode($userData, $sponsorId = null, $preferredPosition = null)
     {
         // Create user with auto-generated password
-        $password = Str::random(12);
+        //$password = Str::random(12
+        $password = rand(1000, 9999);
         $user = User::create(array_merge($userData, [
             'password' => Hash::make($password),
             'decoded_password' => $password

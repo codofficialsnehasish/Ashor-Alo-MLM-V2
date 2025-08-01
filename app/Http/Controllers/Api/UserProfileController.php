@@ -22,7 +22,7 @@ class UserProfileController extends Controller
     public function get_profile(Request $request)
     {
         try {
-            $user = User::findOrFail($request->user()->id);
+            $user = User::with('binaryNode')->findOrFail($request->user()->id);
 
             return apiResponse(true, 'Profile details of '.$user->name, [
                     'user' => $user,
@@ -44,6 +44,7 @@ class UserProfileController extends Controller
      */
     public function update_profile_details(Request $request)
     {
+        $user = User::findOrFail($request->user()->id);
         $validator = Validator::make($request->all(), [
             'father_or_husband_name' => 'required|string|max:255',
             'date_of_birth' => 'required|date',
@@ -51,7 +52,8 @@ class UserProfileController extends Controller
             'marital_status' => 'required|string|in:single,married,divorced,widowed',
             'qualification' => 'nullable|string',
             'occupation' => 'nullable|string',
-            'pan_number' => 'nullable'
+            'pan_number' => 'nullable',
+            'phone' => 'required|digits:10|regex:/^[6789]/|unique:users,phone,' . $user->id,
         ]);
 
         if ($validator->fails()) {
@@ -63,8 +65,11 @@ class UserProfileController extends Controller
                 ['user_id' => $request->user()->id],
                 $request->all()
             );
-
-            return apiResponse(true, 'Profile details updated successfully', ['profile' => UserProfile::where('user_id', $request->user()->id)->first()], 200);
+            
+            $user->phone = $request->phone;
+            $user->update();
+            
+            return apiResponse(true, 'Profile details updated successfully', ['profile' => UserProfile::with('user')->where('user_id', $request->user()->id)->first()], 200);
         } catch (\Exception $e) {
             return apiResponse(false, 'Failed to update profile details', ['error' => $e->getMessage()], 500);
         }

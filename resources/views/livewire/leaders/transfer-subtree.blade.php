@@ -95,7 +95,9 @@
                                             </table>
                                         </div>
                                         
+                                        <div style="margin-top:20px;">
                                         {{ $nodes->links() }}
+                                        </div>
                                     </div>
                     
                                     <div class="col-md-6">

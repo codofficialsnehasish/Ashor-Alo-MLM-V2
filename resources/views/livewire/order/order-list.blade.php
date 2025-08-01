@@ -134,7 +134,7 @@
 
                             <!-- Pagination -->
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-6 mt-3">
                                     Showing {{ $orders->firstItem() }} to {{ $orders->lastItem() }} 
                                     of {{ $orders->total() }} entries
                                 </div>

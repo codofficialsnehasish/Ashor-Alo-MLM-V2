@@ -35,7 +35,7 @@
                                         <label for="endDate">End Date</label>
                                         <input type="date" class="form-control" id="endDate" wire:model="endDate">
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 d-flex align-items-end">
                                         <button wire:click="backToSummary" class="btn btn-secondary me-2">
                                              Back to Summary
                                         </button>
@@ -46,8 +46,8 @@
                                              Export PDF
                                         </button>
                                     </div>
-                                    <div class="col-md-6 d-flex align-items-end">
-                                        <h5>Showing transactions for: {{ $userName }} (ID: {{ $userId }})</h5>
+                                    <div class="col-md-6 d-flex align-items-end mt-5" style="width:100%; justify-content:center;">
+                                        <h5 style="text-center">Showing transactions for: {{ $userName }} (ID: {{ $userId }})</h5>
                                     </div>
                                 </div>
                             </div>

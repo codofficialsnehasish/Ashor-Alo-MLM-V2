@@ -34,7 +34,7 @@
                                             <option value="">Choose a user...</option>
                                             @foreach($users as $user)
                                                 <option value="{{ $user->id }}" {{ $user->id == $user_id ? 'selected' : '' }}>
-                                                    {{ $user->name }} ({{ $user->email }})
+                                                    {{ $user->name }} ({{ $user->member_number }})
                                                 </option>
                                             @endforeach
                                         </select>
@@ -80,7 +80,6 @@
         </div>
     </div>
 </div>
-
 @script()
 <script>
     $(document).ready(function() {

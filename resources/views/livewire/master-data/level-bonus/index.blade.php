@@ -68,8 +68,9 @@
                                     @endforelse
                                 </tbody>
                             </table>
-
+                            <div class="mt-3">
                             {{ $levelBonuses->links() }}
+                            </div>
                         </div>
                     </div>
                 </div>

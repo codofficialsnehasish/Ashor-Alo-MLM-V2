@@ -26,9 +26,8 @@
       <link rel="stylesheet" href="{{ asset('web-assets/css/plugins/select2.min.css') }}">
       <link rel="stylesheet" href="{{ asset('web-assets/css/plugins/animate.css') }}">
       <!-- Main Style CSS -->
-      <link rel="stylesheet" href="{{ asset('web-assets/css/style.css') }}">
+      <link rel="stylesheet" href="{{ asset('web-assets/css/styles.css') }}">
       <link rel="stylesheet" href="{{ asset('web-assets/css/responsive.css') }}">
-
       <style>
          #expandableContainer:hover {
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
@@ -88,6 +87,7 @@
       <script src="{{ asset('web-assets/js/plugins/ajax-mail.js') }}"></script>
       <!-- Main JS -->
       <script src="{{ asset('web-assets/js/main.js') }}"></script>
+      
       <script>
          function toggleContainer() {
             const container = document.getElementById('expandableContainer');

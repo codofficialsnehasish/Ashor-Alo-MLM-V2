@@ -19,14 +19,12 @@ class RoiJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $income_data;
-    protected $current_date;
     /**
      * Create a new job instance.
      */
-    public function __construct($income_data,$current_date)
+    public function __construct($income_data)
     {
         $this->income_data = $income_data;
-        $this->current_date = $current_date;
     }
 
     /**
@@ -53,8 +51,7 @@ class RoiJob implements ShouldQueue
             // Check if transaction already exists for today
             $transactionExists = AccountTransaction::where('user_id', $data->user_id)
                 ->where('which_for', $transactionType)
-                // ->whereDate('created_at', today())
-                ->whereDate('created_at', $this->current_date)
+                ->whereDate('created_at', today())
                 ->where('topup_id', $data->id)
                 ->exists();
 
@@ -62,7 +59,7 @@ class RoiJob implements ShouldQueue
                 // Check if we would exceed total_paying_amount
                 $amount_to_disburse = $data->installment_amount_per_day;
                 $remaining_amount = $data->total_paying_amount - $data->total_disbursed_amount;
-                
+
                 if($remaining_amount <= 0) {
                     $top_up = TopUp::find($data->id);
                     $top_up->is_completed = 1;
@@ -82,7 +79,6 @@ class RoiJob implements ShouldQueue
                     'which_for' => $transactionType,
                     'status' => 0,
                     'topup_id' => $data->id,
-                    'created_at' => $this->current_date
                 ]);
 
                 $is_transacted = 1;
@@ -95,12 +91,7 @@ class RoiJob implements ShouldQueue
                 $top_up->days_count += 1;
                 
                 // Check for month increment
-                // if(Carbon::now()->day == Carbon::parse($data->start_date)->day) {
-                //     $top_up->month_count += 1;
-                // }
-
-                //for testing 
-                if(Carbon::parse($this->current_date)->day == Carbon::parse($data->start_date)->day) {
+                if(Carbon::now()->day == Carbon::parse($data->start_date)->day) {
                     $top_up->month_count += 1;
                 }
                 
@@ -108,13 +99,8 @@ class RoiJob implements ShouldQueue
                 $top_up->total_disbursed_amount += $amount_to_disburse;
                 
                 // Check for completion conditions
-                // if($top_up->total_disbursed_amount >= $top_up->total_paying_amount || $top_up->month_count >= $top_up->total_installment_month || $top_up->days_count >= $top_up->total_installment_days) {
-                //     $top_up->is_completed = 1; 
-                //     $top_up->end_date = now();
-                // }
-
-                if($top_up->total_disbursed_amount >= $top_up->total_paying_amount || $top_up->month_count >= $top_up->total_installment_month) {
-                    $top_up->is_completed = 1; 
+                if($top_up->total_disbursed_amount >= $top_up->total_paying_amount || $top_up->month_count >= $top_up->total_installment_month || $top_up->days_count >= $top_up->total_installment_days) {
+                    $top_up->is_completed = 1;
                     $top_up->end_date = now();
                 }
                 

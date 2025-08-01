@@ -20,9 +20,8 @@ use App\Models\ServiceChargeAccount;
 use App\Models\RepurchaseAccount;
 use App\Models\Account;
 use App\Models\MlmSetting;
-use App\Models\BinaryTree;
 use App\Models\Payout;
-use App\Models\RemunerationBenefitMaster;
+use App\Models\RemunerationBenefit;
 use App\Models\SalaryBonus;
 use App\Models\Advance;
 
@@ -67,15 +66,12 @@ class PayoutJob implements ShouldQueue
 
                     // Remuneration Benefits or Salary Income
                     if ($this->current_day->day <= 15) {
-                        // $total_left_business = calculate_left_business($user_id);
-                        // $total_right_business = calculate_right_business($user_id);
-                        $rootNode = BinaryTree::where('user_id',$user_id)->first();
-                        $total_left_business = $rootNode->calculateLeftBusiness();
-                        $total_right_business = $rootNode->calculateRightBusiness();
+                        $total_left_business = calculate_left_business($user_id);
+                        $total_right_business = calculate_right_business($user_id);
 
-                        $achieved_target = RemunerationBenefitMaster::where('matching_target', '<=', $total_left_business)
-                                            ->where('matching_target', '<=', $total_right_business)
-                                            ->orderBy('matching_target', 'DESC')
+                        $achieved_target = RemunerationBenefit::where('target', '<=', $total_left_business)
+                                            ->where('target', '<=', $total_right_business)
+                                            ->orderBy('target', 'DESC')
                                             ->first();
 
                         if($achieved_target){

@@ -9,6 +9,7 @@ use App\Models\TopUp;
 use App\Models\BankDetail;
 use App\Models\AccountTransaction;
 use App\Models\Nominee;
+use App\Models\SalaryBonus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
@@ -70,7 +71,7 @@ class ReportAPIController extends Controller
         //                             ->get()
         // ], 200);
 
-        $data = SalaryBonus::leftJoin('remuneration_benefits','remuneration_benefits.id','salary_bonus.remuneration_benefit_id')
+        $data = SalaryBonus::leftJoin('remuneration_benefit_masters','remuneration_benefit_masters.id','salary_bonuses.remuneration_benefit_id')
                                         ->where('user_id',$request->user()->id)
                                         ->get();
 

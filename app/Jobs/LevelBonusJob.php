@@ -4,8 +4,6 @@ namespace App\Jobs;
 
 use App\Models\User;
 use App\Models\TopUp;
-use App\Models\BinaryTree;
-use App\Models\AccountTransaction;
 use App\Services\LevelBonusService;
 use Illuminate\Bus\Queueable;
 use Carbon\Carbon;
@@ -14,7 +12,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
 
 class LevelBonusJob implements ShouldQueue
 {
@@ -49,29 +46,12 @@ class LevelBonusJob implements ShouldQueue
     {
         foreach ($this->transactions as $key => $value) {
 
-            // $income_data = TopUp::where('user_id',$key)->where('is_provide_level',1)->get();
             $income_data = TopUp::where('user_id',$key)->get();
-            \Log::info("Transaction value".$value['total_amount']);
 
             foreach($income_data as $data){
-                // $total_roi_amount = 0;
-                // $total_roi_amount = AccountTransaction::where('topup_id',$data->id)
-                //                                         ->whereBetween(
-                //                                             DB::raw('DATE(created_at)'), 
-                //                                             [
-                //                                                 format_date_for_db($this->start_date), 
-                //                                                 format_date_for_db($this->end_date)
-                //                                             ]
-                //                                         )
-                //                                         ->where('which_for','ROI Daily')
-                //                                         ->where('status',1)
-                //                                         // ->selectRaw('IF(COUNT(*) >= 30, SUM(amount), 0) as conditional_sum')
-                //                                         ->sum('amount');
-                // \Log::info("total roi amount : ".$total_roi_amount." of user ".$data->user?->name);
                 $lastSaturday = Carbon::parse($this->start_date);
                 $today = Carbon::parse($this->end_date);
 
-                
                 // Top-up start and end dates
                 $topUpStartDate = Carbon::parse($data->start_date);
                 $topUpEndDate = $data->end_date ? Carbon::parse($data->end_date) : null;
@@ -99,13 +79,8 @@ class LevelBonusJob implements ShouldQueue
 
                 $weeklyPayment = ($data->total_amount / get_days_in_this_month()) * $days;
                 $weeklyPayment = round($weeklyPayment, 2);
-
-
-                // $weeklyPayment = $total_roi_amount;
                 if($user->sponsor){
                     $agent = $user->sponsor;
-                    \Log::info("agent : ".json_encode($agent));
-                    \Log::info("weeklyPayment : ".json_encode($weeklyPayment));
                     $this->levelBonusService->weekly_level_bonus($agent->user_id,$weeklyPayment,1,$user->id);
                 }
             }

@@ -35,9 +35,9 @@ class AuthController extends Controller
             return apiResponse(false, 'Unauthorized. Only Leaders can login.', null, 403);
         }
 
-        if ($sponsor->user->status == 0) {
-            return apiResponse(false, 'Your account is inactive', null, 403);
-        }
+        // if ($sponsor->user->status == 0) {
+        //     return apiResponse(false, 'Your account is inactive', null, 403);
+        // }
 
         if ($sponsor->user->is_block == 1) {
             return apiResponse(false, 'Your ID is Blocked', null, 403);
@@ -68,7 +68,7 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'sponsor_id' => 'nullable|exists:binary_trees,member_number',
             'name' => 'required|string|max:255',
-            'email' => 'required|email',
+            'email' => 'nullable|email',
             'phone' => 'required|digits:10|regex:/^[6789]/|unique:users,phone',
             'preferred_position' => 'required|in:left,right',
         ]);
@@ -100,8 +100,8 @@ class AuthController extends Controller
 
     public function forget_password(Request $request, SMSService $smsService){
         $validator = Validator::make($request->all(), [
-            'phone' => 'required|digits:10|regex:/^[6789]/|exists:users,phone',
-            // 'password' => 'required|min:4',
+            'phone' => 'required_without:user_id|digits:10|regex:/^[6789]/|exists:users,phone',
+            'user_id' => 'required_without:phone|exists:binary_trees,member_number',
         ]);
         if ($validator->fails()) {
             return response()->json(['status' => "false",'errors' => $validator->errors()], 422);
@@ -111,7 +111,13 @@ class AuthController extends Controller
             // return $this->forget_password($r->phone);
 
             // in second version date - 30-12-2024
-            $user = User::where('phone',$request->phone)->first();
+            if($request->phone){
+                $user = User::where('phone',$request->phone)->first();
+            }else{
+                $binarttree = BinaryTree::where('member_number',$request->user_id)->first();
+                $user = $binarttree->user;
+            }
+            // return $user;
             $responce = $smsService->sendSMS('91'.$user->phone,$user->binaryNode->member_number,$user->decoded_password);
             // return $responce;
             if(!empty($responce)){
