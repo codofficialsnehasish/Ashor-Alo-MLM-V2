@@ -77,15 +77,54 @@ class BinaryTree extends Model
     }
 
     // Recursive relationships for counts
-    public function leftUsers()  
+    // public function leftUsers()  
+    // {
+    //     return $this->descendants()->where('position', 'left')->with('user');
+    // }
+    
+    // public function leftUsers()  
+    // {
+    //     return $this->left->descendants()->with('user');
+    // }
+    
+    public function getLeftUsersAttribute()
     {
-        return $this->descendants()->where('position', 'left')->with('user');
+        $left = $this->left; // assuming 'left' relationship is already eager loaded
+    
+        if (!$left) {
+            return collect(); // empty collection
+        }
+    
+        $descendants = $left->descendants()->with('user')->get();
+    
+        return $descendants->prepend($left);
     }
+
+
+
     
 
-    public function rightUsers()
+    // public function rightUsers()
+    // {
+    //     return $this->descendants()->where('position', 'right')->with('user');
+    // }
+    
+    // public function rightUsers()  
+    // {
+    //     return $this->right->descendants()->with('user');
+    // }
+    
+    public function getRightUsersAttribute()
     {
-        return $this->descendants()->where('position', 'right')->with('user');
+        $right = $this->right; // assuming 'left' relationship is already eager loaded
+    
+        if (!$right) {
+            return collect(); // empty collection
+        }
+    
+        $descendants = $right->descendants()->with('user')->get();
+    
+        return $descendants->prepend($right);
     }
     
     public function joinedBy()
