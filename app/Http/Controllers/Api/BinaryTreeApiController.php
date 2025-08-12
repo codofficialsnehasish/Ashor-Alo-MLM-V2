@@ -14,7 +14,7 @@ use App\Models\TopUp;
 
 class BinaryTreeApiController extends Controller
 {
-    public function direct(Request $request){
+    /*public function direct(Request $request){
         $user = User::find($request->user()->id);
         if($user){
             $leader = $user->binaryTreeNode;
@@ -22,9 +22,37 @@ class BinaryTreeApiController extends Controller
             return apiResponse(true, 'Direct Members.', ['direct_members'=>$directMembers], 200);
         }
         return apiResponse(false, 'User not found.', null, 200);
+    }*/
+
+    public function direct(Request $request)
+    {
+        $perPage = $request->get('per_page', 10); // Default to 10 if not provided
+
+        $user = User::find($request->user()->id);
+
+        if ($user) {
+            $leader = $user->binaryTreeNode;
+
+            $directMembers = BinaryTree::where('sponsor_id', $leader->id)
+                ->with('user')
+                ->paginate($perPage); // Apply pagination
+
+            return apiResponse(true, 'Direct Members.', [
+                'members_data' => $directMembers->items(), // Current page data
+                'pagination' => [
+                    'total' => $directMembers->total(),
+                    'per_page' => $directMembers->perPage(),
+                    'current_page' => $directMembers->currentPage(),
+                    'last_page' => $directMembers->lastPage(),
+                ]
+            ], 200);
+        }
+
+        return apiResponse(false, 'User not found.', null, 200);
     }
 
-    public function left_side_members(Request $request){
+
+    /*public function left_side_members(Request $request){
         $user = User::find($request->user()->id);
         if($user){
             $leader = $user->binaryTreeNode;
@@ -32,9 +60,44 @@ class BinaryTreeApiController extends Controller
             return apiResponse(true, 'Left Members.', ['left_members'=>$leftMembers], 200);
         }
         return apiResponse(false, 'User not found.', null, 200);
+    }*/
+
+    public function left_side_members(Request $request)
+    {
+        $perPage = (int) $request->get('per_page', 10);
+        $page = (int) $request->get('page', 1);
+
+        $user = User::find($request->user()->id);
+
+        if ($user) {
+            $leader = $user->binaryTreeNode;
+
+            // This is a collection from the accessor
+            $leftMembersCollection = $leader->leftUsers;
+
+            // Get paginated slice
+            $paginated = $leftMembersCollection->forPage($page, $perPage)->values();
+
+            // Create pagination metadata manually
+            $pagination = [
+                'total' => $leftMembersCollection->count(),
+                'per_page' => $perPage,
+                'current_page' => $page,
+                'last_page' => ceil($leftMembersCollection->count() / $perPage),
+            ];
+
+            return apiResponse(true, 'Left Members.', [
+                'members_data' => $paginated,
+                'pagination' => $pagination
+            ], 200);
+        }
+
+        return apiResponse(false, 'User not found.', null, 200);
     }
 
-    public function right_side_members(Request $request){
+
+
+    /*public function right_side_members(Request $request){
         $user = User::find($request->user()->id);
         if($user){
             $leader = $user->binaryTreeNode;
@@ -42,9 +105,42 @@ class BinaryTreeApiController extends Controller
             return apiResponse(true, 'Right Members.', ['right_members'=>$rightMembers], 200);
         }
         return apiResponse(false, 'User not found.', null, 200);
+    }*/
+
+    public function right_side_members(Request $request)
+    {
+        $perPage = (int) $request->get('per_page', 10);
+        $page = (int) $request->get('page', 1);
+
+        $user = User::find($request->user()->id);
+
+        if ($user) {
+            $leader = $user->binaryTreeNode;
+
+            // This is a collection from accessor
+            $rightMembersCollection = $leader->rightUsers;
+
+            // Paginate manually
+            $paginated = $rightMembersCollection->forPage($page, $perPage)->values();
+
+            $pagination = [
+                'total' => $rightMembersCollection->count(),
+                'per_page' => $perPage,
+                'current_page' => $page,
+                'last_page' => ceil($rightMembersCollection->count() / $perPage),
+            ];
+
+            return apiResponse(true, 'Right Members.', [
+                'members_data' => $paginated,
+                'pagination' => $pagination
+            ], 200);
+        }
+
+        return apiResponse(false, 'User not found.', null, 200);
     }
 
-    public function all_members(Request $request) {
+
+    /*public function all_members(Request $request) {
         $user = User::find($request->user()->id);
         if ($user) {
             $leader = $user->binaryTreeNode;
@@ -60,7 +156,46 @@ class BinaryTreeApiController extends Controller
         }
         
         return apiResponse(false, 'User not found.', null, 200);
+    }*/
+
+    public function all_members(Request $request)
+    {
+        $perPage = (int) $request->get('per_page', 10);
+        $page = (int) $request->get('page', 1);
+
+        $user = User::find($request->user()->id);
+
+        if ($user) {
+            $leader = $user->binaryTreeNode;
+
+            $leftMembers = $leader->leftUsers ?? collect();
+            $rightMembers = $leader->rightUsers ?? collect();
+
+            // Merge both collections
+            $allMembersCollection = $leftMembers->merge($rightMembers);
+
+            // Optional: sort if you need them ordered (e.g., by id or created_at)
+            // $allMembersCollection = $allMembersCollection->sortByDesc('id')->values();
+
+            // Manual pagination
+            $paginated = $allMembersCollection->forPage($page, $perPage)->values();
+
+            $pagination = [
+                'total' => $allMembersCollection->count(),
+                'per_page' => $perPage,
+                'current_page' => $page,
+                'last_page' => ceil($allMembersCollection->count() / $perPage),
+            ];
+
+            return apiResponse(true, 'All Members.', [
+                'members_data' => $paginated,
+                'pagination' => $pagination
+            ], 200);
+        }
+
+        return apiResponse(false, 'User not found.', null, 200);
     }
+
     
     public function member_search(Request $request)
     {
@@ -215,97 +350,276 @@ class BinaryTreeApiController extends Controller
 
         return apiResponse(true, 'User Details', $data, 200);
     }
-    
-    
-    public function getTreeLevels(Request $request, $maxLevels = 40)
-    {
-        $rootUser = $request->user();
 
+    // public function getTreeLevels(Request $request, $maxLevels = 40)
+    // //  public function getTreeLevels($rootId = null, $maxLevels = 4, Request $request)
+    // {
+    //     $withClosure = function ($query) {
+    //         $query->withCount([
+    //             'leftUsers as register_left',
+    //             'rightUsers as register_right',
+    //             'leftUsers as activated_left' => function ($q) {
+    //                 $q->where('status', 1);
+    //             },
+    //             'rightUsers as activated_right' => function ($q) {
+    //                 $q->where('status', 1);
+    //             },
+    //         ]);
+    //     };
+        
+    //     $rootId = $request->user()->id;
+    //     // return $rootId;
+
+    //     if ($rootId) {
+    //         $root = BinaryTree::with([
+    //             'user' => $withClosure,
+    //             'left.user' => $withClosure,
+    //             'right.user' => $withClosure,
+    //         ])->where('user_id', $rootId)->first();
+    //     } else {
+    //         $root = BinaryTree::with([
+    //             'user' => $withClosure,
+    //             'left.user' => $withClosure,
+    //             'right.user' => $withClosure,
+    //         ])->whereNull('parent_id')->first();
+    //     }
+        
+        
+
+    //     if (!$root) {
+    //         return response()->json(['message' => 'Tree not found'], 404);
+    //     }
+
+    //     $levelData = [];
+    //     $this->collectLevelData($root, 0, $maxLevels, $withClosure, $levelData);
+
+    //     // Convert the level data to array of objects
+    //     $formattedLevels = [];
+    //     foreach ($levelData as $level => $nodes) {
+    //         $formattedLevels[] = (object)[
+    //             'level' => $level + 1, // Level numbers start at 1
+    //             'nodes' => array_map(function($node) {
+    //                 return (object)$node;
+    //             }, $nodes)
+    //         ];
+            
+    //         if ($level + 1 >= 40) {
+    //             break;
+    //         }
+    //     }
+
+    //     return response()->json([
+    //         'root' => $rootId,
+    //         'levels' => $formattedLevels
+    //     ]);
+    // }
+
+    // protected function collectLevelData($node, $currentLevel, $maxLevels, $withClosure, &$levelData)
+    // {
+    //     if (!$node) return;
+
+    //     if (!isset($levelData[$currentLevel])) {
+    //         $levelData[$currentLevel] = [];
+    //     }
+        
+    //     // if($maxLevels > $currentLevel) return;
+
+    //     $formattedNode = [
+    //         'user_id' => $node->user_id,
+    //         'member_number' => $node->member_number,
+    //         'status' => $node->status,
+    //         'position' => $node->position,
+    //         'user' => $node->user ? (object)[
+    //             'id' => $node->user->id,
+    //             'name' => $node->user->name,
+    //             'profile_image' => $node->user->getFirstMediaUrl('profile-image'),
+    //             'register_left' => $node->user->register_left ?? 0,
+    //             'register_right' => $node->user->register_right ?? 0,
+    //             'activated_left' => $node->user->activated_left ?? 0,
+    //             'activated_right' => $node->user->activated_right ?? 0,
+    //         ] : null
+    //     ];
+
+    //     $levelData[$currentLevel][] = $formattedNode;
+
+    //     $node->load([
+    //         'left.user' => $withClosure,
+    //         'right.user' => $withClosure,
+    //     ]);
+
+    //     if ($node->left) {
+    //         $this->collectLevelData($node->left, $currentLevel + 1, $maxLevels, $withClosure, $levelData);
+    //     }
+    //     if ($node->right) {
+    //         $this->collectLevelData($node->right, $currentLevel + 1, $maxLevels, $withClosure, $levelData);
+    //     }
+    // }
+    
+    /*public function getTreeLevels(Request $request, $maxLevels = 40)
+    {
+        $rootUser = $request->user(); // Root user
+    
         if (!$rootUser) {
             return response()->json([
                 'success' => false,
                 'message' => 'User not found'
             ], 404);
         }
-
+    
         $levels = [];         // Store level-wise data
         $total_members = 0;   // Total downline count
-
-        $root = BinaryTree::where('user_id', $rootUser->id)
-            ->with(['user'])
-            ->first();
-
-        if (!$root) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Tree not found'
-            ], 404);
+        
+        
+        $root = BinaryTree::where('user_id', $rootUser->id)->first();
+    
+        // Start building levels
+        $this->buildSponsorLevels($root->id, $levels, 1, $maxLevels, $total_members);
+    
+        // Format for API response
+        $level_response = [];
+        foreach ($levels as $level => $members) {
+            $level_response[] = [
+                'level' => $level,
+                'customers' => array_map(function ($member) {
+                    return [
+                        // 'reg_date'   => optional($member->created_at)->format('d-m-Y'),
+                        'id'         => $member['user_id'], // Assuming user_id is unique code
+                        'member_number'       => $member['member_number'],
+                        'position'   => $member['position'], // If needed
+                        'sponsor_id' => $member['sponsor_id'], // Direct sponsor
+                        'status'     => $member['status'],
+                    ];
+                }, $members)
+            ];
         }
+    
+        return response()->json([
+            'success' => true,
+            'total_members' => $total_members,
+            'levels' => $level_response
+        ]);
+    }*/
+    
+    
+    
+    /*protected function buildSponsorLevels($leaderId, &$levels, $level, $maxLevels, &$total_members)
+    {
+        if ($level > $maxLevels) return;
+    
+        // Get all direct members (where sponsor_id = leaderId)
+        $directMembers = BinaryTree::where('sponsor_id', $leaderId)
+            ->with('user')
+            ->get()
+            // ->pluck('user')
+            ->filter(); // Remove null users
+    
+        if ($directMembers->isEmpty()) return;
+    
+        // Add current level members
+        $levels[$level] = $directMembers->toArray();
+        $total_members += $directMembers->count();
+    
+        // Recurse for each direct member
+        foreach ($directMembers as $member) {
+            $this->buildSponsorLevels($member->id, $levels, $level + 1, $maxLevels, $total_members);
+        }
+    }*/
+    
+    
+    public function getTreeLevels(Request $request, $maxLevels = 40)
+{
+    $rootUser = $request->user();
 
-        // Build levels using sponsor relationship
-        $this->buildSponsorLevelNodes($root->id, $levels, 0, $maxLevels, $total_members);
+    if (!$rootUser) {
+        return response()->json([
+            'success' => false,
+            'message' => 'User not found'
+        ], 404);
+    }
 
-        // Format levels into array of objects (like old API)
-        $formattedLevels = [];
-        foreach ($levels as $level => $nodes) {
-            $formattedLevels[] = (object)[
-                'level' => $level + 1, // Level numbers start at 1
-                'nodes' => array_map(function ($node) {
-                    return (object)$node;
-                }, $nodes)
+    $levels = [];         // Store level-wise data
+    $total_members = 0;   // Total downline count
+
+    $root = BinaryTree::where('user_id', $rootUser->id)
+        ->with(['user'])
+        ->first();
+
+    if (!$root) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Tree not found'
+        ], 404);
+    }
+
+    // Build levels using sponsor relationship
+    $this->buildSponsorLevelNodes($root->id, $levels, 0, $maxLevels, $total_members);
+
+    // Format levels into array of objects (like old API)
+    $formattedLevels = [];
+    foreach ($levels as $level => $nodes) {
+        $formattedLevels[] = (object)[
+            'level' => $level + 1, // Level numbers start at 1
+            'nodes' => array_map(function ($node) {
+                return (object)$node;
+            }, $nodes)
+        ];
+
+        if ($level + 1 >= $maxLevels) {
+            break;
+        }
+    }
+
+    return response()->json([
+        'root' => $rootUser->id,
+        'levels' => $formattedLevels
+    ]);
+}
+
+protected function buildSponsorLevelNodes($leaderId, &$levels, $currentLevel, $maxLevels, &$total_members)
+{
+    if ($currentLevel >= $maxLevels) return;
+
+    // Get direct referrals
+    $directMembers = BinaryTree::where('sponsor_id', $leaderId)
+        ->with(['user'])
+        ->get();
+
+    if ($directMembers->isEmpty()) return;
+
+    foreach ($directMembers as $memberNode) {
+        $user = $memberNode->user;
+
+        if ($user) {
+            $formattedNode = [
+                'user_id'         => $user->id,
+                'member_number'   => $memberNode->member_number,
+                'status'          => $memberNode->status,
+                'position'        => $memberNode->position,
+                'sponsor_id'      => $memberNode->sponsor?->member_number,
+                'register_date'   => formated_date($user->created_at),
+                'total_business'  => TopUp::where('user_id',$user->id)->where('is_show_on_business',1)->sum('total_amount'),
+                'user' => (object)[
+                    'id'               => $user->id,
+                    'name'             => $user->name,
+                    'profile_image'    => $user->getFirstMediaUrl('profile-image'),
+                    'register_left'    => $user->leftUsers()->count(),
+                    'register_right'   => $user->rightUsers()->count(),
+                    'activated_left'   => $user->leftUsers()->where('status', 1)->count(),
+                    'activated_right'  => $user->rightUsers()->where('status', 1)->count(),
+                ]
             ];
 
-            if ($level + 1 >= $maxLevels) {
-                break;
-            }
+            $levels[$currentLevel][] = $formattedNode;
+            $total_members++;
         }
 
-        return response()->json([
-            'root' => $rootUser->id,
-            'levels' => $formattedLevels
-        ]);
+        // Recurse into this member’s direct referrals
+        $this->buildSponsorLevelNodes($memberNode->id, $levels, $currentLevel + 1, $maxLevels, $total_members);
     }
+}
 
-    protected function buildSponsorLevelNodes($leaderId, &$levels, $currentLevel, $maxLevels, &$total_members)
-    {
-        if ($currentLevel >= $maxLevels) return;
 
-        // Get direct referrals
-        $directMembers = BinaryTree::where('sponsor_id', $leaderId)
-            ->with(['user'])
-            ->get();
 
-        if ($directMembers->isEmpty()) return;
 
-        foreach ($directMembers as $memberNode) {
-            $user = $memberNode->user;
 
-            if ($user) {
-                $formattedNode = [
-                    'user_id'         => $user->id,
-                    'member_number'   => $memberNode->member_number,
-                    'status'          => $memberNode->status,
-                    'position'        => $memberNode->position,
-                    'sponsor_id'      => $memberNode->sponsor?->member_number,
-                    'register_date'   => formated_date($user->created_at),
-                    'total_business'  => TopUp::where('user_id',$user->id)->where('is_show_on_business',1)->sum('total_amount'),
-                    'user' => (object)[
-                        'id'               => $user->id,
-                        'name'             => $user->name,
-                        'profile_image'    => $user->getFirstMediaUrl('profile-image'),
-                        'register_left'    => $user->leftUsers()->count(),
-                        'register_right'   => $user->rightUsers()->count(),
-                        'activated_left'   => $user->leftUsers()->where('status', 1)->count(),
-                        'activated_right'  => $user->rightUsers()->where('status', 1)->count(),
-                    ]
-                ];
-
-                $levels[$currentLevel][] = $formattedNode;
-                $total_members++;
-            }
-
-            // Recurse into this member’s direct referrals
-            $this->buildSponsorLevelNodes($memberNode->id, $levels, $currentLevel + 1, $maxLevels, $total_members);
-        }
-    }
 }
