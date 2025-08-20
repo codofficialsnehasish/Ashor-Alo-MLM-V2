@@ -14,8 +14,8 @@ class MigrateKycDataSeeder extends Seeder
     /**
      * Base URL for the KYC proof files
      */
-    // protected string $baseUrl = 'https://ashoralo.in/public/';
-    protected string $baseUrl = 'https://old.ashoralo.in/';
+    protected string $baseUrl = 'https://ashoralo.in/public/';
+    // protected string $baseUrl = 'https://old.ashoralo.in/';
 
     /**
      * Sample KYC data array

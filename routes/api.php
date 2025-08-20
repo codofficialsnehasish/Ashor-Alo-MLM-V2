@@ -58,6 +58,7 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::get('/right-members', [BinaryTreeApiController::class, 'right_side_members']);
     Route::get('/all-members', [BinaryTreeApiController::class, 'all_members']);
     Route::post('/search-members', [BinaryTreeApiController::class, 'member_search']);
+    Route::post('level-search-members', [BinaryTreeApiController::class, 'level_member_search']);
     
     Route::get('/tree-view/{rootId?}', [BinaryTreeApiController::class, 'getTree']);
     Route::post('/get-user-details-on-tree', [BinaryTreeApiController::class, 'get_user_details_on_tree']);
@@ -66,7 +67,8 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::post('/topup-report', [ReportAPIController::class, 'topup_report']);
     Route::get('/remuneration-report', [ReportAPIController::class, 'remuneration_report']);
     Route::post('/daily-roi-report', [ReportAPIController::class, 'daily_roi_report']);
-    Route::post('/level-wise-business-report', [ReportAPIController::class, 'level_wise_business_report']);
+    Route::post('/daily-report', [ReportAPIController::class, 'dilse_report']);
+    Route::get('/level-wise-business-report', [ReportAPIController::class, 'level_wise_business_report']);
     Route::post('/tree-wise-business-report', [ReportAPIController::class, 'tree_wise_business_report']);
     Route::post('/daily-dilse-report', [ReportAPIController::class, 'daily_dilse_report']);
     Route::get('/advance-report', [ReportAPIController::class, 'advance_report']);

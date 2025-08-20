@@ -70,7 +70,7 @@ class KycDetails extends Component
     {
         $media = $this->kyc->getFirstMedia($field);
         if ($media) {
-            $media->setCustomProperty('status', $value);
+            $media->setCustomProperty('status', (int) $value);
             $media->setCustomProperty('remarks', $this->remarksFields[$field] ?? '');
             $media->save();
         }

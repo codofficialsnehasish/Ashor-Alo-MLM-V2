@@ -110,6 +110,7 @@ class ReportAPIController extends Controller
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
             'position' => 'nullable|in:left,right',
+            'user_id' => 'nullable|exists:users,id'
         ]);
 
         if ($validator->fails()) {
@@ -129,11 +130,18 @@ class ReportAPIController extends Controller
         $totalLeftAmount = 0;
         $totalRightAmount = 0;
 
+        if($request->user_id){
+            $user_id = $request->user_id;
+        }else{
+            $user_id = $user->id;
+        }
+
         // Get the root user
         if ($user) {
-            $rootNode = BinaryTree::where('user_id', $user->id)->first();
+            $rootNode = BinaryTree::where('user_id', $user_id)->first();
         } else {
-            $rootNode = BinaryTree::whereNull('parent_id')->first();
+            // $rootNode = BinaryTree::whereNull('parent_id')->first();
+            return apiResponse(true, 'Level Wise Business Report not found on this user', null, 200);
         }
 
         if (!$rootNode) {
@@ -200,6 +208,9 @@ class ReportAPIController extends Controller
         $formattedGroupedBusiness = [];
         foreach ($business as $item) {
             $level = $item['level'];
+            if ($level > 40) {
+                break;
+            }
             if (!isset($formattedGroupedBusiness[$level])) {
                 $formattedGroupedBusiness[$level] = [
                     'level' => $level,
@@ -306,6 +317,60 @@ class ReportAPIController extends Controller
                 ];
 
         return apiResponse(true, 'Tree Wise Business Report', $data, 200);
+    }
+
+    public function dilse_report(Request $request){
+        $startDate = $request->start_date;
+        $endDate = $request->end_date;
+        if(!empty($startDate) && !empty($endDate)){
+            $topUps = TopUp::whereDate('created_at', '>=', $startDate)
+                            ->whereDate('created_at', '<=', $endDate)
+                            ->where('user_id',$request->user()->id)
+                            ->whereNull('add_on_against_order_id')
+                            ->where('is_provide_roi',1)
+                            ->where('is_provide_level',0)
+                            ->where('is_provide_direct',0)
+                            ->get();
+        }else{
+            $topUps = TopUp::where('user_id',$request->user()->id)
+                            ->whereNull('add_on_against_order_id')
+                            ->where('is_provide_roi',1)
+                            ->where('is_provide_level',0)
+                            ->where('is_provide_direct',0)
+                            ->get();
+        }
+
+        $data['top_ups'] = $topUps->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'user_id' => $item->user_id,
+                'order_id' => $item->order_id,
+                'add_on_against_order_id' => $item->add_on_against_order_id,
+                'is_provide_direct' => $item->is_provide_direct,
+                'is_provide_roi' => $item->is_provide_roi,
+                'is_provide_level' => $item->is_provide_level,
+                'is_show_on_business' => $item->is_show_on_business,
+                'start_date' => $item->start_date,
+                'end_date' => $item->end_date,
+                'total_amount' => $item->total_amount,
+                'total_paying_amount' => $item->total_paying_amount,
+                'installment_amount_per_month' => $item->installment_amount_per_month,
+                'installment_amount_per_day' => $item->installment_amount_per_day,
+                'total_disbursed_amount' => $item->total_disbursed_amount,
+                'percentage' => $item->percentage,
+                'return_percentage' => $item->return_percentage,
+                'total_installment_month' => $item->total_installment_month,
+                'total_installment_days' => $item->total_installment_days,
+                'month_count' => $item->month_count,
+                'days_count' => $item->days_count,
+                'is_completed' => $item->is_completed,
+                'created_at' => $item->created_at,
+                'updated_at' => $item->updated_at,
+                'deleted_at' => $item->deleted_at,
+            ];
+        });
+
+        return apiResponse(true, 'Dilse Report', $data, 200);
     }
 
     public function daily_dilse_report(Request $request){

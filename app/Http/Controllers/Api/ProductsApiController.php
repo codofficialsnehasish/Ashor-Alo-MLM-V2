@@ -15,17 +15,46 @@ use App\Models\ComboItem;
 
 class ProductsApiController extends Controller
 {
-    public function index()
+    // public function index()
+    // {
+    //     $products = Product::with(['category', 'variations', 'comboItems.product', 'comboItems.variation', 'media'])
+    //         ->where('is_visible',1)
+    //         ->get()
+    //         ->map(function ($product) {
+    //             return $this->formatProduct($product);
+    //         });
+
+    //     return apiResponse(true, 'All Active Products', ['products'=>$products], 200);
+    // 
+
+    public function index(Request $request)
     {
+        $perPage = (int) $request->get('per_page', 10); // default 10
+        $page = (int) $request->get('page', 1);        // default page 1
+
         $products = Product::with(['category', 'variations', 'comboItems.product', 'comboItems.variation', 'media'])
-            ->where('is_visible',1)
+            ->where('is_visible', 1)
             ->get()
             ->map(function ($product) {
                 return $this->formatProduct($product);
             });
 
-        return apiResponse(true, 'All Active Products', ['products'=>$products], 200);
+        // Slice manually for pagination
+        $paginated = $products->forPage($page, $perPage)->values();
+
+        $pagination = [
+            'total' => $products->count(),
+            'per_page' => $perPage,
+            'current_page' => $page,
+            'last_page' => ceil($products->count() / $perPage),
+        ];
+
+        return apiResponse(true, 'All Active Products', [
+            'products' => $paginated,
+            'pagination' => $pagination
+        ], 200);
     }
+
 
     public function show($id)
     {

@@ -61,7 +61,7 @@ class Kyc extends Model implements HasMedia
             ->usingFileName(Str::random(10) . '.png')
             ->withCustomProperties([
                 'type' => $type, 
-                'status' => $status, 
+                'status' => (int) $status, 
                 'remarks' => null, 
             ])
             ->toMediaCollection($collection);
