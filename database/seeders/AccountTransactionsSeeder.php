@@ -35,6 +35,17 @@ class AccountTransactionsSeeder extends Seeder
         't22.php',
         't23.php',
         't24.php',
+        't25.php',
+        't26.php',
+        't27.php',
+        't28.php',
+        't29.php',
+        't30.php',
+        't31.php',
+        't32.php',
+        't33.php',
+        't34.php',
+        't35.php',
     ];
     /**
      * Run the database seeds.

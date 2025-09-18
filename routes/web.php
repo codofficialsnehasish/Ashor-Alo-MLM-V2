@@ -257,6 +257,10 @@ Route::middleware(['auth'])->group(function () {
 
 Route::get("/web/welcome-letter/{user_id}",[Documents::class,"welcome_letter_view"])->name('my-documents.welcome-letter.view');
 Route::get("/web/id-card/{user_id}",[Documents::class,"id_card_view"])->name('my-documents.id-card.view');
+
+Route::get("/web/welcome-letter-download/{user_id}",[Documents::class,"welcome_letter_download"])->name('my-documents.welcome-letter.download');
+Route::get("/web/id-card-download/{user_id}",[Documents::class,"id_card_download"])->name('my-documents.id-card.download');
+
 Route::get('payout/payout-statement/{id}',[PayoutApiController::class,'payout_statement_app'])->name('payout.payout-statement.app');
 require __DIR__.'/auth.php';
 require __DIR__.'/mlm_daily.php';

@@ -17,7 +17,10 @@ use App\Http\Controllers\Api\{
     WebsiteApiController,
     ProductsApiController,
     NoticeApiController,
+    RankWiseUserController,
 };
+
+Route::get('/rank-wise-users', [RankWiseUserController::class, 'index']);
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/get-sponsor-name', [AuthController::class, 'getSponsorName']);

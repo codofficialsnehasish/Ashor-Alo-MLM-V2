@@ -120,7 +120,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <b>Aheartly Welcome To {{ $user->name }}</b>
+                                        <b>A heartly Welcome To {{ $user->name }}</b>
                                         <p>Dear,Mr./Miss/Mrs./Ms : {{ $user->name }},</p>
                                         <p>ID : {{ $user->member_number }},</p>
                                     </div>

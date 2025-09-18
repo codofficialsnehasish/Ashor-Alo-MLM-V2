@@ -29,7 +29,12 @@ class DatabaseSeeder extends Seeder
             MonthlyReturnMasterSeeder::class,
             MigrateUsersFromArraySeeder::class,
             MigrateKycDataSeeder::class,
-            AccountTransactionsSeeder::class
+            AccountTransactionsSeeder::class,
+
+
+            PayoutSeeder::class,
+            MigrateUsersFromArraySeeder::class,
+            TopUpSeeder::class,
         ]);
 
         // Create a default Super Admin user
