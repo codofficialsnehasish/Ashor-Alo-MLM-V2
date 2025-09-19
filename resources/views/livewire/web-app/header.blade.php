@@ -22,7 +22,7 @@
                                     <li><a wire:navigate href="{{ route('photo-gallery') }}">Photo Gallery</a></li>
                                     <li><a wire:navigate href="{{ route('legal') }}">Legal / Affiliation</a></li>
                                     <li><a wire:navigate href="{{ route('contact') }}">Contact</a></li>
-                                    <li class="lis_t"><a href="#">Login</a></li>
+                                    <li class="lis_t"><a wire:navigate href="{{ route('user.login') }}">Login</a></li>
                                     <li class="lis_t"><a href="#">Signup</a></li>
                                     <!-- <li><a href="#">Soft Toys</a></li>
                                         <li><a href="#">Sweets</a></li>
@@ -68,12 +68,12 @@
             <nav>
             <ul class="mobile-menu">
                 <li class="menu-item-has-children"><a href="{{ route('home') }}">Home</a>  </li>
-                <li><a href="{{ route('about') }}">About</a></li>
-                <li><a href="{{ route('site-products') }}">Products</a></li>
-                <li><a href="{{ route('photo-gallery') }}">Photo Gallery</a></li>
-                <li><a href="{{ route('legal') }}">Legal / Affiliation</a></li>
-                <li><a href="{{ route('contact') }}">Contact</a></li>
-                <li><a href="#">Login</a></li>
+                <li><a wire:navigate href="{{ route('about') }}">About</a></li>
+                <li><a wire:navigate href="{{ route('site-products') }}">Products</a></li>
+                <li><a wire:navigate href="{{ route('photo-gallery') }}">Photo Gallery</a></li>
+                <li><a wire:navigate href="{{ route('legal') }}">Legal / Affiliation</a></li>
+                <li><a wire:navigate href="{{ route('contact') }}">Contact</a></li>
+                <li><a wire:navigate href="{{ route('user.login') }}">Login</a></li>
                 <li><a href="#">Signup</a></li>
             </ul>
             </nav>

@@ -28,6 +28,7 @@
       <!-- Main Style CSS -->
       <link rel="stylesheet" href="{{ asset('web-assets/css/styles.css') }}">
       <link rel="stylesheet" href="{{ asset('web-assets/css/responsive.css') }}">
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
       <style>
          #expandableContainer:hover {
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
