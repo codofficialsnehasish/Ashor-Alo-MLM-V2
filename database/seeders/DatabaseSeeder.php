@@ -30,10 +30,7 @@ class DatabaseSeeder extends Seeder
             MigrateUsersFromArraySeeder::class,
             MigrateKycDataSeeder::class,
             AccountTransactionsSeeder::class,
-
-
             PayoutSeeder::class,
-            MigrateUsersFromArraySeeder::class,
             TopUpSeeder::class,
         ]);
 

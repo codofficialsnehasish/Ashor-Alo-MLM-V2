@@ -9,10 +9,10 @@
             <form wire:submit.prevent="login">
                 {{-- User ID --}}
                 <div class="mb-3">
-                    <label class="form-label">User ID</label>
+                    <label class="form-label">Enter Your ID</label>
                     <div class="input-group">
                         <span class="input-group-text bg-white"><i class="bi bi-person"></i></span>
-                        <input type="text" wire:model="member_number" class="form-control @error('member_number') is-invalid @enderror" placeholder="Enter your User ID">
+                        <input type="text" wire:model="member_number" class="form-control @error('member_number') is-invalid @enderror" placeholder="Enter Your ID">
                         @error('member_number') <div class="invalid-feedback">{{ $message }}</div> @enderror
                     </div>
                 </div>
@@ -34,7 +34,7 @@
 
                 <div class="d-flex justify-content-between">
                     <a href="{{ route('password.request') }}" class="text-decoration-none small">Forgot Password?</a>
-                    <a href="{{ route('register') }}" class="text-decoration-none small">Create Account</a>
+                    <a href="{{ route('user.register') }}" class="text-decoration-none small">Create Account</a>
                 </div>
             </form>
         </div>

@@ -35,7 +35,13 @@ class BinaryTreeService
     public function insertNode($userId, $sponsorId = null, $preferredPosition = null)
     {
         $user = User::findOrFail($userId);
-        $memberNumber = str_pad(mt_rand(1, 99999999), 8, '0', STR_PAD_LEFT);
+        // $memberNumber = str_pad(mt_rand(1, 99999999), 8, '0', STR_PAD_LEFT);
+
+        // Generate a unique member number
+        do {
+            $memberNumber = str_pad(mt_rand(1, 99999999), 8, '0', STR_PAD_LEFT);
+        } while (BinaryTree::where('member_number', $memberNumber)->exists());
+
 
         if (!$sponsorId) {
             return BinaryTree::create([

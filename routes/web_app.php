@@ -11,6 +11,7 @@ use App\Livewire\WebApp\{
 };
 
 use App\Livewire\WebApp\User\Auth\Login as UserLogin;
+use App\Livewire\WebApp\User\Auth\Register as UserRegister;
 use App\Livewire\WebApp\User\Dashboard;
 
 Route::get('/', Home::class)->name('home');
@@ -26,6 +27,7 @@ Route::prefix('user')->group(function () {
     // guest routes
     Route::middleware('guest:user')->group(function () {
         Route::get('login', UserLogin::class)->name('user.login');
+        Route::get('register', UserRegister::class)->name('user.register');
         // you can also add user register, forgot password here separately
     });
 

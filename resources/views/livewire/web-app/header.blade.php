@@ -23,7 +23,7 @@
                                     <li><a wire:navigate href="{{ route('legal') }}">Legal / Affiliation</a></li>
                                     <li><a wire:navigate href="{{ route('contact') }}">Contact</a></li>
                                     <li class="lis_t"><a wire:navigate href="{{ route('user.login') }}">Login</a></li>
-                                    <li class="lis_t"><a href="#">Signup</a></li>
+                                    <li class="lis_t"><a wire:navigate href="{{ route('user.register') }}">Signup</a></li>
                                     <!-- <li><a href="#">Soft Toys</a></li>
                                         <li><a href="#">Sweets</a></li>
                                         -->
@@ -74,7 +74,7 @@
                 <li><a wire:navigate href="{{ route('legal') }}">Legal / Affiliation</a></li>
                 <li><a wire:navigate href="{{ route('contact') }}">Contact</a></li>
                 <li><a wire:navigate href="{{ route('user.login') }}">Login</a></li>
-                <li><a href="#">Signup</a></li>
+                <li><a wire:navigate href="{{ route('user.register') }}">Signup</a></li>
             </ul>
             </nav>
             <!-- mobile menu navigation end -->

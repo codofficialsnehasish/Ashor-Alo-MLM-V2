@@ -44,7 +44,7 @@ class MigrateUsersFromArraySeeder extends Seeder
 
         foreach ($this->dataFiles as $file) {
             $this->command->info("Processing file: {$file}");
-            $path = database_path('seeders/data/transaction_data/' . $file);
+            $path = database_path('seeders/data/users/' . $file);
             
             if (!file_exists($path)) {
                 $this->command->error("File not found: {$path}");
