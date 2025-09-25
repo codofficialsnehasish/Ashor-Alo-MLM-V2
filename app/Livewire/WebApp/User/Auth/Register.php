@@ -22,6 +22,27 @@ class Register extends Component
     public $generated_password = "";
     public $user_name = "";
 
+    public function mount()
+    {
+        // Capture query params from URL
+        $this->sponsor_id = request()->query('sponsorid'); // from ?sponsorid=...
+        $this->position   = request()->query('position');  // from ?position=...
+
+        // If sponsor_id exists, automatically fetch sponsor name
+        if ($this->sponsor_id) {
+            $sponsor = BinaryTree::where('member_number', $this->sponsor_id)
+                ->with('user')
+                ->first();
+
+            if ($sponsor && $sponsor->user) {
+                $this->sponsorName = $sponsor->user->name;
+            } else {
+                $this->sponsorName = 'Sponsor not found';
+            }
+        }
+    }
+
+
     public function updatedSponsorId($value)
     {
         $this->sponsorName = '';
