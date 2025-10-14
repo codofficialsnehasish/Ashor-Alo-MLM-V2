@@ -10,13 +10,13 @@ class CategorySeeder extends Seeder
 {
 
     protected $categories = [
-        ['id' => '3','name' => 'Land','parent_id' => NULL,'slug' => 'land','image' => NULL,'visibility' => '1','is_deleted' => '0','created_at' => '2024-08-04 15:27:59','updated_at' => '2025-04-17 18:24:07'],
-        ['id' => '4','name' => 'Building Materials','parent_id' => NULL,'slug' => 'building-materials','image' => NULL,'visibility' => '0','is_deleted' => '0','created_at' => '2024-08-04 15:29:42','updated_at' => '2024-12-21 13:30:56'],
-        ['id' => '5','name' => 'FMCG','parent_id' => NULL,'slug' => 'fmcg','image' => NULL,'visibility' => '1','is_deleted' => '0','created_at' => '2024-08-04 15:30:19','updated_at' => '2025-02-04 17:50:20'],
-        ['id' => '9','name' => 'Only Activation','parent_id' => NULL,'slug' => 'only-activation','image' => NULL,'visibility' => '0','is_deleted' => '0','created_at' => '2024-08-05 18:19:34','updated_at' => '2025-04-04 15:51:16'],
-        ['id' => '10','name' => 'Add On Products','parent_id' => NULL,'slug' => 'add-on-products','image' => NULL,'visibility' => '1','is_deleted' => '0','created_at' => '2024-11-04 19:30:26','updated_at' => '2024-11-04 19:30:26'],
-        ['id' => '11','name' => 'Grocery','parent_id' => NULL,'slug' => 'grocery','image' => NULL,'visibility' => '1','is_deleted' => '0','created_at' => '2025-02-04 17:49:51','updated_at' => '2025-04-26 17:57:07'],
-        ['id' => '12','name' => 'DIL SE','parent_id' => NULL,'slug' => 'dil-se','image' => NULL,'visibility' => '1','is_deleted' => '0','created_at' => '2025-04-29 17:19:23','updated_at' => '2025-04-29 17:19:23']
+        array('id' => '3','name' => 'Land','parent_id' => NULL,'slug' => 'land','image' => NULL,'visibility' => '1','is_deleted' => '0','created_at' => '2024-08-04 15:27:59','updated_at' => '2025-04-17 18:24:07'),
+        array('id' => '4','name' => 'Building Materials','parent_id' => NULL,'slug' => 'building-materials','image' => NULL,'visibility' => '0','is_deleted' => '0','created_at' => '2024-08-04 15:29:42','updated_at' => '2024-12-21 13:30:56'),
+        array('id' => '5','name' => 'FMCG','parent_id' => NULL,'slug' => 'fmcg','image' => NULL,'visibility' => '1','is_deleted' => '0','created_at' => '2024-08-04 15:30:19','updated_at' => '2025-02-04 17:50:20'),
+        array('id' => '9','name' => 'Only Activation','parent_id' => NULL,'slug' => 'only-activation','image' => NULL,'visibility' => '1','is_deleted' => '0','created_at' => '2024-08-05 18:19:34','updated_at' => '2025-07-02 20:31:48'),
+        array('id' => '10','name' => 'Add On Products','parent_id' => NULL,'slug' => 'add-on-products','image' => NULL,'visibility' => '1','is_deleted' => '0','created_at' => '2024-11-04 19:30:26','updated_at' => '2024-11-04 19:30:26'),
+        array('id' => '11','name' => 'Grocery','parent_id' => NULL,'slug' => 'grocery','image' => NULL,'visibility' => '1','is_deleted' => '0','created_at' => '2025-02-04 17:49:51','updated_at' => '2025-04-26 17:57:07'),
+        array('id' => '12','name' => 'DIL SE','parent_id' => NULL,'slug' => 'dil-se','image' => NULL,'visibility' => '1','is_deleted' => '0','created_at' => '2025-04-29 17:19:23','updated_at' => '2025-04-29 17:19:23')
     ];
     /**
      * Run the database seeds.

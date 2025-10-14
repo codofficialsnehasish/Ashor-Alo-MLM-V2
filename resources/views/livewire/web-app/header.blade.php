@@ -22,11 +22,12 @@
                                     <li><a wire:navigate href="{{ route('photo-gallery') }}">Photo Gallery</a></li>
                                     <li><a wire:navigate href="{{ route('legal') }}">Legal / Affiliation</a></li>
                                     <li><a wire:navigate href="{{ route('contact') }}">Contact</a></li>
+                                    @auth
+                                        <li class="lis_t"><a wire:navigate href="{{ route('user.dashboard') }}">Dashboard</a></li>
+                                    @else
                                     <li class="lis_t"><a wire:navigate href="{{ route('user.login') }}">Login</a></li>
                                     <li class="lis_t"><a wire:navigate href="{{ route('user.register') }}">Signup</a></li>
-                                    <!-- <li><a href="#">Soft Toys</a></li>
-                                        <li><a href="#">Sweets</a></li>
-                                        -->
+                                    @endauth
                                 </ul>
                             </nav>
                             </div>

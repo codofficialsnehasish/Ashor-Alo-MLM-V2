@@ -38,6 +38,7 @@ class Login extends Component
         }
 
         Auth::guard('user')->login($sponsor->user);
+        // Auth::login($sponsor->user);
 
         return redirect()->route('user.dashboard');
     }

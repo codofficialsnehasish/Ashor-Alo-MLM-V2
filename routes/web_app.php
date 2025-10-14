@@ -14,7 +14,7 @@ use App\Livewire\WebApp\User\Auth\Login as UserLogin;
 use App\Livewire\WebApp\User\Auth\Register as UserRegister;
 use App\Livewire\WebApp\User\Dashboard;
 
-Route::get('/', Home::class)->name('home');
+// Route::get('/', Home::class)->name('home');
 Route::get('/about', About::class)->name('about');
 Route::get('/contact', Contact::class)->name('contact');
 Route::get('/legal', Legal::class)->name('legal');

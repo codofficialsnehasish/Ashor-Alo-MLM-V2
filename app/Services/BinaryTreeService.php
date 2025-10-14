@@ -7,6 +7,7 @@ use App\Models\BinaryTree;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use App\Services\SMSService;
 
 class BinaryTreeService
 {
@@ -24,6 +25,14 @@ class BinaryTreeService
 
         // Insert into binary tree
         $node = $this->insertNode($user->id, $sponsorId, $preferredPosition);
+        
+        // ✅ Send SMS
+        try {
+            $smsService = new SMSService();
+            $smsService->sendSMS($user->phone, $node->member_number, $password);
+        } catch (\Exception $e) {
+            \Log::info('Failed to send SMS for user '.$node->member_number.': '.$e->getMessage());
+        }
 
         return [
             'user' => $user,
@@ -144,48 +153,6 @@ class BinaryTreeService
         return $node;
     }
 
-    // public function transferSubtree($fromNodeId, $toSponsorId, $position)
-    // {
-    //     DB::transaction(function () use ($fromNodeId, $toSponsorId, $position) {
-    //         $node = BinaryTree::findOrFail($fromNodeId);
-    //         $newSponsor = BinaryTree::where('member_number', $toSponsorId)->firstOrFail();
-            
-    //         // Prevent circular references
-    //         if ($newSponsor->isDescendantOf($node)) {
-    //             throw new \Exception('Cannot move a node to its own descendant');
-    //         }
-
-    //         // Get all descendants to rebuild the tree
-    //         $descendants = $node->descendants()->with('user')->get();
-    //         $originalParent = $node->parent;
-
-    //         // Detach from old parent
-    //         if ($originalParent) {
-    //             $oldPositionField = $node->position . '_user_id';
-    //             $originalParent->update([$oldPositionField => null]);
-    //         }
-
-    //         // Attach to new sponsor
-    //         $positionField = $position . '_user_id';
-    //         if (!empty($newSponsor->$positionField)) {
-    //             throw new \Exception('Position already occupied');
-    //         }
-
-    //         // Update the main node
-    //         $node->update([
-    //             'parent_id' => $newSponsor->id,
-    //             'sponsor_id' => $newSponsor->id,
-    //             'position' => $position,
-    //             '_lft' => 0, // Will be recalculated
-    //             '_rgt' => 0  // Will be recalculated
-    //         ]);
-
-    //         $newSponsor->update([$positionField => $node->id]);
-
-    //         // Rebuild the entire tree to ensure consistency
-    //         BinaryTree::fixTree();
-    //     });
-    // }
 
     public function transferSubtree($fromNodeId, $toSponsorId, $position)
     {

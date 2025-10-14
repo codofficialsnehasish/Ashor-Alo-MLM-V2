@@ -46,6 +46,14 @@ class AccountTransactionsSeeder extends Seeder
         't33.php',
         't34.php',
         't35.php',
+        't36.php',
+        't37.php',
+        't38.php',
+        't39.php',
+        't40.php',
+        't41.php',
+        't42.php',
+        't43.php',
     ];
     /**
      * Run the database seeds.

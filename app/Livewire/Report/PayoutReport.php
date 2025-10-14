@@ -152,6 +152,18 @@ class PayoutReport extends Component
         $this->showFullReport = false;
     }
 
+    // protected function getQuery()
+    // {
+    //     return Payout::select(
+    //                 'start_date',
+    //                 'end_date',
+    //                 DB::raw('SUM(total_payout) as total_payout'),
+    //                 DB::raw('COUNT(DISTINCT user_id) as total_user_count')
+    //             )
+    //             ->groupBy('start_date', 'end_date')
+    //             ->orderBy('start_date', 'desc');
+    // }
+
     protected function getQuery()
     {
         return Payout::select(
@@ -160,9 +172,19 @@ class PayoutReport extends Component
                     DB::raw('SUM(total_payout) as total_payout'),
                     DB::raw('COUNT(DISTINCT user_id) as total_user_count')
                 )
+                // ->whereDate('start_date', $this->fullStartDate)
+                // ->whereDate('end_date', $this->fullEndDate)
+                ->where('total_payout', '>', 0)
+                ->whereHas('user', function ($query) {
+                    $query->where('is_block', 0)
+                        ->whereHas('kyc', function ($kycQuery) {
+                            $kycQuery->where('status', 1);
+                        });
+                })
                 ->groupBy('start_date', 'end_date')
                 ->orderBy('start_date', 'desc');
     }
+
 
     protected function getFullDetailsQuery()
     {

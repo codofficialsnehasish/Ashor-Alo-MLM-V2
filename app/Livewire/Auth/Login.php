@@ -32,7 +32,7 @@ class Login extends Component
 
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
+        if (! Auth::guard('web')->attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
@@ -40,10 +40,11 @@ class Login extends Component
             ]);
         }
 
+        $user = Auth::guard('web')->user();
         // Check if the authenticated user is active (status = 1)
-        if (Auth::user()->status != 1) {
+        if ($user->status != 1) {
             // Log the user out immediately since they're not active
-            Auth::logout();
+            Auth::guard('web')->logout();
             
             throw ValidationException::withMessages([
                 'email' => __('Your account is inactive. Please contact administrator.'),
@@ -54,6 +55,7 @@ class Login extends Component
         Session::regenerate();
 
         $this->redirectIntended(default: route('dashboard', absolute: false), navigate: false);
+
     }
 
     /**

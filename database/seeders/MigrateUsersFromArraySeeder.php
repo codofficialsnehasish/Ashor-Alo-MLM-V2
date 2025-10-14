@@ -30,6 +30,7 @@ class MigrateUsersFromArraySeeder extends Seeder
         'u5.php',
         'u6.php',
         'u7.php',
+        'u8.php',
     ];
 
 
@@ -158,7 +159,7 @@ class MigrateUsersFromArraySeeder extends Seeder
                             'country_id' => $oldUser['country'] != 0 ? $oldUser['country'] : null,
                             'address' => $oldUser['address'] ?? null,
                             'state_id' => $oldUser['state'] != 0 ? $oldUser['state'] : null,
-                            'city_id' => $oldUser['city'] != 0 ? $oldUser['state'] : null,
+                            'city_id' => $oldUser['city'] != 0 ? $oldUser['city'] : null,
                             'pin_code' => $oldUser['pin_code'] ?? null,
                             'created_at' => $oldUser['created_at'] ?? now(),
                             'updated_at' => $oldUser['updated_at'] ?? now(),

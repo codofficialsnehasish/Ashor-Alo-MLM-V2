@@ -27,15 +27,31 @@ class BinaryTreeApiController extends Controller
     public function direct(Request $request)
     {
         $perPage = $request->get('per_page', 10); // Default to 10 if not provided
+        $query = $request->get('query'); // Optional search parameter
 
         $user = User::find($request->user()->id);
 
         if ($user) {
             $leader = $user->binaryTreeNode;
 
-            $directMembers = BinaryTree::where('sponsor_id', $leader->id)
-                ->with('user')
-                ->paginate($perPage); // Apply pagination
+            // $directMembers = BinaryTree::where('sponsor_id', $leader->id)
+            //     ->with('user')
+            //     ->paginate($perPage); // Apply pagination
+
+            // Base query
+            $directQuery = BinaryTree::where('sponsor_id', $leader->id)
+                ->with('user');
+
+            // If query parameter exists, apply search filter
+            if (!empty($query) && strlen($query) >= 2) {
+                $directQuery->whereHas('user', function ($q) use ($query) {
+                    $q->where('name', 'like', '%' . $query . '%');
+                })
+                ->orWhere('member_number', 'like', '%' . $query . '%');
+            }
+
+            // Paginate after filter (if any)
+            $directMembers = $directQuery->paginate($perPage);
 
             return apiResponse(true, 'Direct Members.', [
                 'members_data' => $directMembers->items(), // Current page data
@@ -270,7 +286,7 @@ class BinaryTreeApiController extends Controller
                 || str_contains(strtolower($member->member_number), strtolower($value));
         })->map(function ($member) {
             return [
-                'id' => $member->id,
+                'id' => $member->user->id,
                 'name' => $member->user->name,
                 'member_number' => $member->member_number,
                 // 'email' => $member->user->email,

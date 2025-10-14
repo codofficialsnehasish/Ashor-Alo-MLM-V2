@@ -22,7 +22,7 @@
     <hr class="sidebar-divider">
 
     <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0);">
+        <a class="nav-link" href="{{ route('user.register-member') }}">
             <i class="fas fa-user-plus"></i>
             <span>Register Member</span>
         </a>

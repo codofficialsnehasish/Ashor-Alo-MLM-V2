@@ -149,7 +149,7 @@ class ReportAPIController extends Controller
         }
 
         // Get all descendants with their level information
-        $descendants = BinaryTree::with('user')
+        /*$descendants = BinaryTree::with('user')
             ->whereDescendantOf($rootNode)
             ->defaultOrder()
             ->get()
@@ -170,6 +170,15 @@ class ReportAPIController extends Controller
             })
             ->filter()
             ->toArray();
+        */
+            
+        $levels = [];         // Store level-wise data
+        $total_members = 0;   // Total downline count
+        $maxLevels = 40;
+        $this->buildSponsorLevelNodes($rootNode->id, $levels, 0, $maxLevels, $total_members);
+
+        // Flatten all levels into one collection for consistent output
+        $descendants = collect($levels)->flatten(1)->toArray();
 
         $buyerIds = array_column($descendants, 'id');
 
@@ -262,6 +271,42 @@ class ReportAPIController extends Controller
                 ];
 
         return apiResponse(true, $title, $data, 200);
+    }
+
+    protected function buildSponsorLevelNodes($leaderId, &$levels, $currentLevel, $maxLevels, &$total_members)
+    {
+        if ($currentLevel >= $maxLevels) return;
+
+        // Get all direct members under this sponsor
+        $directMembers = BinaryTree::where('sponsor_id', $leaderId)
+            ->with(['user', 'sponsor'])
+            ->get();
+
+        if ($directMembers->isEmpty()) return;
+
+        foreach ($directMembers as $memberNode) {
+            $user = $memberNode->user;
+
+            if ($user) {
+                $formattedNode = [
+                    'id'         => $user->id,
+                    'level'      => $currentLevel + 1, // increment level each recursion
+                    'user_id'    => $memberNode->member_number,
+                    'name'       => $user->name,
+                    'phone'      => $user->phone,
+                    'reg_date'   => $user->created_at,
+                    'position'   => $memberNode->position,
+                    'sponsor_id' => $memberNode->sponsor?->member_number,
+                    'status'     => $memberNode->status,
+                ];
+
+                $levels[$currentLevel][] = $formattedNode;
+                $total_members++;
+            }
+
+            // Recursively process this member’s direct downline
+            $this->buildSponsorLevelNodes($memberNode->id, $levels, $currentLevel + 1, $maxLevels, $total_members);
+        }
     }
 
     public function tree_wise_business_report(Request $request){

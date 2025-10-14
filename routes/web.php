@@ -118,9 +118,9 @@ use Illuminate\Support\Facades\Route;
 //     return redirect()->away('https://agents.ashoralo.in');
 // });
 
-// Route::get('/', function () {
-//     return redirect(route('login'));
-// })->name('home');
+Route::get('/', function () {
+    return redirect(route('login'));
+})->name('home');
 
 // Route::view('dashboard', 'dashboard')
 //     ->middleware(['auth', 'verified'])
@@ -264,7 +264,7 @@ Route::get("/web/id-card-download/{user_id}",[Documents::class,"id_card_download
 Route::get('payout/payout-statement/{id}',[PayoutApiController::class,'payout_statement_app'])->name('payout.payout-statement.app');
 require __DIR__.'/auth.php';
 require __DIR__.'/mlm_daily.php';
-require __DIR__.'/web_app.php';
+// require __DIR__.'/web_app.php';
 
 
 

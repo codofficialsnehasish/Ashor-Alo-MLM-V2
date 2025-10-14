@@ -68,6 +68,8 @@ class User extends Authenticatable implements HasMedia
             ->implode('');
     }
 
+    protected $guard_name = ['web', 'user'];
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()

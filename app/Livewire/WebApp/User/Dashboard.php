@@ -110,6 +110,6 @@ class Dashboard extends Component
     public function render()
     {
         return view('livewire.web-app.user.dashboard')
-            ->layout('livewire.web-app.user.user_dashboard.partials.layout');
+            ->layout('livewire.web-app.user.user-dashboard.partials.layout');
     }
 }

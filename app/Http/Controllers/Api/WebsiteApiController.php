@@ -129,10 +129,8 @@ class WebsiteApiController extends Controller
     }
 
     public function about_us(){
-        $setting = WebsiteSetting::select([
-                                    'about_us'
-                                ])->first();
+        $setting = WebsiteSetting::first();
 
-        return apiResponse(true, 'About Us', ['about_us'=>$setting->about_us], 200);
+        return apiResponse(true, 'About Us', ['about_us_title'=>$setting->about_us_title, 'about_us'=>$setting->about_us, 'image'=>$setting->getFirstMediaUrl('about-image')], 200);
     }
 }

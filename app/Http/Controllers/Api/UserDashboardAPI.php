@@ -62,7 +62,7 @@ class UserDashboardAPI extends Controller
             $allMembers = $leftMembers->merge($rightMembers);
 
             $data['all_team_member'] = $allMembers->count();
-            $data['level_team_member'] = 1953;
+            $data['level_team_member'] = $this->getTreeLevelCounts($user);
             $data['active_team_member'] = $allMembers->where('status',1)->count();
             $total_left_business = $leader->calculateLeftBusiness();
             $total_right_business = $leader->calculateRightBusiness();
@@ -116,4 +116,36 @@ class UserDashboardAPI extends Controller
         }
         return apiResponse(false, 'User not found.', null, 200);
     }
+
+    public function getTreeLevelCounts($rootUser, $maxLevels = 40)
+    {
+
+        if (!$rootUser) {
+            return 0;
+        }
+
+        $root = BinaryTree::where('user_id', $rootUser->id)->first();
+
+        if (!$root) {
+            return 0;
+        }
+
+        // Prepare result array
+        $totalMembers = 0;
+        $currentLevelNodes = collect([$root->id]); // start with root node id
+
+        for ($level = 1; $level <= $maxLevels; $level++) {
+            // Fetch next level member IDs
+            $nextLevelIds = BinaryTree::whereIn('sponsor_id', $currentLevelNodes)->pluck('id');
+
+            $count = $nextLevelIds->count();
+            if ($count === 0) break; // stop when no more members found
+
+            $totalMembers += $count;
+            $currentLevelNodes = $nextLevelIds;
+        }
+
+        return $totalMembers;
+    }
+
 }

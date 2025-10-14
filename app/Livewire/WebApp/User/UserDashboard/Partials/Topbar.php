@@ -19,6 +19,6 @@ class Topbar extends Component
     
     public function render()
     {
-        return view('livewire.web-app.user.user_dashboard.partials.topbar');
+        return view('livewire.web-app.user.user-dashboard.partials.topbar');
     }
 }
