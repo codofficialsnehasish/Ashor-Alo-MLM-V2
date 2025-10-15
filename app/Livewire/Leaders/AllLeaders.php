@@ -82,7 +82,8 @@ class AllLeaders extends Component
 
     public function exportPDF()
     {
-        ini_set('memory_limit', '512M');
+        ini_set('memory_limit', '1024M');
+        set_time_limit(0);
         
         $users = $this->getFilteredUsersForExport();
         
@@ -99,6 +100,9 @@ class AllLeaders extends Component
 
     public function exportExcel()
     {
+        ini_set('memory_limit', '1024M');
+        set_time_limit(0);
+        
         return Excel::download(
             new UsersExport($this->getFilteredUsersForExport()), 
             "leaders-export-".now()->format('Y-m-d').".xlsx"
