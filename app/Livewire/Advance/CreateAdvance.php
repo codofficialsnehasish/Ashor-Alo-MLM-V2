@@ -12,6 +12,7 @@ class CreateAdvance extends Component
 {
     public $user_id;
     public $original_amount;
+    public $cut_percentage;
     public $notes;
     public $is_new_advance = true; // Track if creating new advance or adding to existing
     
@@ -25,6 +26,7 @@ class CreateAdvance extends Component
     protected $rules = [
         'user_id' => 'required|exists:users,id',
         'original_amount' => 'required|numeric|min:1',
+        'cut_percentage' => 'required|numeric',
         'notes' => 'nullable|string|max:500',
     ];
 
@@ -58,6 +60,7 @@ class CreateAdvance extends Component
                 'user_id' => $this->user_id,
                 'admin_id' => Auth::id(),
                 'original_amount' => $this->original_amount,
+                'cut_percentage' => $this->cut_percentage,
                 'due_amount' => $this->original_amount,
                 'balance' => $this->original_amount,
                 'notes' => $this->notes,

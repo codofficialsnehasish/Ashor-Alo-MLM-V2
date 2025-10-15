@@ -54,6 +54,15 @@
                                     </div>
 
                                     <div class="mb-4">
+                                        <label for="cut_percentage" class="form-label fw-bold">Cutting Percentage from Payout</label>
+                                        <div class="input-group">
+                                            <input wire:model="cut_percentage" type="number" step="0.01" id="cut_percentage" 
+                                                   class="form-control form-control-lg" placeholder="0.00">
+                                        </div>
+                                        @error('cut_percentage') <div class="text-danger small mt-1"><i class="ti-alert me-1"></i>{{ $message }}</div> @enderror
+                                    </div>
+
+                                    <div class="mb-4">
                                         <label for="notes" class="form-label fw-bold">Notes</label>
                                         <textarea wire:model="notes" id="notes" rows="3" 
                                                   class="form-control" placeholder="Additional information..."></textarea>

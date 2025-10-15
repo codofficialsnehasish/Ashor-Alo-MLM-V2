@@ -43,7 +43,8 @@ class RoiJob implements ShouldQueue
 
             // Determine transaction type based on business rules
             if($data->is_provide_direct == 0 && $data->is_provide_roi == 1 && $data->is_provide_level == 0) {
-                $transactionType = ($data->add_on_against_order_id != null) ? 'ROI Dailys' : 'DILSE Daily';
+                // $transactionType = ($data->add_on_against_order_id != null) ? 'ROI Dailys' : 'DILSE Daily';
+                $transactionType = ($data->is_dilse_plan == 0) ? 'ROI Dailys' : 'DILSE Daily';
             } else {
                 $transactionType = 'ROI Daily';
             }

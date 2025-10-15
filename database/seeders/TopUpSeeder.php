@@ -3269,6 +3269,7 @@ class TopUpSeeder extends Seeder
                     $top_up->is_provide_roi = 1;
                     $top_up->is_provide_level = 0;
                     $top_up->is_show_on_business = 0;
+                    $top_up->is_dilse_plan = 1;
                 } 
                 elseif ($top_upp['is_provide_direct'] == '0' && $top_upp['is_personal_business'] == '0' && $top_upp['is_special_business'] == '1') {
                     // Case 4: Special business

@@ -268,6 +268,14 @@ class AddOrder extends Component
             ]));
             return;
         }
+        
+        if($this->last_top_up_amount*2 > $this->total){
+            $this->dispatch('toastMessage', json_encode([
+                'type'=>'error',
+                'message' => 'Your Order Amount is too low to complete this order. Please add more products.'
+            ]));
+            return;
+        }
 
         $this->validate([
             'selectedCustomer' => 'required|exists:users,id',

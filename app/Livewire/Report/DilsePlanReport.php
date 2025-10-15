@@ -100,6 +100,7 @@ class DilsePlanReport extends Component
                 });
             })
             ->whereNull('add_on_against_order_id')
+            ->where('is_dilse_plan',1)
             ->where('is_provide_roi',1)
             ->where('is_provide_level',0)
             ->where('is_provide_direct',0)

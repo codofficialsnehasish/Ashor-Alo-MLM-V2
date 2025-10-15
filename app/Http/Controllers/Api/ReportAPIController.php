@@ -372,6 +372,7 @@ class ReportAPIController extends Controller
                             ->whereDate('created_at', '<=', $endDate)
                             ->where('user_id',$request->user()->id)
                             ->whereNull('add_on_against_order_id')
+                            ->where('is_dilse_plan',1)
                             ->where('is_provide_roi',1)
                             ->where('is_provide_level',0)
                             ->where('is_provide_direct',0)
@@ -379,6 +380,7 @@ class ReportAPIController extends Controller
         }else{
             $topUps = TopUp::where('user_id',$request->user()->id)
                             ->whereNull('add_on_against_order_id')
+                            ->where('is_dilse_plan',1)
                             ->where('is_provide_roi',1)
                             ->where('is_provide_level',0)
                             ->where('is_provide_direct',0)
@@ -395,6 +397,7 @@ class ReportAPIController extends Controller
                 'is_provide_roi' => $item->is_provide_roi,
                 'is_provide_level' => $item->is_provide_level,
                 'is_show_on_business' => $item->is_show_on_business,
+                'is_dilse_plan' => $item->is_dilse_plan,
                 'start_date' => $item->start_date,
                 'end_date' => $item->end_date,
                 'total_amount' => $item->total_amount,

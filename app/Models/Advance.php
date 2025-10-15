@@ -15,6 +15,7 @@ class Advance extends Model
         'user_id',
         'admin_id',
         'original_amount',
+        'cut_percentage',
         'due_amount',
         'balance',
         'status',
@@ -23,6 +24,7 @@ class Advance extends Model
 
     protected $casts = [
         'original_amount' => 'decimal:2',
+        'cut_percentage' => 'decimal:2',
         'due_amount' => 'decimal:2',
         'balance' => 'decimal:2',
     ];

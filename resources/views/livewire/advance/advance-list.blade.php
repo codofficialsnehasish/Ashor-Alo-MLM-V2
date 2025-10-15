@@ -118,6 +118,7 @@
                                             <th>User</th>
                                             <th>Assigned By</th>
                                             <th class="text-end">Original Amount</th>
+                                            <th class="text-end">Cutting Percentage</th>
                                             <th class="text-end">Due Amount</th>
                                             <th>Status</th>
                                             <th>Date</th>
@@ -137,6 +138,7 @@
                                                 </td>
                                                 <td>{{ $loan->admin->name }}</td>
                                                 <td class="text-end">₹{{ number_format($loan->original_amount, 2) }}</td>
+                                                <td class="text-end">{{ $loan->cut_percentage }}%</td>
                                                 <td class="text-end">₹{{ number_format($loan->due_amount, 2) }}</td>
                                                 <td>
                                                     <span class="badge rounded-pill {{ $loan->status === 'active' ? 'bg-warning' : 'bg-success' }}">

@@ -13,6 +13,7 @@ class EditAdvance extends Component
     public $advanceId;
     public $user_id;
     public $original_amount;
+    public $cut_percentage;
     public $notes;
     
     protected function checkPermission($permission)
@@ -35,6 +36,7 @@ class EditAdvance extends Component
         
         $this->user_id = $advance->user_id;
         $this->original_amount = $advance->original_amount;
+        $this->cut_percentage = $advance->cut_percentage;
         $this->notes = $advance->notes;
     }
 
@@ -58,6 +60,7 @@ class EditAdvance extends Component
         $advance->update([
             'user_id' => $this->user_id,
             'original_amount' => $this->original_amount,
+            'cut_percentage' => $this->cut_percentage,
             'due_amount' => $this->original_amount,
             'notes' => $this->notes,
         ]);
