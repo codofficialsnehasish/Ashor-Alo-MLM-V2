@@ -38,9 +38,9 @@
                                         <button wire:click="exportFullExcel" class="btn btn-success me-2">
                                             Export Excel
                                         </button>
-                                        <button wire:click="exportFullPDF" class="btn btn-danger">
+                                        {{-- <button wire:click="exportFullPDF" class="btn btn-danger">
                                             Export PDF
-                                        </button>
+                                        </button> --}}
                                     </div>
                                 </div>
                             </div>

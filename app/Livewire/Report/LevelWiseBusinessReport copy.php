@@ -26,14 +26,6 @@ class LevelWiseBusinessReport extends Component
     public $total_amount = 0;
     public $total_user_count = 0;
     public $title = 'Level Wise Business Report';
-    
-    // Infinite scroll properties
-    public $loadedLevels = 1; // Number of levels to load initially
-    public $levelsPerLoad = 1; // Levels to load each time
-    public $maxLevels = 40;
-    public $isLoading = false;
-    public $hasMoreLevels = true;
-    public $initialLoad = false; // Track if initial data has been loaded
 
     protected function checkPermission($permission)
     {
@@ -54,32 +46,113 @@ class LevelWiseBusinessReport extends Component
         $this->users = User::whereHas('roles', function ($query) {
             $query->whereIn('name', ['Leader']);
         })->get();
-        
-        // Load initial data only if filters are set
-        if ($this->start_date || $this->end_date || $this->user_id || $this->position) {
-            $this->initialLoad = true;
-            $this->loadLevels();
-        }
     }
 
     public function render()
     {
         $this->checkPermission('Level Wise Business Report');
+        $this->generateReport();
         return view('livewire.report.level-wise-business-report');
     }
 
+    // public function generateReport()
+    // {
+    //     $this->resetReportData();
+
+    //     // Get the root user
+    //     // $user = isset($this->user_id) 
+    //     //     ? User::where('user_id', $this->user_id)->first()
+    //     //     : User::whereNull('parent_id')->where('role', 'agent')->first();
+
+    //     // if (!$user) {
+    //     //     return;
+    //     // }
+
+    //     // Get the binary tree node for this user
+    //     if ($this->user_id) {
+    //         $rootNode = BinaryTree::where('user_id', $user->id)->first();
+    //     }else{
+    //         $rootNode = BinaryTree::whereNull('parent_id')->first();
+    //     }
+        
+    //     if (!$rootNode) {
+    //         return;
+    //     }
+
+    //     // Get all descendants with their level information
+    //     $descendants = BinaryTree::with('user')
+    //         ->whereDescendantOf($rootNode)
+    //         ->defaultOrder()
+    //         ->get()
+    //         ->map(function ($node) use ($rootNode) {
+    //             $level = $node->ancestors()->whereDescendantOf($rootNode)->count();
+    //             return [
+    //                 'id' => $node->user_id,
+    //                 'level' => $level, // Calculate level based on depth
+    //                 'user_id' => optional($node->user)->member_number,
+    //                 'name' => optional($node->user)->name,
+    //                 'phone' => optional($node->user)->phone,
+    //                 'reg_date' => optional($node->user)->created_at,
+    //                 'position' => $node->position,
+    //                 'sponsor_id' => $node->sponsor?->member_number,
+    //                 'status' => $node->status,
+    //             ];
+    //         })
+    //         ->filter() // Remove any null entries if user relationship fails
+    //         ->toArray();
+
+    //     $buyer_ids = array_column($descendants, 'id');
+
+    //     $query = TopUp::whereIn('user_id', $buyer_ids)
+    //         ->where(function($query) {
+    //             $query->where('is_show_on_business', 1);
+    //         });
+
+    //     if ($this->start_date && $this->end_date) {
+    //         $query->whereDate('start_date', '>=', $this->start_date)
+    //             ->whereDate('start_date', '<=', $this->end_date);
+    //     }
+
+    //     $total_businesss = $query->orderBy('id', 'ASC')->get();
+
+    //     $business = [];
+    //     foreach ($total_businesss as $total_business) {
+    //         $matchingUser = array_filter($descendants, function ($user) use ($total_business) {
+    //             if ($user['id'] != $total_business->user_id) {
+    //                 return false;
+    //             }
+    //             return $this->position ? strtolower($user['position']) === strtolower($this->position) : true;
+    //         });
+            
+    //         if (!empty($matchingUser)) {
+    //             $business[] = array_merge(current($matchingUser), [
+    //                 'total_business' => $total_business,
+    //             ]);
+    //         }
+    //     }
+
+    //     foreach ($business as $item) {
+    //         $level = $item['level'];
+    //         if (!isset($this->groupedBusiness[$level])) {
+    //             $this->groupedBusiness[$level] = [];
+    //         }
+    //         $this->groupedBusiness[$level][] = $item;
+            
+    //         $this->total_amount += $item['total_business']->total_amount;
+    //         $this->total_user_count += 1;
+    //     }
+
+    //     ksort($this->groupedBusiness);
+
+    //     $this->title = 'Level Wise Business Report of ' . $rootNode->user?->name;
+    //     if ($this->start_date && $this->end_date) {
+    //         $this->title .= ' from ' . formated_date($this->start_date) . ' to ' . formated_date($this->end_date);
+    //     }
+    // }
+
     public function generateReport()
     {
-        $this->initialLoad = true;
         $this->resetReportData();
-        $this->loadLevels();
-    }
-
-    public function loadLevels()
-    {
-        if ($this->isLoading) return;
-
-        $this->isLoading = true;
 
         // Determine the root user
         if ($this->user_id) {
@@ -89,84 +162,64 @@ class LevelWiseBusinessReport extends Component
         }
 
         if (!$rootNode) {
-            $this->isLoading = false;
             return;
         }
 
-        // Build sponsor-level data only for levels we haven't loaded yet
+        // Build sponsor-level data
         $levels = [];
         $total_members = 0;
+        $maxLevels = 40; // or any limit you prefer
 
-        $this->buildSponsorLevelNodes($rootNode->id, $levels, 0, $this->loadedLevels - 1, $total_members);
+        $this->buildSponsorLevelNodes($rootNode->id, $levels, 0, $maxLevels, $total_members);
 
         // Flatten all levels into one array to collect all user IDs
         $allMembers = collect($levels)->flatten(1);
         $buyer_ids = $allMembers->pluck('user_id')->toArray();
 
-        if (!empty($buyer_ids)) {
-            // Query TopUps of all members
-            $query = TopUp::whereIn('user_id', $buyer_ids)
-                ->where('is_show_on_business', 1);
+        // Query TopUps of all members
+        $query = TopUp::whereIn('user_id', $buyer_ids)
+            ->where('is_show_on_business', 1);
 
-            if ($this->start_date && $this->end_date) {
-                $query->whereDate('start_date', '>=', $this->start_date)
-                    ->whereDate('start_date', '<=', $this->end_date);
-            }
+        if ($this->start_date && $this->end_date) {
+            $query->whereDate('start_date', '>=', $this->start_date)
+                ->whereDate('start_date', '<=', $this->end_date);
+        }
 
-            $total_businesss = $query->orderBy('id', 'ASC')->get();
+        $total_businesss = $query->orderBy('id', 'ASC')->get();
 
-            // Combine topup data into level-wise business report
-            foreach ($levels as $level => $members) {
-                foreach ($members as $member) {
-                    $topup = $total_businesss->firstWhere('user_id', $member['user_id']);
+        // Combine topup data into level-wise business report
+        $this->groupedBusiness = [];
 
-                    // Skip if not matching position filter
-                    if ($this->position && strtolower($member['position']) !== strtolower($this->position)) {
-                        continue;
-                    }
+        foreach ($levels as $level => $members) {
+            foreach ($members as $member) {
+                $topup = $total_businesss->firstWhere('user_id', $member['user_id']);
 
-                    if ($topup) {
-                        $member['total_business'] = $topup;
-                        $this->groupedBusiness[$level][] = $member;
-                        $this->total_amount += $topup->total_amount;
-                        $this->total_user_count += 1;
-                    }
+                // Skip if not matching position filter
+                if ($this->position && strtolower($member['position']) !== strtolower($this->position)) {
+                    continue;
+                }
+
+                if ($topup) {
+                    $member['total_business'] = $topup;
+                    $this->groupedBusiness[$level][] = $member;
+                    $this->total_amount += $topup->total_amount;
+                    $this->total_user_count += 1;
                 }
             }
         }
 
         ksort($this->groupedBusiness);
 
-        // Check if there are more levels to load
-        $this->hasMoreLevels = $this->loadedLevels < $this->maxLevels;
-
         // Set report title
         $this->title = 'Level Wise Business Report of ' . ($rootNode->user?->name ?? 'Unknown');
         if ($this->start_date && $this->end_date) {
             $this->title .= ' from ' . formated_date($this->start_date) . ' to ' . formated_date($this->end_date);
         }
-
-        $this->isLoading = false;
-    }
-
-    public function loadMore()
-    {
-        if ($this->hasMoreLevels && !$this->isLoading) {
-            $this->loadedLevels += $this->levelsPerLoad;
-            $this->loadLevels();
-        }
-    }
-
-    public function resetLevels()
-    {
-        $this->loadedLevels = 1;
-        $this->hasMoreLevels = true;
-        $this->generateReport();
     }
 
     protected function buildSponsorLevelNodes($leaderId, &$levels, $currentLevel, $maxLevels, &$total_members)
     {
-        if ($currentLevel > $maxLevels) return;
+        if ($currentLevel >= $maxLevels) return;
 
         // Get direct referrals
         $directMembers = BinaryTree::where('sponsor_id', $leaderId)
@@ -204,10 +257,8 @@ class LevelWiseBusinessReport extends Component
                 $total_members++;
             }
 
-            // Recurse into this member's direct referrals
-            if ($currentLevel < $maxLevels) {
-                $this->buildSponsorLevelNodes($memberNode->id, $levels, $currentLevel + 1, $maxLevels, $total_members);
-            }
+            // Recurse into this member’s direct referrals
+            $this->buildSponsorLevelNodes($memberNode->id, $levels, $currentLevel + 1, $maxLevels, $total_members);
         }
     }
 
@@ -216,18 +267,10 @@ class LevelWiseBusinessReport extends Component
         $this->groupedBusiness = [];
         $this->total_amount = 0;
         $this->total_user_count = 0;
-        $this->loadedLevels = 1;
-        $this->hasMoreLevels = true;
-        $this->isLoading = false;
     }
 
     public function exportPdf()
     {
-        // Load all levels for export
-        $originalLoadedLevels = $this->loadedLevels;
-        $this->loadedLevels = $this->maxLevels;
-        $this->loadLevels();
-        
         $data = [
             'groupedBusiness' => $this->groupedBusiness,
             'total_amount' => $this->total_amount,
@@ -239,10 +282,6 @@ class LevelWiseBusinessReport extends Component
 
         $pdf = Pdf::loadView('exports.report.level-wise-business-pdf', $data);
         
-        // Restore original loaded levels
-        $this->loadedLevels = $originalLoadedLevels;
-        $this->loadLevels();
-        
         return response()->streamDownload(
             fn () => print($pdf->output()),
             'level-wise-business-report-'.now()->format('Y-m-d').'.pdf'
@@ -251,21 +290,16 @@ class LevelWiseBusinessReport extends Component
 
     public function exportExcel()
     {
-        // Load all levels for export
-        $originalLoadedLevels = $this->loadedLevels;
-        $this->loadedLevels = $this->maxLevels;
-        $this->loadLevels();
-        
         $exportData = [];
         
         foreach ($this->groupedBusiness as $level => $users) {
             foreach ($users as $user) {
                 $exportData[] = [
-                    'Level' => $level + 1,
+                    'Level' => $level,
                     'User ID' => $user['user_id'] ?? '',
                     'Name' => $user['name'] ?? '',
                     'Phone' => $user['phone'] ?? '',
-                    'Registration Date' => $user['register_date'] ?? '',
+                    'Registration Date' => $user['reg_date'] ? $user['reg_date']->format('Y-m-d') : '',
                     'Position' => $user['position'] ?? '',
                     'Sponsor ID' => $user['sponsor_id'] ?? '',
                     'Status' => $user['status'] ?? '',
@@ -287,10 +321,6 @@ class LevelWiseBusinessReport extends Component
             'Amount' => $this->total_amount,
         ];
 
-        // Restore original loaded levels
-        $this->loadedLevels = $originalLoadedLevels;
-        $this->loadLevels();
-        
         return Excel::download(new LevelWiseBusinessExport($exportData, $this->title), 'level-wise-business-report-'.now()->format('Y-m-d').'.xlsx');
     }
 }

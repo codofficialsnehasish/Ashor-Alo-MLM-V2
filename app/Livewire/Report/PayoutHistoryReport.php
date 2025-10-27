@@ -151,7 +151,7 @@ class PayoutHistoryReport extends Component
         $this->checkPermission('Payout History Report');
         if ($this->showFullReport) {
             return view('livewire.report.payout-history-full-report', [
-                'title' => 'Direct Bonus Full Report - ' . $this->selectedUserName,
+                'title' => 'Payout History Full Report - ' . $this->selectedUserName,
                 'items' => $this->getFullDetailsQuery()->paginate($this->perPage),
                 'userName' => $this->selectedUserName,
                 'userId' => $this->selectedUserId

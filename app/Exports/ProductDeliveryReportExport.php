@@ -47,7 +47,7 @@ class ProductDeliveryReportExport implements FromCollection, WithHeadings, WithM
             format_datetime($item->created_at),
             $item->order_number,
             $item->user->name ?? 'N/A',
-            $item->user->member_number,
+            $item->user->member_number ?? 'N/A',
             $item->price_total,
             $item->category?->name ?? 'N/A',
             $item->payment_method,

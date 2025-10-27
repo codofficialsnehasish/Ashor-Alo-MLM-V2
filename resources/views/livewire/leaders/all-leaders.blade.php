@@ -32,9 +32,9 @@
                                 
                                 <div class="row mb-3">
                                     <div class="col-md-6 d-flex align-items-end">
-                                        <button wire:click="exportPDF" class="btn btn-danger me-2">
+                                        {{-- <button wire:click="exportPDF" class="btn btn-danger me-2">
                                             <i class="fas fa-file-pdf me-1"></i> PDF Export
-                                        </button>
+                                        </button> --}}
                                         <button wire:click="exportExcel" class="btn btn-success">
                                             <i class="fas fa-file-excel me-1"></i> Excel Export
                                         </button>

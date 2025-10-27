@@ -106,8 +106,11 @@ class AddOnReport extends Component
                       });
                 });
             })
-            ->whereNotNull('add_on_against_order_id')
+            // ->whereNotNull('add_on_against_order_id')
             ->where('is_dilse_plan',0)
+            ->where('is_provide_roi',1)
+            ->where('is_provide_level',0)
+            ->where('is_provide_direct',0)
             ->orderBy($this->sortField, $this->sortDirection)
             ->with('user'); // Assuming TopUp has a user relationship
     }

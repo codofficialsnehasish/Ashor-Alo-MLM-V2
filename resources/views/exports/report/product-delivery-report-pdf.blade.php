@@ -73,7 +73,7 @@
                 <tr>
                     <td>{{ format_datetime($item->created_at) }}</td>
                     <td>{{ $item->order_number }}</td>
-                    <td>{{ $item->user->name ?? 'N/A' }} ({{ $item->user->member_number }})</td>
+                    <td>{{ $item->user->name ?? 'N/A' }} ({{ $item->user->member_number ?? 'N/A' }})</td>
                     <td>{{ $item->price_total }}</td>
                     <td>{{ $item->category?->name ?? 'N/A' }}</td>
                     <td>{{ $item->payment_method }} ({{ $item->payment_status }})</td>

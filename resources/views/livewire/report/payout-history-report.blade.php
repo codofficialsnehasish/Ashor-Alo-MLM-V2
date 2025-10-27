@@ -38,15 +38,15 @@
                                         </div>
                                         <div class="col-md-3">
                                             <label for="searchs">Search User</label>
-                                            <input type="text" class="form-control" id="searchs" placeholder="Search by username or name" wire:model.live="search">
+                                            <input type="text" class="form-control" id="searchs" placeholder="Search by user id or name" wire:model.live="search">
                                         </div>
                                         <div class="col-md-5 d-flex align-items-end">
                                             <button wire:click="exportExcel" class="btn btn-success me-2">
                                                  Export Excel
                                             </button>
-                                            <button wire:click="exportPDF" class="btn btn-danger">
+                                            {{-- <button wire:click="exportPDF" class="btn btn-danger">
                                                  Export PDF
-                                            </button>
+                                            </button> --}}
                                         </div>
                                     </div>
                                 </form>

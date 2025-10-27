@@ -39,7 +39,7 @@ class SalesReportExport implements FromCollection, WithHeadings, WithMapping, Sh
     public function map($sale): array
     {
         return [
-            $sale->binaryNode->member_number,
+            $sale->user?->member_number,
             $sale->user->name ?? 'N/A',
             $sale->total_amount,
             $sale->order?->category?->name ?? 'N/A',

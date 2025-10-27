@@ -277,7 +277,7 @@
 
 
 
-                                <div class="d-flex justify-content-center">
+                                <div class="mt-3">
                                     {{ $all_products->links() }} <!-- Pagination links -->
                                 </div>
                             </div>

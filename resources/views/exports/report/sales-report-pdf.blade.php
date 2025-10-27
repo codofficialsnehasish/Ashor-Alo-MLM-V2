@@ -68,7 +68,7 @@
         <tbody>
             @foreach($items as $item)
                 <tr>
-                    <td>{{ $item->binaryNode->member_number }}</td>
+                    <td>{{ $item->user?->member_number }}</td>
                     <td>{{ $item->user->name ?? 'N/A' }}</td>
                     <td>{{ $item->total_amount }}</td>
                     <td>{{ $item->order?->category?->name ?? 'N/A' }}</td>

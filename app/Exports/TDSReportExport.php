@@ -36,7 +36,7 @@ class TDSReportExport implements FromCollection, WithHeadings, WithMapping, Shou
     {
         return [
             $item->user->name ?? 'N/A',
-            $item->user->member_number,
+            $item->user->member_number ?? '',
             $item->total_amount,
         ];
     }

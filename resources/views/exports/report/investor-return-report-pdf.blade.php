@@ -71,7 +71,7 @@
             @foreach($items as $item)
                 <tr>
                     <td>{{ $item->user->name ?? 'N/A' }}</td>
-                    <td>{{ $item->binaryNode->member_number }}</td>
+                    <td>{{ $item->binaryNode->member_number ?? '' }}</td>
                     <td>{{ $item->total_amount }}</td>
                     <td>{{ $item->total_installment_month }}</td>
                     <td>{{ $item->installment_amount_per_month }}</td>

@@ -42,7 +42,7 @@ class InvestorReturnReportExport implements FromCollection, WithHeadings, WithMa
     {
         return [
             $sale->user->name ?? 'N/A',
-            $sale->binaryNode->member_number,
+            $sale->binaryNode->member_number ?? '',
             $sale->total_amount,
             $sale->total_installment_month,
             $sale->installment_amount_per_month,

@@ -21,6 +21,7 @@ class PayoutSeeder extends Seeder
         'p8.php',
         'p9.php',
         'p10.php',
+        'p11.php',
     ];
     /**
      * Run the database seeds.

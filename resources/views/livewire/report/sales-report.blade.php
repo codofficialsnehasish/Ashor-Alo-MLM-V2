@@ -90,7 +90,7 @@
                                                     <td>{{ $item->order?->category?->name ?? 'N/A' }}</td>
                                                     <td>{{ $item->order?->payment_method }}</td>
                                                     <td>{{ $item->start_date }}</td>
-                                                    <td>{{ $item->order->placed_by ?? 'N/A' }}</td>
+                                                    <td>{{ $item->entry_by ?? 'N/A' }}</td>
                                                 </tr>
                                             @empty
                                                 <tr>

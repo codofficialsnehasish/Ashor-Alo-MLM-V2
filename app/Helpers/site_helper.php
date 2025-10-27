@@ -215,7 +215,7 @@
                 if ($lastPayout->id == $payout_id) {
                     return $lastPayout->paid_unpaid == 1 ? 'Paid' : 'Pending';
                 } else {
-                    return $payout->paid_unpaid == 1 ? 'Paid' : 'Forwarded to Next Payout';
+                    return $lastPayout->paid_unpaid == 1 ? 'Paid' : 'Forwarded to Next Payout';
                 }
             }
 

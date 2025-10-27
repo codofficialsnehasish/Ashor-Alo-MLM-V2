@@ -654,7 +654,8 @@ class BinaryTreeApiController extends Controller
     }*/
     
     
-    public function getTreeLevels(Request $request, $maxLevels = 40)
+    /* main code */
+    /*public function getTreeLevels(Request $request, $maxLevels = 40)
     {
         $rootUser = $request->user();
 
@@ -743,6 +744,114 @@ class BinaryTreeApiController extends Controller
 
             // Recurse into this member’s direct referrals
             $this->buildSponsorLevelNodes($memberNode->id, $levels, $currentLevel + 1, $maxLevels, $total_members);
+        }
+    }*/
+
+
+
+
+    /* optimal test code */
+    public function getTreeLevels(Request $request, $maxLevels = 40)
+    {
+        $rootUser = $request->user();
+
+        if (!$rootUser) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found'
+            ], 404);
+        }
+
+        $levels = [];         // Store level-wise data
+        $total_members = 0;   // Total downline count
+
+        $root = BinaryTree::where('user_id', $rootUser->id)
+            ->with(['user'])
+            ->first();
+
+        if (!$root) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tree not found'
+            ], 404);
+        }
+
+        // Get parameters for pagination
+        $startLevel = $request->get('start_level', 0); // Start from level (0-based)
+        $levelsCount = $request->get('levels_count', 2); // Number of levels to load
+        $endLevel = min($startLevel + $levelsCount - 1, $maxLevels - 1);
+
+        // Build only requested levels
+        $this->buildSponsorLevelNodes($root->id, $levels, $startLevel, $endLevel, $total_members);
+
+        // Format levels into array of objects (like old API)
+        $formattedLevels = [];
+        foreach ($levels as $level => $nodes) {
+            if ($level >= $startLevel && $level <= $endLevel) {
+                $formattedLevels[] = (object)[
+                    'level' => $level + 1, // Level numbers start at 1
+                    'nodes' => array_map(function ($node) {
+                        return (object)$node;
+                    }, $nodes)
+                ];
+            }
+        }
+
+        return response()->json([
+            'root' => $rootUser->id,
+            'levels' => $formattedLevels,
+            'pagination' => [
+                'start_level' => $startLevel + 1,
+                'end_level' => $endLevel + 1,
+                'levels_count' => $levelsCount,
+                'has_more' => ($endLevel + 1) < $maxLevels,
+                'next_start_level' => $endLevel + 1
+            ]
+        ]);
+    }
+
+    protected function buildSponsorLevelNodes($leaderId, &$levels, $currentLevel, $maxLevel, &$total_members)
+    {
+        if ($currentLevel > $maxLevel) return;
+
+        // Get direct referrals with pagination for large levels
+        $directMembers = BinaryTree::where('sponsor_id', $leaderId)
+            ->with(['user', 'sponsor'])
+            ->get();
+
+        if ($directMembers->isEmpty()) return;
+
+        foreach ($directMembers as $memberNode) {
+            $user = $memberNode->user;
+
+            if ($user) {
+                $formattedNode = [
+                    'user_id'         => $user->id,
+                    'member_number'   => $memberNode->member_number,
+                    'status'          => $memberNode->status,
+                    'position'        => $memberNode->position,
+                    'sponsor_id'      => $memberNode->sponsor?->member_number,
+                    'register_date'   => formated_date($user->created_at),
+                    'total_business'  => TopUp::where('user_id',$user->id)->where('is_show_on_business',1)->sum('total_amount'),
+                    'user' => (object)[
+                        'id'               => $user->id,
+                        'name'             => $user->name,
+                        'profile_image'    => $user->getFirstMediaUrl('profile-image'),
+                        'register_left'    => $user->leftUsers()->count(),
+                        'register_right'   => $user->rightUsers()->count(),
+                        'activated_left'   => $user->leftUsers()->where('status', 1)->count(),
+                        'activated_right'  => $user->rightUsers()->where('status', 1)->count(),
+                    ]
+                ];
+
+                $levels[$currentLevel][] = $formattedNode;
+                $total_members++;
+            }
+
+            // Recurse into this member's direct referrals for next levels
+            if ($currentLevel < $maxLevel) {
+                $this->buildSponsorLevelNodes($memberNode->id, $levels, $currentLevel + 1, $maxLevel, $total_members);
+            }
         }
     }
 }
