@@ -97,15 +97,16 @@ class MigrateUsersFromArraySeeder extends Seeder
 
                         try {
                             // Step 2: Use Guzzle as a fallback if addMediaFromUrl fails
-                            try {
-                                // First attempt: Standard Spatie Media Library method
-                                $media = $newUser->addMediaFromUrl($fullUrl)
-                                    ->withOptions(['verify' => false])  // Disable SSL verification if needed (dev only)
-                                    ->toMediaCollection('profile-image');
+                            // try {
+                            //     // First attempt: Standard Spatie Media Library method
+                            //     $media = $newUser->addMediaFromUrl($fullUrl)
+                            //         ->withOptions(['verify' => false])  // Disable SSL verification if needed (dev only)
+                            //         ->toMediaCollection('profile-image');
                                 
-                                $this->command->info("Successfully added media from URL: {$fullUrl}");
-                            } catch (\Exception $e) {
-                                $this->command->warn("Standard method failed. Trying Guzzle fallback...");
+                            //     $this->command->info("Successfully added media from URL: {$fullUrl}");
+                            // } catch (\Exception $e) {
+                                // $this->command->warn("Standard method failed. Trying Guzzle fallback...");
+                                $this->command->warn("Getting User Profile Image...");
                                 
                                 // Fallback: Manually fetch with Guzzle
                                 $client = new \GuzzleHttp\Client();
@@ -119,7 +120,7 @@ class MigrateUsersFromArraySeeder extends Seeder
                                 
                                 $media = $newUser->addMedia($tempFile)->toMediaCollection('profile-image');
                                 $this->command->info("Successfully added media via Guzzle fallback!");
-                            }
+                            // }
                         } catch (\Exception $e) {
                             $this->command->error("ALL METHODS FAILED for URL {$fullUrl}: " . $e->getMessage());
                         }

@@ -199,6 +199,10 @@ class PayoutJob implements ShouldQueue
                     $product_return_deduction = ($product_return * $mlm_settings->tds) / 100;
                     $total_product_return = $product_return - $product_return_deduction;
 
+                    // repurchase deduction from investment
+                    $product_return_repurchase_deduction =  ($total_product_return * $mlm_settings->repurchase ) / 100;
+                    $total_product_return = $product_return - $product_return_repurchase_deduction;
+
                     $dilse_return_deduction = ($dilse_return * $mlm_settings->tds) / 100;
                     $total_dilse_return = $dilse_return - $dilse_return_deduction;
         
@@ -315,7 +319,7 @@ class PayoutJob implements ShouldQueue
                         }
                     }
 
-                    if($payout->total_payout < 200){
+                    if($payout->total_payout < 500){
                         $payout->hold_wallet = $payout->total_payout;
                         $payout->total_payout = 0.00;
                     }

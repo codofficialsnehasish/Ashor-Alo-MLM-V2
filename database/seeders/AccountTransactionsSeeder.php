@@ -58,6 +58,12 @@ class AccountTransactionsSeeder extends Seeder
         't45.php',
         't46.php',
         't47.php',
+        't48.php',
+        't49.php',
+        't50.php',
+        't51.php',
+        't52.php',
+        't53.php',
     ];
     /**
      * Run the database seeds.

@@ -31,6 +31,8 @@ class DatabaseSeeder extends Seeder
             MigrateKycDataSeeder::class,
             AccountTransactionsSeeder::class,
             PayoutSeeder::class,
+            OrderSeeder::class,
+            OrderProductsSeeder::class,
             TopUpSeeder::class,
         ]);
 
