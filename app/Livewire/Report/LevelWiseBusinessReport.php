@@ -26,6 +26,9 @@ class LevelWiseBusinessReport extends Component
     public $total_amount = 0;
     public $total_user_count = 0;
     public $title = 'Level Wise Business Report';
+
+    public $search = '';
+    public $searchResults = [];
     
     // Infinite scroll properties
     public $loadedLevels = 1; // Number of levels to load initially
@@ -61,6 +64,41 @@ class LevelWiseBusinessReport extends Component
             $this->loadLevels();
         }
     }
+
+    public function updatedSearch($value)
+    {
+        if (strlen($value) < 2) {
+            $this->searchResults = [];
+            return;
+        }
+
+        $this->searchResults = BinaryTree::with('user')
+            ->whereHas('user', function($query) use ($value) {
+                $query->where('name', 'like', '%'.$value.'%')
+                      ->orWhere('email', 'like', '%'.$value.'%')
+                      ->orWhere('member_number', 'like', '%'.$value.'%');
+            })
+            ->limit(10)
+            ->get()
+            ->map(function($tree) {
+                return [
+                    'id' => $tree->user_id,
+                    'name' => $tree->user->name,
+                    'member_number' => $tree->user->member_number,
+                    'email' => $tree->user->email
+                ];
+            });
+    }
+
+    public function selectUser($userId)
+    {
+        $this->user_id = $userId;
+        $selectedUser = User::find($userId);
+        $this->search = $selectedUser ? "{$selectedUser->name} ({$selectedUser->member_number})" : '';
+        $this->searchResults = [];
+        $this->generateReport();
+    }
+
 
     public function render()
     {

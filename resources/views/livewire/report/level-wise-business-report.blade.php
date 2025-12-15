@@ -38,7 +38,7 @@
                                                     <label for="endDate">End Date</label>
                                                     <input type="date" class="form-control" id="endDate" wire:model.live="end_date">
                                                 </div>
-                                                <div class="mb-0 col-md-4">
+                                                {{-- <div class="mb-0 col-md-4">
                                                     <label class="form-label">Choose Agents</label>
                                                     <select class="form-control select2" wire:model="user_id">
                                                         <option selected disabled value="">Select...</option>
@@ -46,6 +46,39 @@
                                                         <option value="{{ $user->id }}">{{ $user->name }} ( {{ $user->member_number ?? 'N/A' }} )</option>
                                                         @endforeach
                                                     </select>
+                                                </div> --}}
+                                                <div class="mb-0 col-md-4">
+                                                    <label for="search-report">Search User</label>
+                                                    <div class="search-container">
+                                                        <input type="text" class="form-control" id="search-report" 
+                                                            placeholder="Search by name or member number..." 
+                                                            wire:model.live="search"
+                                                            wire:keydown.escape="searchResults = []"
+                                                            autocomplete="off">
+                                                        
+                                                        @if(count($searchResults) > 0)
+                                                            <div class="search-results dropdown-menu show" style="display: block; width: 31%;">
+                                                                @foreach($searchResults as $result)
+                                                                    <a href="javascript:void(0)" 
+                                                                       class="dropdown-item" 
+                                                                       style="white-space: normal; 
+                                                                              word-wrap: break-word;
+                                                                              padding: 8px 12px;
+                                                                              display: block;"
+                                                                        wire:click="selectUser({{ $result['id'] }})">
+                                                                        <div style="display: flex; justify-content: space-between;">
+                                                                            <span style="flex: 1; min-width: 0; margin-right: 8px;">
+                                                                                {{ $result['name'] }}
+                                                                            </span>
+                                                                            <span style="color: #6c757d;">
+                                                                                ({{ $result['member_number'] }})
+                                                                            </span>
+                                                                        </div>
+                                                                    </a>
+                                                                @endforeach
+                                                            </div>
+                                                        @endif
+                                                    </div>
                                                 </div>
                                                 <div class="mb-0 col-md-2">
                                                     <label class="form-label">Choose Position</label>
@@ -123,7 +156,7 @@
                                                     @endphp
                                                     <tr>
                                                         <td class="text-wrap">{{ $loop->iteration }}</td>
-                                                        <td class="text-wrap">{{ $item['name'] }} ({{ $item['user_id'] }}) </td>
+                                                        <td class="text-wrap">{{ $item['name'] }} ({{ $item['member_number'] }}) </td>
                                                         <td class="text-wrap">{{ $item['position'] }}</td>
                                                         <td class="text-wrap">{{ $item['phone'] }}</td>
                                                         <td class="text-wrap">{{ $item['sponsor_id'] }}</td>

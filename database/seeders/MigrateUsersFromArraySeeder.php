@@ -207,7 +207,8 @@ class MigrateUsersFromArraySeeder extends Seeder
                             'position' => $this->determinePosition($oldUser),
                             'status' => $oldUser['status'],
                             'activated_at' => $oldUser['join_amount_put_date'] ?? null,
-                            'join_by' => null,
+                            'joining_amount' => $oldUser['joining_amount'] ?? 0.00,
+                            'join_by' => $oldUser['join_by'] ?? null,
                             'created_at' => $oldUser['created_at'] ?? now(),
                             'updated_at' => $oldUser['updated_at'] ?? now(),
                         ]);

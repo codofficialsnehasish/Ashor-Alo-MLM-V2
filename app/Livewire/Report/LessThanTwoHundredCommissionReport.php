@@ -14,7 +14,7 @@ class LessThanTwoHundredCommissionReport extends Component
 {
     use WithPagination;
 
-    public $title = 'Commission Report of < 200';
+    public $title = 'Commission Report of < 500';
     public $startDate;
     public $endDate;
     public $status;

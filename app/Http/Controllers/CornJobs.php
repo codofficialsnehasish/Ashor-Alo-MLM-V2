@@ -90,7 +90,8 @@ class CornJobs extends Controller
         }
     }  
     
-    public function payout() {
+    /* vertion 1.0 */
+    /*public function payout() {
         $last_payout_date = Payout::latest('end_date')->first()?->end_date;
         $lastSaturday = Carbon::parse($last_payout_date ?? now())->addDay();
         $current_day = Carbon::now();
@@ -101,6 +102,51 @@ class CornJobs extends Controller
         foreach ($chunks as $chunk) {
             PayoutJob::dispatch($chunk, $lastSaturday, $current_day);
         }
+    }*/
+
+    public function payout()
+    {
+        $today = Carbon::now();
+        $day = $today->day;
+        $lastDay = $today->copy()->endOfMonth()->day;
+
+        // Allow only on 15th or last day of month
+        // if (!in_array($day, [15, $lastDay])) {
+        if (!in_array($day, [15, $lastDay])) {
+            return "Allow only on 15th or last day of month";
+        }
+
+        // Determine activation date range
+        if ($day == 15) {
+            // 1st to 15th
+            $start = $today->copy()->startOfMonth()->format('Y-m-d');
+            $end   = $today->copy()->startOfMonth()->addDays(14)->format('Y-m-d'); // 15th
+            $payout_type = 'mid';
+        } else {
+            // 16th to last day of month
+            $start = $today->copy()->startOfMonth()->addDays(15)->format('Y-m-d'); // 16th
+            $end   = $today->copy()->endOfMonth()->format('Y-m-d');               // 28/29/30/31
+            $payout_type = 'last';
+        }
+
+
+        // Fetch eligible users from BinaryTree OR Users table
+        // Assuming BinaryTree has activation_date column
+
+        $user_ids = BinaryTree::with('user')->where('status', 1)
+            // ->whereBetween(DB::raw('DAY(activated_at)'), [$start, $end])
+            ->where('payout_type', $payout_type)
+            // ->get();
+            ->pluck('user_id');
+
+
+        $chunks = $user_ids->chunk(5);
+
+
+        foreach ($chunks as $chunk) {
+            PayoutJob::dispatch($chunk, $start, $end);
+        }
     }
+
 
 }

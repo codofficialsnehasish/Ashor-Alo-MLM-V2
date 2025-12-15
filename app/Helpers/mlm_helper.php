@@ -7,6 +7,8 @@
     use App\Models\User;
     use App\Models\OrderProducts;
     use App\Models\TopUp;
+    use App\Models\Payout;
+    use App\Models\BinaryTree;
     use App\Models\MLMSettings;
     use App\Models\AccountTransaction;
     use App\Models\RemunerationBenefit;
@@ -261,3 +263,42 @@
         }
     }
 
+    
+    if(!function_exists('calculatePayoutDate')){
+        function calculatePayoutDate($user_id)
+        {
+            $activationDate = null;
+            // Case 1: Existing payout history
+            $lastPayout = Payout::where('user_id', $user_id)
+                                ->where('paid_unpaid', '1')
+                                ->latest('end_date')
+                                ->first();
+
+            if ($lastPayout) {
+                $activationDate = Carbon::parse($lastPayout->end_date);
+                $day = $activationDate->day;
+
+                if ($day >= 1 && $day <= 15) {
+                    return 'mid';
+                }else{
+                    return 'last';
+                }
+            }
+
+            $binary_tree = BinaryTree::where('user_id',$user_id)->first();
+
+            // Case 2: No payout history → use activation date rules
+            if (!$binary_tree->activated_at) {
+                return null; // no activation = no payout date
+            }
+
+            $activationDate = Carbon::parse($binary_tree->activated_at);
+            $day = $activationDate->day;
+
+            if ($day >= 1 && $day <= 15) {
+                return 'mid';
+            }else{
+                return 'last';
+            }
+        }
+    }

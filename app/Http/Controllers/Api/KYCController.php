@@ -74,9 +74,9 @@ class KYCController extends Controller
         $user = $request->user();
 
         $validator = Validator::make($request->all(), [
-            'identy_proof_type' => 'required|string',
-            'address_proof_type' => 'required|string',
-            'bank_proof_type'    => 'required|string',
+            'identy_proof_type' => 'nullable|string',
+            'address_proof_type' => 'nullable|string',
+            'bank_proof_type'    => 'nullable|string',
 
             'identityFile'   => 'nullable|string',
             'addressFile'    => 'nullable|string',

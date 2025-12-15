@@ -22,7 +22,11 @@ class BinaryTree extends Model
         'left_user_id', 
         'right_user_id',
         'status',
+        'joining_amount',
+        'join_by',
+        'joining_order_id',
         'activated_at',
+        'payout_type',
     ];
 
     public function getActivitylogOptions(): LogOptions

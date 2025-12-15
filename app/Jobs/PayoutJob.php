@@ -21,9 +21,10 @@ use App\Models\RepurchaseAccount;
 use App\Models\Account;
 use App\Models\MlmSetting;
 use App\Models\Payout;
-use App\Models\RemunerationBenefit;
+use App\Models\RemunerationBenefitMaster;
 use App\Models\SalaryBonus;
 use App\Models\Advance;
+use App\Models\BinaryTree;
 
 use Carbon\Carbon;
 
@@ -52,9 +53,22 @@ class PayoutJob implements ShouldQueue
     public function handle(): void
     {
         foreach($this->transactions as $user_id){
+            // check if the payout already paid or not on current day
             if(!Payout::where('user_id',$user_id)->whereDate('end_date',$this->current_day)->exists()){
+
+                // get mlm settings data for percentage of service_charge, repurchase, tds
                 $mlm_settings = MlmSetting::first();
                 $total_deduction = $mlm_settings->tds + $mlm_settings->repurchase;
+
+                $binary_tree = BinaryTree::where('user_id',$user_id)->first();
+
+                // getting the date of last calculation
+                $last_payout = Payout::where('user_id',$user_id)->latest('end_date')->first();
+                if($last_payout){
+                    $last_payout_date = Carbon::parse($last_payout->end_date)->addDay();
+                }else{
+                    $last_payout_date = $binary_tree->activated_at->format('Y-m-d');
+                }
 
                 $user = User::find($user_id);
                 if($user){
@@ -65,13 +79,14 @@ class PayoutJob implements ShouldQueue
                     $remuneration_salary = 0;
 
                     // Remuneration Benefits or Salary Income
-                    if ($this->current_day->day <= 15) {
-                        $total_left_business = calculate_left_business($user_id);
-                        $total_right_business = calculate_right_business($user_id);
+                    // if ($this->current_day->day <= 15) {
 
-                        $achieved_target = RemunerationBenefit::where('target', '<=', $total_left_business)
-                                            ->where('target', '<=', $total_right_business)
-                                            ->orderBy('target', 'DESC')
+                        $total_left_business = $binary_tree->calculateLeftBusiness();
+                        $total_right_business = $binary_tree->calculateRightBusiness();
+
+                        $achieved_target = RemunerationBenefitMaster::where('matching_target', '<=', $total_left_business)
+                                            ->where('matching_target', '<=', $total_right_business)
+                                            ->orderBy('matching_target', 'DESC')
                                             ->first();
 
                         if($achieved_target){
@@ -124,7 +139,7 @@ class PayoutJob implements ShouldQueue
                                 ]);
                             }
                         }
-                    }
+                    // }
     
 
                     $total_paid_payout = Payout::where('user_id',$user_id)->where('paid_unpaid','1')->sum('total_payout');
@@ -132,69 +147,28 @@ class PayoutJob implements ShouldQueue
                     $total_payout_roi = Payout::where('user_id',$user_id)->sum('roi');
                     $total_payout_roi_tds = Payout::where('user_id',$user_id)->sum('roi_tds_deduction');
 
-                    $lastPayout = Payout::where('user_id', $user_id)->latest()->first();
+                    // $lastPayout = Payout::where('user_id', $user_id)->latest()->first();
 
-                    $previous_unpaid_amount = $lastPayout ? ($lastPayout->paid_unpaid == '0' ? $lastPayout->total_payout : 0.00) : 0.00;
-
+                    // $previous_unpaid_amount = $lastPayout ? ($lastPayout->paid_unpaid == '0' ? $lastPayout->total_payout : 0.00) : 0.00;
+                    
+                    $previous_unpaid_amount = 0;
                     $total_payout = $total_paid_payout + $previous_unpaid_amount;
                     $total_payout -= ($total_payout_roi - $total_payout_roi_tds);
-
-                    // for roi in every 1 month 
-                    // $last_roi_paid_date = Payout::where('roi', '!=', 0)->latest('id')->first()?->end_date;
-                    // if($last_roi_paid_date){
-                    //     $roi_start_date = Carbon::parse($last_roi_paid_date)->addDay();
-                    // }   
         
                     $product_return = AccountTransaction::where(function ($query) {
-                                                                $query->where('which_for', 'ROI Daily');
-                                                                    // ->orWhere('which_for', 'ROI Dailys');
+                                                                $query->where('which_for', 'ROI Daily')
+                                                                    ->orWhere('which_for', 'ROI Dailys');
                                                             })
-                                                            // ->whereBetween(DB::raw('DATE(created_at)'), [format_date_for_db($this->lastSaturday), format_date_for_db($this->current_day)])
+                                                            ->whereBetween(DB::raw('DATE(created_at)'), [$last_payout_date, $this->current_day])
                                                             ->where('user_id',$user_id)
-                                                            ->where('status',0)
-                                                            // ->sum('amount');
-                                                            ->selectRaw('IF(COUNT(*) >= 30, SUM(amount), 0) as conditional_sum')
-                                                            ->value('conditional_sum') ?? 0;
-                    if ($product_return > 0) {
-                        AccountTransaction::where('which_for', 'ROI Daily')
-                                        ->where('user_id', $user_id)
-                                        ->where('status', 0)
-                                        ->update(['status' => 1]);
-                    }
-
-                    $addon_return = AccountTransaction::where(function ($query) {
-                                                                $query->Where('which_for', 'ROI Dailys');
-                                                            })
-                                                            // ->whereBetween(DB::raw('DATE(created_at)'), [format_date_for_db($this->lastSaturday), format_date_for_db($this->current_day)])
-                                                            ->where('user_id',$user_id)
-                                                            ->where('status',0)
-                                                            // ->sum('amount');
-                                                            ->selectRaw('IF(COUNT(*) >= 30, SUM(amount), 0) as conditional_sum')
-                                                            ->value('conditional_sum') ?? 0;
-                    if ($addon_return > 0) {
-                        AccountTransaction::where('which_for', 'ROI Dailys')
-                                        ->where('user_id', $user_id)
-                                        ->where('status', 0)
-                                        ->update(['status' => 1]);
-                    }
-
-                    $product_return += $addon_return;
+                                                            ->sum('amount');
 
                     $dilse_return = AccountTransaction::where(function ($query) {
                                                                 $query->where('which_for', 'DILSE Daily');
                                                             })
-                                                            // ->whereBetween(DB::raw('DATE(created_at)'), [format_date_for_db($this->lastSaturday), format_date_for_db($this->current_day)])
+                                                            ->whereBetween(DB::raw('DATE(created_at)'), [$last_payout_date, $this->current_day])
                                                             ->where('user_id',$user_id)
-                                                            ->where('status',0)
-                                                            // ->sum('amount');
-                                                            ->selectRaw('IF(COUNT(*) >= 30, SUM(amount), 0) as conditional_sum')
-                                                            ->value('conditional_sum') ?? 0;
-                    if ($dilse_return > 0) {
-                        AccountTransaction::where('which_for', 'DILSE Daily')
-                                        ->where('user_id', $user_id)
-                                        ->where('status', 0)
-                                        ->update(['status' => 1]);
-                    }
+                                                            ->sum('amount');
 
                     $product_return_deduction = ($product_return * $mlm_settings->tds) / 100;
                     $total_product_return = $product_return - $product_return_deduction;
@@ -207,13 +181,13 @@ class PayoutJob implements ShouldQueue
                     $total_dilse_return = $dilse_return - $dilse_return_deduction;
         
                     $direct_bonus = AccountTransaction::whereIn('which_for', ['Direct Bonus', 'Direct Bonus on Hold'])
-                                                        ->whereBetween(DB::raw('DATE(created_at)'), [format_date_for_db($this->lastSaturday), format_date_for_db($this->current_day)])
+                                                        ->whereBetween(DB::raw('DATE(created_at)'), [$last_payout_date, $this->current_day])
                                                         ->where('user_id', $user_id)
                                                         ->sum('amount');
         
                     
                     $lavel_bonus = AccountTransaction::whereIn('which_for', ['Level Bonus','Level Bonus on Hold'])
-                                                        ->whereBetween(DB::raw('DATE(created_at)'), [format_date_for_db($this->lastSaturday), format_date_for_db($this->current_day)])
+                                                        ->whereBetween(DB::raw('DATE(created_at)'), [$last_payout_date, $this->current_day])
                                                         ->where('user_id', $user_id)
                                                         ->sum('amount');
                     

@@ -19,12 +19,10 @@ use App\Models\TDSAccount;
 use App\Models\ServiceChargeAccount;
 use App\Models\RepurchaseAccount;
 use App\Models\Account;
-use App\Models\MlmSetting;
-use App\Models\BinaryTree;
+use App\Models\MLMSettings;
 use App\Models\Payout;
-use App\Models\RemunerationBenefitMaster;
+use App\Models\RemunerationBenefit;
 use App\Models\SalaryBonus;
-use App\Models\Advance;
 
 use Carbon\Carbon;
 
@@ -57,7 +55,7 @@ class GeneratePayoutJob implements ShouldQueue
         foreach($this->transactions as $user_id){
             if(!Payout::where('user_id',$user_id)->whereDate('end_date',$this->current_day)->exists()){
                 // Log::info("user_id ".$user_id.", end_date ".$this->current_day);
-                $mlm_settings = MlmSetting::first();
+                $mlm_settings = MLMSettings::first();
                 $total_deduction = $mlm_settings->tds + $mlm_settings->repurchase;
 
                 $user = User::find($user_id);
@@ -67,18 +65,59 @@ class GeneratePayoutJob implements ShouldQueue
                     $limit = $total_top_up_amount * 10;
 
 
+                    //Personal Income DilSe Plan
+
+                    // $dillse_personal_income = 0;
+                    // $dilse_service_charge_deduction = 0;
+
+                    /*$personal_incomes = TopUp::where('user_id',$user_id)->where('is_personal_business',1)->where('is_completed',0)->get();
+                    if($personal_incomes->isNotEmpty()){
+                        foreach($personal_incomes as $p_income){
+                            $date = $p_income->start_date;
+
+                            // $day = Carbon::parse($date)->format('d');
+                            $day = Carbon::parse($date)->day;
+                            $from = Carbon::parse($this->lastSaturday)->day;
+                            $to = Carbon::parse($this->current_day)->day;
+                            // Handle month wraparound (e.g., 29 → 1)
+
+                            if ($from > $to) {
+                                // Check if $day >= $from (e.g., 29,30,31) OR $day <= $to (e.g., 1,2,...)
+                                $isInRange = ($day >= $from) || ($day <= $to);
+                            } else {
+                                // Normal case (e.g., 1 → 7)
+                                $isInRange = ($day >= $from) && ($day <= $to);
+                            }
+                        
+                            if ($isInRange) {
+                                $dillse_personal_income = $p_income->installment_amount_per_month;
+                                $p_income->month_count += 1;
+                                $p_income->total_disbursed_amount += $dillse_personal_income;
+                                $p_income->update();
+                        
+                                $dilse_service_charge_deduction = ($dillse_personal_income * 5) / 100;
+                                // $dillse_personal_income -= $dilse_service_charge_deduction;
+                            }
+                        }
+                    }*/
+
+                    //end of personal income
+
+
+
                     $remuneration_salary = 0;
 
                     // Remuneration Benefits or Salary Income
                     // if ($this->current_day->day <= 7) {
                     if ($this->current_day->day <= 15) {
-                        $rootNode = BinaryTree::where('user_id',$user_id)->first();
-                        $total_left_business = $rootNode->calculateLeftBusiness();
-                        $total_right_business = $rootNode->calculateRightBusiness();
+                        $total_left_business = calculate_left_business($user_id);
+                        $total_right_business = calculate_right_business($user_id);
 
-                        $achieved_target = RemunerationBenefitMaster::where('matching_target', '<=', $total_left_business)
-                                            ->where('matching_target', '<=', $total_right_business)
-                                            ->orderBy('matching_target', 'DESC')
+                        $achieved_target = RemunerationBenefit::where('target', '<=', $total_left_business)
+                                            ->where('target', '<=', $total_right_business)
+                                            ->where('visiblity',1)
+                                            ->where('is_deleted',0)
+                                            ->orderBy('target', 'DESC')
                                             ->first();
 
                         if($achieved_target){
@@ -90,12 +129,12 @@ class GeneratePayoutJob implements ShouldQueue
                                     $remuneration_salary = $achieved_target->bonus;
                                     $salary->update();
 
-                                    $transaction = AccountTransaction::create([
-                                        'user_id' => $user_id,
-                                        'amount' => $achieved_target->bonus,
-                                        'which_for' => 'Salary Bonus',
-                                        'status' => 1,
-                                    ]);
+                                    $transaction->make_transaction(
+                                        $user_id,
+                                        $achieved_target->bonus,
+                                        'Salary Bonus',
+                                        1
+                                    );
                                 }else{
                                     if($achieved_target->id != $salary->remuneration_benefit_id){
                                         $salary->remuneration_benefit_id = $achieved_target->id;
@@ -104,13 +143,13 @@ class GeneratePayoutJob implements ShouldQueue
                                         $salary->amount = $achieved_target->bonus;
                                         $remuneration_salary = $achieved_target->bonus;
                                         $salary->update();
-
-                                        $transaction = AccountTransaction::create([
-                                            'user_id' => $user_id,
-                                            'amount' => $achieved_target->bonus,
-                                            'which_for' => 'Salary Bonus',
-                                            'status' => 1,
-                                        ]);
+    
+                                        $transaction->make_transaction(
+                                            $user_id,
+                                            $achieved_target->bonus,
+                                            'Salary Bonus',
+                                            1
+                                        );
                                     }
                                 }
                             }else{
@@ -123,12 +162,12 @@ class GeneratePayoutJob implements ShouldQueue
                                 $salary->save();
                                 $remuneration_salary = $achieved_target->bonus;
 
-                                $transaction = AccountTransaction::create([
-                                    'user_id' => $user_id,
-                                    'amount' => $achieved_target->bonus,
-                                    'which_for' => 'Salary Bonus',
-                                    'status' => 1,
-                                ]);
+                                $transaction->make_transaction(
+                                    $user_id,
+                                    $achieved_target->bonus,
+                                    'Salary Bonus',
+                                    1
+                                );
                             }
                         }
                     }
@@ -165,6 +204,10 @@ class GeneratePayoutJob implements ShouldQueue
 
                     $product_return_deduction = ($product_return * $mlm_settings->tds) / 100;
                     $total_product_return = $product_return - $product_return_deduction;
+
+                    // repurchase deduction from investment
+                    $product_return_repurchase_deduction =  ($total_product_return * $mlm_settings->repurchase ) / 100;
+                    $total_product_return = $total_product_return - $product_return_repurchase_deduction;
 
                     $dilse_return_deduction = ($dilse_return * $mlm_settings->tds) / 100;
                     $total_dilse_return = $dilse_return - $dilse_return_deduction;
@@ -217,7 +260,7 @@ class GeneratePayoutJob implements ShouldQueue
                         // then pay the hold amount
                         // $payout->hold_amount_added = $user->hold_balance;
                         $payout->hold_amount_added = $last_hold_amount; 
-                        // $user->hold_balance = 0;
+                        $user->hold_balance = 0;
                     }else{
                         // after limit hold
                         // $payout->hold_amount = abs($limit - ($current_payout + $total_payout));
@@ -226,10 +269,10 @@ class GeneratePayoutJob implements ShouldQueue
                         if($limit <= $total_payout){
                             // $payout->hold_amount = $user->hold_balance + $final_commission;
                             $payout->hold_amount = $last_hold_amount + $final_commission;
-                            // $user->hold_balance += $final_commission;
+                            $user->hold_balance += $final_commission;
                         }else{
                             $payout->hold_amount = abs($limit - ($current_payout + $total_payout));
-                            // $user->hold_balance = $payout->hold_amount;
+                            $user->hold_balance = $payout->hold_amount;
                         }
                     }
 
@@ -245,6 +288,7 @@ class GeneratePayoutJob implements ShouldQueue
 
                     $payout->roi = $product_return;
                     $payout->roi_tds_deduction = $product_return_deduction;
+                    $payout->roi_repurchase_deduction = $product_return_repurchase_deduction;
 
                     $payout->previous_unpaid_amount = $previous_unpaid_amount;
 
@@ -264,17 +308,17 @@ class GeneratePayoutJob implements ShouldQueue
                     $payout->total_payout += $total_dilse_return;
                     // Log::info('User is: ' . $payout->user_id. ' after add dilse Total payout '.$payout->total_payout);
 
-                    if($payout->total_payout < 200){
-                        $payout->hold_wallet = $payout->total_payout;
+                    if($payout->total_payout < 500){
+                        $user->hold_wallet = $payout->hold_wallet = $payout->total_payout;
                         $payout->total_payout = 0.00;
                     }else{
                         // $payout->hold_wallet_added = $user->hold_wallet;
-                        // $user->hold_wallet = 0.00;
+                        $user->hold_wallet = 0.00;
                     }
 
                     $payout->save();
 
-                    // $user->repurchase_wallet = $payout->direct_bonus_repurchase_deduction + $payout->lavel_bonus_repurchase_deduction + $payout->remuneration_bonus_repurchase_deduction;
+                    $user->repurchase_wallet = $payout->direct_bonus_repurchase_deduction + $payout->lavel_bonus_repurchase_deduction + $payout->remuneration_bonus_repurchase_deduction;
 
                     $user->update();
 
@@ -296,6 +340,14 @@ class GeneratePayoutJob implements ShouldQueue
                         'which_for'=>'Deducting from Payout',
                         'status'=>1
                     ]);
+
+                    RepurchaseAccount::create([
+                        'user_id'=>$user->id,
+                        'amount'=>$payout->roi_repurchase_deduction,
+                        'which_for'=>'Roi Repurchase',
+                        'status'=>1
+                    ]);
+
                     ServiceChargeAccount::create([
                         'user_id'=>$user->id,
                         'amount'=>$payout->roi_tds_deduction + $payout->dilse_service_charge_deduction,

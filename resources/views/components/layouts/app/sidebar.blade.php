@@ -179,7 +179,7 @@
                                 <li><a wire:navigate href="{{ route('report.paid-unpaid-payment-report') }}">Paid/Unpaid Payments</a></li>
                                 @endcan
                                 @can('Commission < 200 Report')
-                                <li><a wire:navigate href="{{ route('report.less-than-two-hundred-commission-report') }}">Commission < 200</a></li>
+                                <li><a wire:navigate href="{{ route('report.less-than-two-hundred-commission-report') }}">Commission < 500</a></li>
                                 @endcan
                             </ul>
                         </li>
