@@ -60,6 +60,7 @@ class Payout extends Model
         'hold_wallet' => 'decimal:2',
         'previous_unpaid_amount' => 'decimal:2',
         'total_payout' => 'decimal:2',
+        'payable_account' => 'array',
     ];
 
     /**

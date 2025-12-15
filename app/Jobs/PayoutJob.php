@@ -64,10 +64,10 @@ class PayoutJob implements ShouldQueue
 
                 // getting the date of last calculation
                 $last_payout = Payout::where('user_id',$user_id)->latest('end_date')->first();
-                if($last_payout){
+                if ($last_payout) {
                     $last_payout_date = Carbon::parse($last_payout->end_date)->addDay();
-                }else{
-                    $last_payout_date = $binary_tree->activated_at->format('Y-m-d');
+                } else {
+                    $last_payout_date = Carbon::parse($binary_tree->activated_at)->format('Y-m-d');
                 }
 
                 $user = User::find($user_id);
@@ -297,6 +297,24 @@ class PayoutJob implements ShouldQueue
                         $payout->hold_wallet = $payout->total_payout;
                         $payout->total_payout = 0.00;
                     }
+
+                    if (optional($user->kyc)->status == 1 && $payout->total_payout > 500) {
+                        $payout->is_payoutable = 1;
+
+                        $payout->payable_account = [
+                            'account_name'   => $user->bankDetails->account_name ?? '',
+                            'bank_name'      => $user->bankDetails->bank_name ?? '',
+                            'account_number' => $user->bankDetails->account_number ?? '',
+                            'ifsc_code'      => $user->bankDetails->ifsc_code ?? '',
+                            'account_type'   => $user->bankDetails->account_type ?? '',
+                            'upi' => [
+                                'upi_type'   => $user->bankDetails->upi_type ?? '',
+                                'upi_number' => $user->bankDetails->upi_number ?? '',
+                                'upi_name'   => $user->bankDetails->upi_name ?? '',
+                            ],
+                        ];
+                    }
+
 
                     $payout->save();
 
