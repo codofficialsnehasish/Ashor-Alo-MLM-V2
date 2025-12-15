@@ -33,6 +33,7 @@ class LevelWiseBusinessReport extends Component
     // Infinite scroll properties
     public $loadedLevels = 1; // Number of levels to load initially
     public $levelsPerLoad = 1; // Levels to load each time
+    public $lastLoadedLevel = -1;
     public $maxLevels = 40;
     public $isLoading = false;
     public $hasMoreLevels = true;
@@ -113,7 +114,7 @@ class LevelWiseBusinessReport extends Component
         $this->loadLevels();
     }
 
-    public function loadLevels()
+    /*public function loadLevels()
     {
         if ($this->isLoading) return;
 
@@ -173,7 +174,9 @@ class LevelWiseBusinessReport extends Component
             }
         }
 
-        ksort($this->groupedBusiness);
+        // dd($this->groupedBusiness);
+
+        // ksort($this->groupedBusiness);
 
         // Check if there are more levels to load
         $this->hasMoreLevels = $this->loadedLevels < $this->maxLevels;
@@ -185,11 +188,140 @@ class LevelWiseBusinessReport extends Component
         }
 
         $this->isLoading = false;
+    }*/
+
+    public function loadLevels()
+    {
+        if ($this->isLoading || !$this->hasMoreLevels) return;
+
+        $this->isLoading = true;
+
+        $root = $this->user_id
+            ? BinaryTree::where('user_id', $this->user_id)->first()
+            : BinaryTree::whereNull('parent_id')->first();
+
+        if (!$root) {
+            $this->isLoading = false;
+            return;
+        }
+
+        $currentLevel = $this->lastLoadedLevel + 1;
+        $maxLevel     = min($currentLevel + $this->levelsPerLoad - 1, $this->maxLevels - 1);
+
+        $parentIds = [$root->id];
+
+        for ($level = 0; $level <= $maxLevel; $level++) {
+
+            if ($level < $currentLevel) {
+                // Move parents forward without storing
+                $parentIds = BinaryTree::whereIn('sponsor_id', $parentIds)->pluck('id')->toArray();
+                continue;
+            }
+
+            $nodes = BinaryTree::with('user')
+                ->whereIn('sponsor_id', $parentIds)
+                ->get();
+
+            if ($nodes->isEmpty()) {
+                $this->hasMoreLevels = false;
+                break;
+            }
+
+            $userIds = $nodes->pluck('user_id')->toArray();
+
+            // 🔥 ONE TopUp query per level
+            // $topups = TopUp::whereIn('user_id', $userIds)
+            //     ->where('is_show_on_business', 1)
+            //     ->when($this->start_date && $this->end_date, fn ($q) =>
+            //         $q->whereBetween('start_date', [$this->start_date, $this->end_date])
+            //     )
+            //     ->selectRaw('user_id, SUM(total_amount) as total')
+            //     ->groupBy('user_id')
+            //     ->pluck('total', 'user_id');
+            $topups = TopUp::whereIn('user_id', $userIds)
+                    ->where('is_show_on_business', 1)
+                    ->when($this->start_date && $this->end_date, fn ($q) =>
+                        $q->whereBetween('start_date', [$this->start_date, $this->end_date])
+                    )
+                    ->orderBy('start_date')
+                    ->get()
+                    ->groupBy('user_id'); // group only in memory
+
+
+            /*foreach ($nodes as $node) {
+                if (!$node->user) continue;
+
+                if ($this->position && strtolower($node->position) !== strtolower($this->position)) {
+                    continue;
+                }
+
+                $amount = $topups[$node->user_id] ?? 0;
+
+                if ($amount <= 0) continue;
+
+                $this->groupedBusiness[$level][] = [
+                    'user_id'        => $node->user->id,
+                    'name'           => $node->user->name,
+                    'phone'          => $node->user->phone,
+                    'member_number'  => $node->member_number,
+                    'position'       => $node->position,
+                    'sponsor_id'     => $node->sponsor?->member_number,
+                    'register_date'  => formated_date($node->user->created_at),
+                    'total_business' => $amount,
+                ];
+
+                $this->total_amount += $amount;
+                $this->total_user_count++;
+            }*/
+
+            foreach ($nodes as $node) {
+                if (!$node->user) continue;
+
+                if ($this->position && strtolower($node->position) !== strtolower($this->position)) {
+                    continue;
+                }
+
+                $userTopups = $topups[$node->user_id] ?? collect();
+
+                foreach ($userTopups as $topup) {
+
+                    $this->groupedBusiness[$level][] = [
+                        'user_id'        => $node->user->id,
+                        'name'           => $node->user->name,
+                        'phone'          => $node->user->phone,
+                        'member_number'  => $node->member_number,
+                        'position'       => $node->position,
+                        'sponsor_id'     => $node->sponsor?->member_number,
+                        'register_date'  =>  formated_date($topup->start_date),
+                        'total_business' => $topup->total_amount,
+                    ];
+
+                    $this->total_amount += $topup->total_amount;
+                    $this->total_user_count++;
+                }
+            }
+
+
+            $parentIds = $nodes->pluck('id')->toArray();
+            $this->lastLoadedLevel = $level;
+        }
+
+        $this->hasMoreLevels = $this->lastLoadedLevel < $this->maxLevels - 1;
+        $this->isLoading = false;
     }
+
+
+    /*public function loadMore()
+    {
+        if ($this->hasMoreLevels && !$this->isLoading) {
+            $this->loadedLevels += $this->levelsPerLoad;
+            $this->loadLevels();
+        }
+    }*/
 
     public function loadMore()
     {
-        if ($this->hasMoreLevels && !$this->isLoading) {
+        if (!$this->isLoading && $this->hasMoreLevels) {
             $this->loadedLevels += $this->levelsPerLoad;
             $this->loadLevels();
         }
@@ -248,6 +380,9 @@ class LevelWiseBusinessReport extends Component
             }
         }
     }
+
+    
+
 
     protected function resetReportData()
     {

@@ -152,7 +152,9 @@
                                                     @php $amount = 0 @endphp
                                                     @foreach($business as $item)
                                                     @php 
-                                                        $amount += $item['total_business']->total_amount;
+                                                    // dd($item);
+                                                        // $amount += $item['total_business']->total_amount;
+                                                        $amount += (float) $item['total_business'];
                                                     @endphp
                                                     <tr>
                                                         <td class="text-wrap">{{ $loop->iteration }}</td>
@@ -160,8 +162,8 @@
                                                         <td class="text-wrap">{{ $item['position'] }}</td>
                                                         <td class="text-wrap">{{ $item['phone'] }}</td>
                                                         <td class="text-wrap">{{ $item['sponsor_id'] }}</td>
-                                                        <td class="text-wrap">{{ formated_date($item['total_business']->start_date,'-') }}</td>
-                                                        <td class="text-wrap">{{ $item['total_business']->total_amount }}</td>
+                                                        <td class="text-wrap">{{ $item['register_date'] }}</td>
+                                                        <td class="text-wrap">{{ $item['total_business'] }}</td>
                                                     </tr>
                                                     @endforeach
                                                 </tbody>
@@ -210,12 +212,27 @@
                                     }
                                  }"
                                  x-init="init">
+
                                 <div class="card">
                                     <div class="card-body">
                                         {{-- <p class="text-muted">Scroll down to load more levels...</p> --}}
-                                        <button wire:click="loadMore" class="btn btn-primary">
+                                        {{-- <button wire:click="loadMore" class="btn btn-primary">
                                             Load Next {{ $levelsPerLoad }} Levels
+                                        </button> --}}
+                                        <button wire:click="loadMore"
+                                            wire:loading.attr="disabled"
+                                            wire:target="loadMore"
+                                            class="btn btn-primary"
+                                        >
+                                            <span wire:loading.remove wire:target="loadMore">
+                                                Load Next {{ $levelsPerLoad }} Levels
+                                            </span>
+
+                                            <span wire:loading wire:target="loadMore">
+                                                Loading...
+                                            </span>
                                         </button>
+
                                     </div>
                                 </div>
                             </div>
